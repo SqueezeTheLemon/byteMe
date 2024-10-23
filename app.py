@@ -7,9 +7,29 @@ application = Flask(__name__)
 def hello():
     return render_template("index.html")
 
-@application.route("/list")
+@application.route("/login")
+def view_login():
+    return render_template("login.html")
+
+@application.route("/mypage")
+def view_mypage():
+    return render_template("mypage.html")
+
+@application.route("/basket")
+def view_basket():
+    return render_template("basket.html")
+
+@application.route("/customer_center")
+def view_customer_center():
+    return render_template("customer_center.html")
+
+@application.route("/menu")
 def view_list():
-    return render_template("list.html")
+    return render_template("menu.html")
+
+@application.route("/store")
+def reg_review():
+    return render_template("store.html")
 
 @application.route("/review")
 def view_review():
@@ -19,21 +39,18 @@ def view_review():
 def reg_item():
     return render_template("reg_items.html")
 
-@application.route("/reg_reviews")
-def reg_review():
-    return render_template("reg_reviews.html")
-
 @application.route("/submit_item")
 def reg_item_submit():
     name=request.args.get("name")
+    category=request.args.get("category")
+    price=request.args.get("price")
+    card=request.args.get("card")
     seller=request.args.get("seller")
     addr=request.args.get("addr")
-    email=request.args.get("email")
-    category=request.args.get("category")
-    card=request.args.get("card")
-    status=request.args.get("status")
     phone=request.args.get("phone")
-    print(name,seller,addr,email,category,card,status,phone)
+    info=request.args.get("info")
+    opt=request.args.get("opt")
+    print(name,category,price,card,seller,addr,phone,info,opt)
     #return render_template("reg_item.html")
 
 @application.route("/submit_item_post", methods=['POST'])

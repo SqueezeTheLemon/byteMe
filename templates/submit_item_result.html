@@ -1,32 +1,25 @@
 {% extends "index.html" %}
 {% block section %}
+    <img src="{{img_path}}" align="left" style="margin-right: 20px;">
     <p>
-        Seller {{data.seller}} sells {{data.name}} and its category is {{data.category}}.
-
-        The item is
-        {% if data['status'] == "lnew" %}
-            likely new!
-        {% endif %}
-        {% if data['status'] == "new" %}
-            new!
-        {% endif %}
-        {% if data['status'] == "used" %}
-            used!
-        {% endif %}
-    </p>
-    <img src="{{img_path}}"/>
-    <p>
-        Contact via {{data.email}} or {{data.phone}}
-        if you are interested!
-        The address is {{data.addr}}
-    </p>
-    <p>
-        For payment, the credit card is
+        상품명 | {{data.name}}<br>
+        카테고리 | {{data.category}}<br>
+        <br>
+        상품 설명 | {{data.info}}<br>
+        <br>
+        가격 | {{data.price}}<br>
+        추가 옵션 | {{data.opt}}<br>
+        카드 결제 |
         {% if data['card'] == "Y" %}
-            accepted!
+            가능
         {% endif %}
         {% if data['card'] == "N" %}
-            NOT accepted!
+            불가능
         {% endif %}
+        <br>
+        <br>
+        판매자 아이디 | {{data.seller}}<br>
+        문의 번호 | {{data.phone}}<br>
+        판매 주소 | {{data.addr}}<br>
     </p>
 {% endblock section %}

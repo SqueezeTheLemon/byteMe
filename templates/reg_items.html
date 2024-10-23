@@ -2,35 +2,28 @@
 {% block section %}
     <form action="/submit_item_post" method="post" enctype="multipart/form-data">
         <div><br><br>
-            <label for="name">Item name: </label>
+            <label for="img"><span style="color:red;">*</span> 상품 이미지 업로드 : </label>
+            <input type="file" name="file" /><br><br>
+        </div>
+        <div>
+            <label for="name"><span style="color:red;">*</span> 상품명 : </label>
             <input type="text" name="name" id="name" required><br><br>
         </div>
         <div>
-            <label for="seller"> Seller ID: </label>
-            <input type="text" name="seller" id="seller" required><br><br>
-        </div>
-        <div>
-            <label for="addr"> Address: </label>
-            <input type="text" name="addr" id="addr" required><br><br>
-        </div>
-        <div>
-            <label for="tel">Email: </label>
-            <input type="text" name="email" id="email" required><br><br>
-        </div>
-        <div>
-            <label for="category">Category: </label>
+            <label for="category"><span style="color:red;">*</span> 카테고리 : </label>
             <br>
             <select id="category" name="category">
-                <option value="Clothes" selected> Clothes </option>
-                <option value="Beauty"> Beauty </option>
-                <option value="Books"> Books </option>
-                <option value="Furniture"> Furniture </option>
-                <option value="Electronics"> Electronics </option>
-                <option value="ETC"> ETC </option>
+                <option value="음료" selected>음료</option>
+                <option value="디저트">디저트</option>
+                <option value="김밥">김밥</option>
             </select><br><br>
         </div>
         <div>
-            <label for="card">Credit Card? (Y/N): </label>
+            <label for="price"><span style="color:red;">*</span> 가격 : </label>
+            <input type="text" name="price" id="price" placeholder="원" required><br><br>
+        </div>
+        <div>
+            <label for="card"><span style="color:red;">*</span> 카드 결제 가능? (Y/N) : </label>
             <br>
             <select id="card" name="card">
                 <option value="Y" selected>Yes</option>
@@ -38,24 +31,28 @@
             </select><br><br>
         </div>
         <div>
-            <label for="status">Status? </label>
-            <br>
-            <select id="status" name="status">
-                <option value="new" selected>New</option>
-                <option value="lnew">Likely New</option>
-                <option value="used">Used</option>
-            </select><br><br>
+            <label for="seller"><span style="color:red;">*</span> 판매자 아이디 : </label>
+            <input type="text" name="seller" id="seller" required><br><br>
         </div>
         <div>
-            <label for="phone">Phone : </label>
+            <label for="addr"><span style="color:red;">*</span> 판매 주소 : </label>
+            <input type="text" name="addr" id="addr" required><br><br>
+        </div>
+        <div>
+            <label for="phone"><span style="color:red;">*</span> 문의 가능 번호 : </label>
             <input type="text" name="phone" id="phone"><br><br>
         </div>
+        <div class="information">
+            <label for="info" style="margin-right: 10px;"><span style="color:red;">*</span> 상품 설명 : </label>
+            <textarea name="info" id="info" required></textarea>
+        </div>
+        <br>
         <div>
-            <label for="img">Representative Image upload : </label>
-            <input type="file" name="file" /><br><br>
+            <label for="opt">추가 옵션 : </label>
+            <input type="text" name="opt" id="opt"><br><br>
         </div>
         <div>
-            <input type="submit" value="Submit!"><br><br>
+            <input type="submit" value="등록" id="submit"><br><br>
         </div>
     </form>
 {% endblock section %}
