@@ -29,7 +29,6 @@ ul {
     padding: 0px 8px;
 }
 
-/* Style the topnav links */
 .upperbar li a {
     float: right;
     display: block;
@@ -37,23 +36,28 @@ ul {
     text-align: center;
     text-decoration: none;
 }
-  
-/* Change color on hover */
+
 .upperbar li a:hover {
     color: rgb(0, 70, 42);
     font-weight: bold;
 }
 
-/* Style the top navigation bar */
 nav {
     overflow: hidden;
     background-color: #ffffff;
 }
 
 .navbar__logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     padding: 20px;
     padding-bottom: 40px;
+}
+
+.navbar__logo img {
+    height: 50px;
 }
 
 .navbar__logo a {
@@ -63,13 +67,27 @@ nav {
     text-decoration: none;
 }
 
-.navbar__menu {
+.navbar__menu .submenu {
     padding: 0px;
+    overflow: hidden;
 }
 
-/* Style the topnav links */
-.navbar__menu li a {
+.navbar__menu li {
     float: left;
+    line-height: 40px;
+}
+
+.navbar__menu li:hover {
+    background-color: rgb(134, 182, 162);
+    transition-duration: 0.5s;
+}
+  
+.navbar__menu li:hover .submenu {
+    height: 180px; /*서브메뉴 li한개의 높이 50*5*/
+    transition-duration: 1s;
+}
+
+.navbar__menu li a {
     display: block;
     font-size: 18px;
     color: #222222;
@@ -77,12 +95,65 @@ nav {
     padding: 14px 30px;
     text-decoration: none;
 }
-  
-/* Change color on hover */
+
 .navbar__menu li a:hover {
     font-size: 18px;
     background-color: rgb(134, 182, 162);
     color: #222222;
+}
+
+.submenu {
+    height: 0; /*ul의 높이를 안보이게 처리*/
+    overflow: hidden;
+}
+
+.submenu li {
+    float: none;
+    line-height: 30px;
+    background-color: rgb(134, 182, 162);
+    text-align: center;
+}
+
+.submenu__under li {
+    float: left;
+    display: block;
+    font-size: 18px;
+    color: #222222;
+    text-align: center;
+    padding: 14px 10px;
+    text-decoration: none;
+}
+
+.submenu__under li a {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(0, 70, 42);
+    text-align: center;
+    text-decoration: none;
+}
+
+.submenu__under li a:hover {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(0, 70, 42);
+}
+
+.column {
+    float: left;
+    padding: 20px;
+}
+
+.column.left {
+    width: 40%;
+    text-align: center;
+}
+
+.column.right {
+    width: 60%;
+}
+
+.column.right input::placeholder {
+    text-align: right;
 }
 
 textarea {
