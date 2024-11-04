@@ -7,22 +7,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}" defer></script>
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <header>
         <ul class="upperbar">
             <li><a href="/customer_center">고객센터</a></li>
             <li>|</li>
             <li><a href="/basket">장바구니</a></li>
             <li>|</li>
-            <li><a href="/mypage">마이페이지</a></li>
+            <li><a href="/signup">회원가입</a></li>
             <li>|</li>
-            <li><a href="/login">로그인</a></li>
+            <li><a href="/login_selection">로그인</a></li>
         </ul>
     </header>
     <section>
     <nav>
         <div class="navbar__logo">
-            <img src="static/images/logo.png" alt="Logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
             <a href="/home">BrEw-Ha</a>
         </div>
         <hr>

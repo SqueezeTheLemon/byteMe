@@ -1,19 +1,44 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import sys
 
 application = Flask(__name__)
+
+application.config['TEMPLATES_AUTO_RELOAD'] = True
+
 
 @application.route("/")
 def hello():
     return render_template("index.html")
 
-@application.route("/home")
+@application.route("/home", methods=["GET", "POST"])
 def home():
     return render_template("home.html")
 
-@application.route("/login")
-def view_login():
-    return render_template("login.html")
+@application.route("/login_selection")
+def login_selection():
+    return render_template("login_selection.html")
+
+@application.route("/user_login", methods=["GET", "POST"])
+def user_login():
+     if request.method == "POST":
+        # 로그인 인증 로직 (예: 사용자 이름과 비밀번호 확인)
+        # 인증 성공 시 홈으로 리디렉션
+        return redirect(url_for('home'))
+     return render_template("user_login.html")
+   
+
+@application.route("/admin_login",methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        return redirect(url_for('home'))
+    return render_template("admin_login.html")
+
+
+@application.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        return redirect(url_for('home'))
+    return render_template("signup.html")
 
 @application.route("/mypage")
 def view_mypage():
