@@ -1,0 +1,227 @@
+{% extends "index.html" %}
+{% block section %}
+    <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status</title>
+    <style>
+
+ body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+       
+        /* 상단 테이블 */
+         .table-container {
+            display: flex;
+            width: 100%;
+            border: 2px solid rgb(0, 70, 42);
+            max-width: 700px;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+            height: 110px;
+            margin-top: 20px;
+            
+            
+        }
+        .table-cell {
+            flex: 1;
+            border: 2px solid rgb(0, 70, 42);
+            padding: 20px;
+            position: relative;
+            text-align: left; /* 좌측 정렬 */
+            vertical-align: top; /* 상단 정렬 */
+            color: #646464;
+           
+            
+        }
+        .table-call, p{
+        	font-size:12px;
+           
+        }
+        .table-cell h3 {
+            margin: 0; /* 제목의 상하 여백 제거 */
+        }
+        .table-cell:last-child {
+            border-right: 2px solid rgb(0, 70, 42);
+        }
+        
+        .table-cell:hover {
+            background-color: rgb(134, 182, 162);
+        }
+        /* 버튼 위치 */
+        .edit-button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+            background-color: rgb(0, 70, 42);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            text-decoration: none;
+        }
+        
+       
+        /* 우측 하단 표시 스타일 */
+        .bottom-right {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        
+        /* 하단 레이아웃 */
+        .bottom-container {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+            
+            padding-top: 10px;
+        }
+        /* 좌측 메뉴 (1 비율) */
+        .menu-container {
+            flex: 1;
+            padding: 3px;
+            border-right: 3px solid #ddd;
+        }
+        .menu-item {
+            padding: 10px 0;
+            font-size: 0.9em;
+            color: 	#969696;
+            margin: 3px;
+            text-decoration: none;
+        }
+        
+        
+        
+        .menu-item:hover {
+            color: rgb(0, 70, 42);
+        }
+        .menu-divider {
+            border-top: 3px solid #ddd;
+            margin: 6px 0;
+        }
+        /* 우측 콘텐츠 (5 비율) */
+        .right-content {
+            flex: 5;
+            padding: 10px;
+            text-align: left;
+            color: #333;
+            overflow-y: auto; /* 스크롤 추가 */
+            max-height: 400px; /* 적절한 높이 설정 */
+            position: relative;
+        }
+        /* 상품 정보 스타일 */
+        .product-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+           
+            margin-bottom: 10px;
+        }
+        .product-image {
+            width: 40%;
+            margin-right: 10px;
+            
+            
+        }
+        .product-image img {
+            width: 100%;
+            border-radius: 4px;
+            
+            object-fit: cover;
+        }
+        .product-details {
+            flex: 1;
+            font-size: 0.9em;
+        }
+       
+        .detail-item {
+            margin: 3px 0; /* 세로 간격 줄이기 */
+        }
+        /* 완료 버튼 */
+        .complete-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            background-color: rgb(0, 70, 42);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- 상단 테이블 -->
+    <div class="table-container">
+        <!-- 이름 칸 -->
+        <div class="table-cell">
+            <h3>박이화 님</h3>
+            <p><strong>관리자</strong></p>
+             <a href="edit-info.html" class="edit-button">정보 수정</a>
+        </div>
+        <!-- 주문대기 칸 -->
+        <div class="table-cell">
+            <h3>주문 대기</h3>
+            <div class="bottom-right"><strong>총 3건</strong></div>
+        </div>
+        <!-- 제조완료 칸 -->
+        <div class="table-cell">
+            <h3>제조 완료</h3>
+            <div class="bottom-right"><strong>총 4건</strong></div>
+        </div>
+    </div>
+
+    <!-- 하단 레이아웃 -->
+    <div class="bottom-container">
+        <!-- 좌측 메뉴 -->
+        <div class="menu-container">
+           <a href="order-history.html" class="menu-item">주문 내역</a><br>
+            <a href="completed-orders.html" class="menu-item">완료 내역</a>
+            <div class="menu-divider"></div>
+            <a href="product-management.html" class="menu-item">상품 관리</a><br>
+            <a href="product-edit.html" class="menu-item">상품 수정</a><br>
+            <a href="stock-status.html" class="menu-item">재고 현황</a>
+            <div class="menu-divider"></div>
+            <a href="edit-member-info.html" class="menu-item">회원 정보 수정</a><br>
+            <a href="delete-member.html" class="menu-item">회원 탈퇴</a>
+        </div>
+        <!-- 우측 콘텐츠 -->
+        <div class="right-content">
+            <!-- 상품 정보 예시 -->
+            <div class="product-container">
+                <div class="product-image">
+                    <img src="example.jpg" alt="상품 이미지">
+                </div>
+                <div class="product-details">
+                    <div class="detail-item"><h2>핫티노/아이스티노</h2></div>
+                    <div class="detail-item">옵션 | ICE</div>
+                    <div class="detail-item">수량 | 1</div>
+                    <div class="detail-item">가격 | 2900원</div>
+                    <div class="detail-item">결제수단 | 카드</div>
+                </div>
+            </div>
+            <!-- 추가 상품 정보가 여기에 표시될 수 있음 -->
+
+            <!-- 완료 버튼 -->
+            <button class="complete-button">완료</button>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock section %}
