@@ -51,14 +51,18 @@
             <label for="phone"><span class="required">*</span> 핸드폰 번호</label>
             <input type="tel" id="phone" placeholder="핸드폰 번호">
         </div>
-        
-        <div class="signup-buttons">
-            <button type="submit" class="btn-submit">취소</button>
-            <form action="{{ url_for('home') }}" method="POST">
-                <button type="submit" class="btn-submit">확인</button>
-            </form>
-        </div>
     </form>
+    <div class="signup-buttons">
+        <!-- 취소 버튼 -->
+        <form action="{{ url_for('hello') }}" method="POST">
+            <button type="submit" class="btn-cancel">취소</button>
+        </form>
+        
+        <!-- 확인 버튼 -->
+        <form action="{{ url_for('home') }}" method="POST">
+            <button type="submit" class="btn-submit">확인</button>
+        </form>
+    </div>
 </main>
 
 <script>
