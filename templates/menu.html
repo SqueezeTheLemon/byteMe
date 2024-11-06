@@ -1,4 +1,111 @@
 {% extends "index.html" %}
 {% block section %}
-    메뉴 조회 화면 입니다.
+    <nav>
+        <ul class="submenu__under">
+            <li><a href="/menu">메뉴</a></li>
+            <li>|</li>
+            <li><a href="/menu">전체</a></li>
+        </ul>
+    </nav>
+    <section>
+    <hr>
+    </section>
+    <br>
+    <ul class="sort">
+        <li>인기순</li>
+        <li>|</li>
+        <li>낮은 가격순</li>
+        <li>|</li>
+        <li>높은 가격순</li>
+        <li>|</li>
+        <li>리뷰 많은순</li>
+    </ul>
+    <button class="submit_prd" onclick="location.href='/reg_items'"></button>
+    <br>
+    <ul class="prd_list">
+        <li class="prd">
+            <div class="prd_info">
+                <a href="">
+                    <img class="prd_img" src="static/images/test.png" alt="상품 사진">
+                </a>
+            </div>
+            <div class="prd_name">
+                <a href="">
+                    <p>쿠키</p>
+                </a>
+            </div>
+            <button class="btn_jjim">
+            </button>
+            <div class="prd_star">
+                <a href="">
+                    <button class="btn_star"></button>
+                    <p class="star_score">4.5</p>
+                </a>
+            </div>
+            <p class="prd_price">1,000원</p>
+        </li>
+        <li class="prd">
+            <div class="prd_info">
+                <a href="">
+                    <img class="prd_img" src="static/images/test.png" alt="상품 사진">
+                </a>
+            </div>
+            <div class="prd_name">
+                <a href="">
+                    <p>쿠키</p>
+                </a>
+            </div>
+            <button class="btn_jjim">
+            </button>
+            <div class="prd_star">
+                <a href="">
+                    <button class="btn_star"></button>
+                    <p class="star_score">4.5</p>
+                </a>
+            </div>
+            <p class="prd_price">1,000원</p>
+        </li>
+        <li class="prd">
+            <div class="prd_info">
+                <a href="">
+                    <img class="prd_img" src="static/images/test.png" alt="상품 사진">
+                </a>
+            </div>
+            <div class="prd_name">
+                <a href="">
+                    <p>쿠키</p>
+                </a>
+            </div>
+            <button class="btn_jjim">
+            </button>
+            <div class="prd_star">
+                <a href="">
+                    <button class="btn_star"></button>
+                    <p class="star_score">4.5</p>
+                </a>
+            </div>
+            <p class="prd_price">1,000원</p>
+        </li>
+        <li class="prd">
+            <div class="prd_info">
+                <a href="">
+                    <img class="prd_img" src="static/images/test.png" alt="상품 사진">
+                </a>
+            </div>
+            <div class="prd_name">
+                <a href="">
+                    <p>쿠키</p>
+                </a>
+            </div>
+            <button class="btn_jjim">
+            </button>
+            <div class="prd_star">
+                <a href="">
+                    <button class="btn_star"></button>
+                    <p class="star_score">4.5</p>
+                </a>
+            </div>
+            <p class="prd_price">1,000원</p>
+        </li>
+    </ul>
 {% endblock section %}

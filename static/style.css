@@ -83,7 +83,7 @@ nav {
 }
   
 .navbar__menu li:hover .submenu {
-    height: 180px; /*서브메뉴 li한개의 높이 50*5*/
+    height: 180px;
     transition-duration: 1s;
 }
 
@@ -103,7 +103,7 @@ nav {
 }
 
 .submenu {
-    height: 0; /*ul의 높이를 안보이게 처리*/
+    height: 0;
     overflow: hidden;
 }
 
@@ -165,4 +165,123 @@ textarea {
 .information {
     display: flex;
     align-items: flex-start;
+}
+
+.sort li {
+    float: left;
+    display: block;
+    color: #505050;
+    text-align: center;
+    padding: 0px 8px;
+    text-decoration: none;
+}
+
+
+.sort li:hover {
+    color: rgb(0, 70, 42);
+    font-weight: bold;
+}
+
+.submit_prd {
+    position: absolute;
+    top: 310px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-image: url("images/submit.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.prd_list {
+    list-style: none;
+    display: block;
+    margin: 8px 0 0;
+    text-decoration: none;
+}
+
+.prd {
+    position: relative;
+    float: left;
+    width: 350px;
+    padding: 30px 25px 35px;
+}
+
+.prd_info {
+    text-align: center;
+    font-size: 14px;
+    display: table;
+    margin: 0;
+    padding: 0;
+}
+
+.prd_img {
+    display: table-cell;
+    width: auto !important;
+    max-width: 315px;
+    height: auto !important;
+    max-height: 315px;
+    vertical-align: top;
+}
+
+.prd_name {
+    margin-top: 15px;
+}
+
+.prd_name a {
+    text-decoration: none;
+    color: #222222;
+    font-size: 18px;
+}
+
+.btn_jjim {
+    position: absolute;
+    top: 300px;
+    left: 290px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-image: url("images/heart_empty.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.prd_price {
+    height: 25px;
+    line-height: 22px;
+}
+
+.prd_star {
+    position: absolute;
+    top: 355px;
+    left: 260px;
+    width: 80px;
+    height: 40px;
+}
+
+.prd_star a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #222222;
+}
+
+.btn_star {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-image: url("images/star.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    display: inline;
+}
+
+.star_score {
+    text-align: left;
+    display: inline;
+    padding-left: 10px;
 }
