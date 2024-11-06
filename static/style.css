@@ -29,7 +29,6 @@ ul {
     padding: 0px 8px;
 }
 
-/* Style the topnav links */
 .upperbar li a {
     float: right;
     display: block;
@@ -37,23 +36,28 @@ ul {
     text-align: center;
     text-decoration: none;
 }
-  
-/* Change color on hover */
+
 .upperbar li a:hover {
     color: rgb(0, 70, 42);
     font-weight: bold;
 }
 
-/* Style the top navigation bar */
 nav {
     overflow: hidden;
     background-color: #ffffff;
 }
 
 .navbar__logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     padding: 20px;
     padding-bottom: 40px;
+}
+
+.navbar__logo img {
+    height: 50px;
 }
 
 .navbar__logo a {
@@ -63,13 +67,27 @@ nav {
     text-decoration: none;
 }
 
-.navbar__menu {
+.navbar__menu .submenu {
     padding: 0px;
+    overflow: hidden;
 }
 
-/* Style the topnav links */
-.navbar__menu li a {
+.navbar__menu li {
     float: left;
+    line-height: 40px;
+}
+
+.navbar__menu li:hover {
+    background-color: rgb(134, 182, 162);
+    transition-duration: 0.5s;
+}
+  
+.navbar__menu li:hover .submenu {
+    height: 180px;
+    transition-duration: 1s;
+}
+
+.navbar__menu li a {
     display: block;
     font-size: 18px;
     color: #222222;
@@ -77,12 +95,65 @@ nav {
     padding: 14px 30px;
     text-decoration: none;
 }
-  
-/* Change color on hover */
+
 .navbar__menu li a:hover {
     font-size: 18px;
     background-color: rgb(134, 182, 162);
     color: #222222;
+}
+
+.submenu {
+    height: 0;
+    overflow: hidden;
+}
+
+.submenu li {
+    float: none;
+    line-height: 30px;
+    background-color: rgb(134, 182, 162);
+    text-align: center;
+}
+
+.submenu__under li {
+    float: left;
+    display: block;
+    font-size: 18px;
+    color: #222222;
+    text-align: center;
+    padding: 14px 10px;
+    text-decoration: none;
+}
+
+.submenu__under li a {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(0, 70, 42);
+    text-align: center;
+    text-decoration: none;
+}
+
+.submenu__under li a:hover {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(0, 70, 42);
+}
+
+.column {
+    float: left;
+    padding: 20px;
+}
+
+.column.left {
+    width: 40%;
+    text-align: center;
+}
+
+.column.right {
+    width: 60%;
+}
+
+.column.right input::placeholder {
+    text-align: right;
 }
 
 textarea {
@@ -94,4 +165,123 @@ textarea {
 .information {
     display: flex;
     align-items: flex-start;
+}
+
+.sort li {
+    float: left;
+    display: block;
+    color: #505050;
+    text-align: center;
+    padding: 0px 8px;
+    text-decoration: none;
+}
+
+
+.sort li:hover {
+    color: rgb(0, 70, 42);
+    font-weight: bold;
+}
+
+.submit_prd {
+    position: absolute;
+    top: 310px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-image: url("images/submit.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.prd_list {
+    list-style: none;
+    display: block;
+    margin: 8px 0 0;
+    text-decoration: none;
+}
+
+.prd {
+    position: relative;
+    float: left;
+    width: 350px;
+    padding: 30px 25px 35px;
+}
+
+.prd_info {
+    text-align: center;
+    font-size: 14px;
+    display: table;
+    margin: 0;
+    padding: 0;
+}
+
+.prd_img {
+    display: table-cell;
+    width: auto !important;
+    max-width: 315px;
+    height: auto !important;
+    max-height: 315px;
+    vertical-align: top;
+}
+
+.prd_name {
+    margin-top: 15px;
+}
+
+.prd_name a {
+    text-decoration: none;
+    color: #222222;
+    font-size: 18px;
+}
+
+.btn_jjim {
+    position: absolute;
+    top: 300px;
+    left: 290px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-image: url("images/heart_empty.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.prd_price {
+    height: 25px;
+    line-height: 22px;
+}
+
+.prd_star {
+    position: absolute;
+    top: 355px;
+    left: 260px;
+    width: 80px;
+    height: 40px;
+}
+
+.prd_star a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #222222;
+}
+
+.btn_star {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-image: url("images/star.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    display: inline;
+}
+
+.star_score {
+    text-align: left;
+    display: inline;
+    padding-left: 10px;
 }
