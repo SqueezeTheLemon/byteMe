@@ -1,0 +1,254 @@
+{% extends "index.html" %}
+{% block section %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>화연이의 모험</title>
+    <style>
+        /*여기서부터*/
+    /* 여행페이지의 배너 이미지 */
+.banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 1500px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+/* 콘텐츠 */
+.content {
+    margin-top: 20px;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* 슬라이드 이미지 */
+.image-slider {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.image-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.image-slide {
+    min-width: 100%;
+    height: auto;
+}
+
+.image-slide img {
+    width: 100%;
+    height: auto;
+}
+
+/* 슬라이드 좌우 버튼 */
+button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+button.prev {
+    left: 10px;
+}
+
+button.next {
+    right: 10px;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* 페이지네이션 (슬라이드 번호 표시) */
+.pagination {
+    text-align: center;
+    padding: 10px;
+}
+
+.dot {
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+    cursor: pointer;
+}
+
+.dot:hover {
+    background-color: #717171;
+}
+
+.order-count {
+    font-size: 30px;
+    background-color: #b0bdff;
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+/* 텍스트 박스
+.text-box {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    margin-top: 20px;
+} */
+
+     /* 각 요소들 간의 간격 */
+    /* section {
+     margin-bottom: 30px; }/* 각 섹션 간 간격 */
+    
+    </style>
+    <!--js 여기서부터-->
+    <script>
+    let currentIndex = 0;
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const sliderContainer = document.querySelector('.image-container');
+    const sliderImages = document.querySelectorAll('.image-slide');
+    const orderCountElement = document.getElementById('order-count');
+    const paginationDots = document.querySelectorAll('.dot');
+    
+    let orderCount = 0;  // 서버에서 주문횟수 받아야 하는데 일단 0으로 함
+    orderCountElement.textContent = `나의 주문횟수: ${orderCount}`;
+
+    // 슬라이드 이동 함수
+    function moveSlide(direction) {
+        const totalSlides = sliderImages.length;
+
+        currentIndex += direction;
+
+        if (currentIndex < 0) {
+            currentIndex = totalSlides - 1;
+        } else if (currentIndex >= totalSlides) {
+            currentIndex = 0;
+        }
+
+        sliderContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+        updatePagination();
+    }
+
+    // 페이지네이션 업데이트 함수
+    function updatePagination() {
+        paginationDots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.style.backgroundColor = '#717171';
+            } else {
+                dot.style.backgroundColor = '#bbb';
+            }
+        });
+    }
+
+    // 주문횟수에 따라 이미지 변경 함수
+    function checkOrderCountAndUpdateImage(count) {
+        if (count >= 4 && count < 8) {
+            sliderImages[0].querySelector('img').src = "trv1.png";
+          } else if (count >= 8 && count < 12) {
+            sliderImages[0].querySelector('img').src = "trv1.png";
+            sliderImages[1].querySelector('img').src = "trv2-2.png";
+          } else if (count >= 12 && count < 16) {
+            sliderImages[0].querySelector('img').src = "trv1.png";
+            sliderImages[1].querySelector('img').src = "trv2-3.png";
+          } else if (count >= 16 && count < 20) {
+            sliderImages[0].querySelector('img').src = "trv1.png";
+            sliderImages[1].querySelector('img').src = "trv2.png";
+            sliderImages[2].querySelector('img').src = "trv3-1.png";
+          } else if (count >= 20 && count < 24) {
+            sliderImages[0].querySelector('img').src = "trv1.png";
+            sliderImages[1].querySelector('img').src = "trv2.png";
+            sliderImages[2].querySelector('img').src = "trv3-2.png"; 
+          } else if (count >=24 ){
+            sliderImages[0].querySelector('img').src = "trv1.png";
+            sliderImages[1].querySelector('img').src = "trv2.png";
+            sliderImages[2].querySelector('img').src = "trv3.png";
+          }
+    }
+
+    
+    // // 주문횟수 증가 후 이미지 변경 = = = 테스트 코드
+    // setInterval(() => {
+    //     orderCount += 1;
+    //     orderCountElement.textContent = `나의 주문횟수: ${orderCount}`;
+    //     checkOrderCountAndUpdateImage(orderCount);  // 주문횟수에 맞춰 이미지 변경
+
+    //     // 이미지 변경 후에도 슬라이드가 올바르게 동작하도록 유지
+    //     sliderContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+    // }, 5000); //테스트: 5초마다 주문횟수를 증가시킴
+
+    // 슬라이드 이동 버튼 클릭 이벤트
+    document.querySelector('.prev').addEventListener('click', () => moveSlide(-1));
+    document.querySelector('.next').addEventListener('click', () => moveSlide(1));
+    
+    // 페이지네이션 클릭 이벤트
+    paginationDots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentIndex = index;
+            sliderContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+            updatePagination();
+            updateDescription(currentIndex);
+        });
+    });
+
+    // 초기 상태 업데이트
+    updatePagination();
+});
+    </script>    
+</head>
+
+<body>
+    <section class="banner">
+        <img src="{{ url_for('static', filename='0.png') }}" alt="배너 이미지">
+    </section>
+    <br>
+    <section class="content">
+        <!-- 슬라이드 이미지 -->
+        <div class="image-slider">
+            <div class="image-container">
+                <div class="image-slide">
+                    <img src="{{ url_for('static', filename='trv1-1.png') }}" alt="슬라이드 1">
+                </div>
+                <div class="image-slide">
+                    <img src="{{ url_for('static', filename='trv2-1.png') }}" alt="슬라이드 2">
+                </div>
+                <div class="image-slide">
+                    <img src="{{ url_for('static', filename='trv3-1.png') }}" alt="슬라이드 3">
+                </div>
+            </div>
+
+            <!-- 좌우 버튼 -->
+            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+
+        <!-- 페이지네이션 (슬라이드 번호 표시) -->
+        <div class="pagination">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
+        <div class="order-count">
+            <p><strong><span id="order-count"></span>회</strong></p>
+        </div>
+
+    </section>
+    
+</body>
+{% endblock section %}
