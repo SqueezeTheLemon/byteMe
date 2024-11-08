@@ -1,7 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, session
+from database import DBhandler
 import sys
+import hashlib
 
 application = Flask(__name__)
+application.config["SECRET_KEY"] = "helloosp"
+DB = DBhandler
 
 application.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -34,11 +38,21 @@ def admin_login():
     return render_template("admin_login.html")
 
 
-@application.route("/signup", methods=["GET", "POST"])
+@application.route("/signup")
 def signup():
-    if request.method == "POST":
-        return redirect(url_for('home'))
     return render_template("signup.html")
+
+@application.route("/signup_post", methods=['POST'])
+def register_user():
+    data=request.form
+    pw=request.form['pw']
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    if DB.insert_user(data, pw_hash):
+        return render_template("user_login.html")
+    else:
+        flash("user id already exist!")
+        return render_template("signup.html")
+
 
 @application.route("/mypage")
 def view_mypage():
@@ -101,6 +115,7 @@ def reg_item_submit_post():
     image_file.save("static/images/{}".format(image_file.filename))
     data=request.form
     payment=data.getlist("payment")
+    DB.insert_item(data['name'], data, image_file.filename)
     return render_template("result.html", data=data, payment=payment, img_path="static/images/{}".format(image_file.filename))
 
 if __name__ == "__main__":
