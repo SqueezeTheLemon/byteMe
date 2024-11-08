@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block body_class %}logo-left{% endblock body_class %}
+
+{% block section %}
+<div class="login-container-user">
+    <h2 class="login-title-user">일반회원 로그인</h2>
+    <form action="{{ url_for('user_login') }}" method="POST">
+        <input type="text" name="username" placeholder="아이디를 입력해주세요" required>
+        <input type="password" name="password" placeholder="비밀번호를 입력해주세요" required>
+        <button type="submit" class="login-button-user">로그인</button>
+    </form>
+    <div class="login-options">
+        <a href="#">아이디/비밀번호 찾기</a> | <a href="{{ url_for('signup') }}">회원가입</a>
+    </div>
+</div>
+{% endblock section %}

@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block section %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 탈퇴</title>
+</head>
+<body>
+    <h1>회원 탈퇴</h1>
+    <p>정말 회원을 탈퇴하시겠습니까? 탈퇴를 원하시면 아래 버튼을 클릭하세요.</p>
+    <button onclick="alert('탈퇴가 완료되었습니다.'); window.location.href = 'index.html';">탈퇴하기</button>
+</body>
+</html>
+{% endblock section %}
