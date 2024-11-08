@@ -1,19 +1,51 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sys
 
 application = Flask(__name__)
 
-@application.route("/")
+application.config['TEMPLATES_AUTO_RELOAD'] = True
+
+
+@application.route("/", methods=["GET", "POST"])
 def hello():
     return render_template("index.html")
 
-@application.route("/login")
-def view_login():
-    return render_template("login.html")
+@application.route("/home", methods=["GET", "POST"])
+def home():
+    return render_template("home.html")
 
+@application.route("/login_selection")
+def login_selection():
+    return render_template("login_selection.html")
+
+@application.route("/user_login", methods=["GET", "POST"])
+def user_login():
+     if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        # 로그인 인증 로직 (예: 사용자 이름과 비밀번호 확인)
+        # 인증 성공 시 홈으로 리디렉션
+        return redirect(url_for('home'))
+     return render_template("user_login.html")
+   
+
+@application.route("/admin_login",methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        return redirect(url_for('home'))
+    return render_template("admin_login.html")
+
+
+@application.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        return redirect(url_for('home'))
+    return render_template("signup.html")
+
+#백엔드가 없어, 우선 user mypage에만 연결. 
 @application.route("/mypage")
 def view_mypage():
-    return render_template("mypage.html")
+    return render_template("mypage_user.html")
 
 @application.route("/basket")
 def view_basket():
@@ -27,13 +59,29 @@ def view_customer_center():
 def view_list():
     return render_template("menu.html")
 
+@application.route("/drink")
+def view_drink():
+    return render_template("drink.html")
+
+@application.route("/dessert")
+def view_dessert():
+    return render_template("dessert.html")
+
+@application.route("/gimbap")
+def view_gimbap():
+    return render_template("gimbap.html")
+
 @application.route("/store")
-def reg_review():
+def store():
     return render_template("store.html")
 
-@application.route("/review")
-def view_review():
-    return render_template("review.html")
+@application.route("/review_list")
+def review_list():
+    return render_template("review_list.html")
+
+@application.route('/review_form')
+def review_form():
+    return render_template('review_form.html')
 
 @application.route("/reg_items")
 def reg_item():
@@ -44,13 +92,14 @@ def reg_item_submit():
     name=request.args.get("name")
     category=request.args.get("category")
     price=request.args.get("price")
-    card=request.args.get("card")
+    payment=request.args.getlist("payment")
+    stock=request.args.get("stock")
     seller=request.args.get("seller")
     addr=request.args.get("addr")
     phone=request.args.get("phone")
     info=request.args.get("info")
     opt=request.args.get("opt")
-    print(name,category,price,card,seller,addr,phone,info,opt)
+    print(name,category,price,payment,seller,addr,phone,info,opt)
     #return render_template("reg_item.html")
 
 @application.route("/submit_item_post", methods=['POST'])
@@ -58,7 +107,24 @@ def reg_item_submit_post():
     image_file=request.files["file"]
     image_file.save("static/images/{}".format(image_file.filename))
     data=request.form
-    return render_template("result.html", data=data, img_path="static/images/{}".format(image_file.filename))
+    payment=data.getlist("payment")
+    return render_template("result.html", data=data, payment=payment, img_path="static/images/{}".format(image_file.filename))
+
+@application.route("/submit_review_post", methods=['POST'])
+def reg_review_submit_post():
+    image_file=request.files["file"]
+    image_file.save("static/images/{}".format(image_file.filename))
+    data=request.form
+    return render_template("review_card.html", data=data, img_path="static/images/{}".format(image_file.filename))
+
+@application.route('/travel') 
+def travel():
+    return render_template("travel.html")  # 'travel.html'렌더링
+
+@application.route('/api/order-count', methods=['GET'])
+def get_order_count():
+    order_count = 4 # 예시로 주문 횟수를 4로 설정
+    return jsonify({'orderCount': order_count})
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
