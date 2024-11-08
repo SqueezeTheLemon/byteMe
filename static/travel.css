@@ -1,0 +1,209 @@
+* {
+    box-sizing: border-box;
+}
+  
+body {
+    font-family: Arial;
+    padding: 10px;
+    background: #ffffff;
+}
+
+header {
+    padding-bottom: 30px;
+}
+
+hr {
+    margin: 0%;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0%;
+}
+
+.upperbar li {
+    float: right;
+    display: block;
+    color: #505050;
+    text-align: center;
+    padding: 0px 8px;
+}
+
+/* Style the topnav links */
+.upperbar li a {
+    float: right;
+    display: block;
+    color: #505050;
+    text-align: center;
+    text-decoration: none;
+}
+  
+/* Change color on hover */
+.upperbar li a:hover {
+    color: rgb(0, 70, 42);
+    font-weight: bold;
+}
+
+/* Style the top navigation bar */
+nav {
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.navbar__logo {
+    text-align: center;
+    padding: 20px;
+    padding-bottom: 40px;
+}
+
+.navbar__logo a {
+    font-weight: bold;
+    font-size: 50px;
+    color: rgb(0, 70, 42);
+    text-decoration: none;
+}
+
+.navbar__menu {
+    padding: 0px;
+}
+
+/* Style the topnav links */
+.navbar__menu li a {
+    float: left;
+    display: block;
+    font-size: 18px;
+    color: #222222;
+    text-align: center;
+    padding: 14px 30px;
+    text-decoration: none;
+}
+  
+/* Change color on hover */
+.navbar__menu li a:hover {
+    font-size: 18px;
+    background-color: rgb(134, 182, 162);
+    color: #222222;
+}
+
+textarea {
+    width: 500px;
+    height: 100px;
+    resize: none;
+}
+
+.information {
+    display: flex;
+    align-items: flex-start;
+}
+
+
+/*여기서부터*/
+/* 배너 이미지 */
+.banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 1500px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+/* 콘텐츠 */
+.content {
+    margin-top: 20px;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* 슬라이드 이미지 */
+.image-slider {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.image-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.image-slide {
+    min-width: 100%;
+    height: auto;
+}
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+/* 슬라이드 좌우 버튼 */
+button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+button.prev {
+    left: 10px;
+}
+
+button.next {
+    right: 10px;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* 페이지네이션 (슬라이드 번호 표시) */
+.pagination {
+    text-align: center;
+    padding: 10px;
+}
+
+.dot {
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+    cursor: pointer;
+}
+
+.dot:hover {
+    background-color: #717171;
+}
+
+.order-count {
+    font-size: 30px;
+    background-color: #b0bdff;
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+/* 텍스트 박스
+.text-box {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    margin-top: 20px;
+} */
+
+/* 각 요소들 간의 간격 */
+section {
+    margin-bottom: 30px; /* 각 섹션 간 간격 */
+}
