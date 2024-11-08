@@ -1,0 +1,98 @@
+{% extends "index.html" %}
+{% block section %}
+    <style>
+        .review-card {
+            padding: 20px;
+            width: 100%; 
+            max-width: 1300px; 
+            display: flex;
+        }
+
+        .review-image {
+            flex: 0 0 380px;
+            height: 380px;
+            border: 1.5px solid gray;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 30px;
+            color: gray;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .review-content {
+            flex: 1;
+        }
+
+        .review-title {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .review-meta {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 15px;
+        }
+
+        .review-box {
+            border: 2.5px solid rgb(184,198,191);
+            min-height: 310px; 
+        }
+
+        .review-rating {
+            color: rgb(0,70,42);
+            font-size: 35px;
+            margin: 10px 0; 
+            text-align: right;
+            cursor: pointer; /* 클릭 가능하도록 커서 변경 */
+        }
+
+        .review-text {
+            margin: 15px 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .divider {
+            border-top: 1.5px solid gray;
+            margin: 10px 10px;
+        }
+    </style>
+    <section class="sec_review_card">
+        <div class="review-card">
+            <div class="review-image">
+                <img src="{{img_path}}">
+            </div>
+            <div class="review-content">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 class="review-title">{{data.review_title}}</h2>
+                    <div class="review-rating" id="rating">
+                        ★★★★★ {{data.rating}} | 👍 <span id="like-count">0</span>
+                    </div>
+                </div>
+                <div class="review-box">
+                    <div class="review-meta">
+                        작성자 | {{data.reviewer_id}}<br>
+                        작성일 | 2024.08.25<br>
+                        상품명 | {{data.product_name}}
+                    </div>
+                    <div class="divider"></div>
+                    <div class="review-text">{{data.review_content}}</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 좋아요 수를 증가시키는 함수
+            let likeCount = 0;
+
+            document.getElementById('rating').addEventListener('click', function() {
+                likeCount++;
+                document.getElementById('like-count').textContent = likeCount;
+            });
+        </script>
+    </body>
+{% endblock section %}
