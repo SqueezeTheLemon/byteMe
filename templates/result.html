@@ -1,25 +1,25 @@
 {% extends "index.html" %}
+
 {% block section %}
     <img src="{{img_path}}" align="left" style="margin-right: 20px;">
     <p>
-        상품명 | {{data.name}}<br>
-        카테고리 | {{data.category}}<br>
+        상품명  |  {{data.name}}<br>
+        카테고리  |  {{data.category}}<br>
+        재고 | {{data.stock}}개<br>
         <br>
-        상품 설명 | {{data.info}}<br>
+        상품 설명  |  {{data.info}}<br>
         <br>
-        가격 | {{data.price}}<br>
-        추가 옵션 | {{data.opt}}<br>
-        카드 결제 |
-        {% if data['card'] == "Y" %}
-            가능
-        {% endif %}
-        {% if data['card'] == "N" %}
-            불가능
-        {% endif %}
+        가격  |  {{data.price}}원<br>
+        추가 옵션  |  {{data.opt}}<br>
+        <div>
+        결제 가능 수단  | 
+        {% for pay in payment %}
+            {{ pay }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        </div>
         <br>
-        <br>
-        판매자 아이디 | {{data.seller}}<br>
-        문의 번호 | {{data.phone}}<br>
-        판매 주소 | {{data.addr}}<br>
+        판매자 아이디  |  {{data.seller}}<br>
+        문의 번호  |  {{data.phone}}<br>
+        판매 주소  |  {{data.addr}}<br>
     </p>
 {% endblock section %}

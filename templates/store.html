@@ -1,4 +1,34 @@
 {% extends "index.html" %}
+
 {% block section %}
-    매장 화면 입니다.
+
+    <nav>
+        <ul class="submenu__under">
+            <li><a href="/store">매장 찾기</a></li>
+        </ul>
+    </nav>
+
+    <section>
+        <hr>
+    </section>
+
+    <h2>매장 정보</h2>
+    <div class="store-container">
+        <div class="store-card">
+            <img src="static/images/test.png" alt="Store 1" class="store-image">
+            <div class="store-info">
+                <h3>이화상점 1호점</h3>
+                <p>주소: 서울특별시 서대문구 이화여대길 52 이화여대 학관 </p>
+            </div>
+        </div>
+
+        <div class="store-card">
+            <img src="static/images/test.png" alt="Store 2" class="store-image">
+            <div class="store-info">
+                <h3>이화상점 2호점</h3>
+                <p>주소: 서울특별시 서대문구 이화여대길 52 이화여대 학문관</p>
+            </div>
+        </div>
+
+
 {% endblock section %}
