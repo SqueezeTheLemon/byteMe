@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>화연이의 모험</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='travel.css') }}">
+    <script src="{{ url_for('static', filename='travel.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='main.js') }}" defer></script>    
+</head>
+
+<body>
+    <header>
+        <ul class="upperbar">
+            <li><a href="/customer_center">고객센터</a></li>
+            <li>|</li>
+            <li><a href="/basket">장바구니</a></li>
+            <li>|</li>
+            <li><a href="/mypage">마이페이지</a></li>
+            <li>|</li>
+            <li><a href="/login">로그인</a></li>
+        </ul>
+    </header>
+    
+    <section>
+        <nav>
+            <div class="navbar__logo">
+                <a href="">BrEw-Ha</a>
+            </div>
+            <hr>
+            <ul class="navbar__menu">
+                <li><a href="/menu">메뉴</a></li>
+                <li><a href="/store">매장</a></li>
+                <li><a href="/review">리뷰</a></li>
+                <li><a href="/reg_items">상품 등록 화면</a></li>
+                <!--모험 추가-->
+                <li><a href="/travel">화연이의 모험</a></li>
+            </ul>
+        </nav>
+    </section>
+    
+    <hr>
+    <section class="banner">
+        <img src="{{ url_for('static', filename='0.png') }}" alt="배너 이미지">
+    </section>
+
+    <section class="content">
+        <!-- 슬라이드 이미지 -->
+        <div class="image-slider">
+            <div class="image-container">
+                <div class="image-slide">
+                    <img src="{{ url_for('static', filename='trv1-1.png') }}" alt="슬라이드 1">
+                </div>
+                <div class="image-slide">
+                    <img src="{{ url_for('static', filename='trv2-1.png') }}" alt="슬라이드 2">
+                </div>
+                <div class="image-slide">
+                    <img src="{{ url_for('static', filename='trv3-1.png') }}" alt="슬라이드 3">
+                </div>
+            </div>
+
+            <!-- 좌우 버튼 -->
+            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+
+        <!-- 페이지네이션 (슬라이드 번호 표시) -->
+        <div class="pagination">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
+        <div class="order-count">
+            <p><strong><span id="order-count"></span>회</strong></p>
+        </div>
+
+    </section>
+    
+</body>
+</html>
