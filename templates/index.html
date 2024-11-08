@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}" defer></script>
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <header>
         <ul class="upperbar">
             <li><a href="/customer_center">고객센터</a></li>
@@ -20,21 +20,36 @@
         </ul>
     </header>
     <section>
-    <nav>
-        <div class="navbar__logo">
-            <a href="">BrEw-Ha</a>
-        </div>
-        <hr>
-        <ul class="navbar__menu">
-            <li><a href="/menu">메뉴</a></li>
-            <li><a href="/store">매장</a></li>
-            <li><a href="/review_list">리뷰</a></li>
-        </ul>
-    </nav>
+        <nav>
+            <div class="navbar__logo">
+                <img src="static/images/logo.png" alt="Logo">
+                <a href="/home">BrEw-Ha</a>
+            </div>
+            
+            <hr>
+            <ul class="navbar__menu">
+                <li><a href="/menu">메뉴</a>
+                    <ul class="submenu">
+                        <li><a href="/drink">음료</a></li>
+                        <li><a href="/dessert">디저트</a></li>
+                        <li><a href="/gimbap">김밥</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="/store">매장 찾기</a></li>
+                <li><a href="/review_list">리뷰</a></li>
+            </ul>
+        </nav>
     </section>
     <hr>
     <section>
         {% block section %}
+        <div class="banner">
+            <img src="static/images/banner.jpg" alt="홈 배너" class="banner-image">
+        </div>
+        <section class="home-content">
+            <p>홈 화면 입니다.</p>
+        </section>
         {% endblock section %}
     </section>
 </body>

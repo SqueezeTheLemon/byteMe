@@ -1,16 +1,6 @@
 {% extends "index.html" %}
 {% block section %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리뷰 폼</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
         .container {
             display: flex;
             gap: 20px;
@@ -86,7 +76,7 @@
             cursor: pointer;
             margin-left: 5px;
         }
-        .submit-button {
+        .cancel-button {
             background-color: rgb(0,70,42);
             color: white;
             padding: 10px 20px;
@@ -120,73 +110,75 @@
             }
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="upload-section">
-            <img src="static/images/test.png" alt="사진 업로드">
-            <input type="file" class="file-input" id="file-input" accept="image/*">
-            <button class="upload-button" onclick="document.getElementById('file-input').click();">사진 업로드</button>
-        </div>
-        <div class="form-section">
-            <div class="inline-inputs">
-                <div>
-                    <label><d style="color:red;">*</d> 상품명</label>
-                    <input type="text" id="product-name" required>
+    <form action="/submit_review_post" method="post" enctype="multipart/form-data">
+        <section class="sec_review_form">
+            <div class="container">
+                <div class="upload-section">
+                    <img src="static/images/image.png" alt="사진 업로드">
+                    <label for="img"><span style="color:red;">*</span> 사진 업로드 : </label>
+                    <input type="file" name="file" id="file-input"/>
                 </div>
-                <div>
-                    <label><d style="color:red;">*</d> 리뷰자 아이디</label>
-                    <input type="text" id="reviewer-id" required>
+                <div class="form-section">
+                    <div class="inline-inputs">
+                        <div>
+                            <label><d style="color:red;">*</d> 상품명</label>
+                            <input type="text" id="product-name" name="product_name" required>
+                        </div>
+                        <div>
+                            <label><d style="color:red;">*</d> 리뷰자 아이디</label>
+                            <input type="text" id="reviewer-id" name="reviewer_id" required>
+                        </div>
+                    </div>
+
+                    <label><d style="color:red;">*</d> 별점</label>
+                    <div class="star-rating">
+                        <input type="radio" id="5-stars" name="rating" value="1" required onclick="setRating(1)">
+                        <label for="5-stars">★</label>
+                        <input type="radio" id="4-stars" name="rating" value="2" onclick="setRating(2)">
+                        <label for="4-stars">★</label>
+                        <input type="radio" id="3-stars" name="rating" value="3" onclick="setRating(3)">
+                        <label for="3-stars">★</label>
+                        <input type="radio" id="2-stars" name="rating" value="4" onclick="setRating(4)">
+                        <label for="2-stars">★</label>
+                        <input type="radio" id="1-star" name="rating" value="5" onclick="setRating(5)">
+                        <label for="1-star">★</label>
+                    </div>
+
+                    <label><d style="color:red;">*</d> 제목</label>
+                    <input type="text" id="review-title" name="review_title" required>
+
+                    <label><d style="color:red;">*</d> 내용</label>
+                    <textarea id="review-content" name="review_content" rows="4" required></textarea>
+
+                    <input type="submit" value="등록" id="submit"><br>
+                    <div class="button-container">
+                        <button class="cancel-button" onclick="submitForm()">취소</button>
+                    </div>
                 </div>
             </div>
+        </section>
+    </form>
 
-            <label><d style="color:red;">*</d> 별점</label>
-            <div class="star-rating">
-                <input type="radio" id="5-stars" name="rating" value="5" required onclick="setRating(5)">
-                <label for="5-stars">★</label>
-                <input type="radio" id="4-stars" name="rating" value="4" onclick="setRating(4)">
-                <label for="4-stars">★</label>
-                <input type="radio" id="3-stars" name="rating" value="3" onclick="setRating(3)">
-                <label for="3-stars">★</label>
-                <input type="radio" id="2-stars" name="rating" value="2" onclick="setRating(2)">
-                <label for="2-stars">★</label>
-                <input type="radio" id="1-star" name="rating" value="1" onclick="setRating(1)">
-                <label for="1-star">★</label>
-            </div>
+        <script>
+            function setRating(rating) {
+                const labels = document.querySelectorAll('.star-rating label');
+                labels.forEach((label, index) => {
+                    label.style.color = index < rating ? '#ffcc00' : '#ccc'; // 선택된 별의 색상 변경
+                });
+            }
 
-            <label><d style="color:red;">*</d> 제목</label>
-            <input type="text" id="review-title" required>
-
-            <label><d style="color:red;">*</d> 내용</label>
-            <textarea id="review-content" rows="4" required></textarea>
-
-            <div class="button-container">
-                <button class="submit-button" onclick="submitForm()">등록</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function setRating(rating) {
-            const labels = document.querySelectorAll('.star-rating label');
-            labels.forEach((label, index) => {
-                label.style.color = index < rating ? '#ffcc00' : '#ccc'; // 선택된 별의 색상 변경
-            });
-        }
-
-        function submitForm() {
-            // 입력 필드 초기화
-            document.getElementById('product-name').value = '';
-            document.getElementById('reviewer-id').value = '';
-            document.querySelector('input[name="rating"]:checked').checked = false; // 별점 초기화
-            document.getElementById('review-title').value = '';
-            document.getElementById('review-content').value = '';
-            
-            // 이미지 미리보기를 지우고 파일 입력 초기화
-            const imgElement = document.querySelector('.upload-section img');
-            imgElement.src = '#'; // 기본 이미지로 설정
-            document.getElementById('file-input').value = ''; // 파일 입력 초기화
-        }
-    </script>
-</body>
+            function submitForm() {
+                // 입력 필드 초기화
+                document.getElementById('product-name').value = '';
+                document.getElementById('reviewer-id').value = '';
+                document.querySelector('input[name="rating"]:checked').checked = false; // 별점 초기화
+                document.getElementById('review-title').value = '';
+                document.getElementById('review-content').value = '';
+                
+                // 이미지 미리보기를 지우고 파일 입력 초기화
+                const imgElement = document.querySelector('.upload-section img');
+                imgElement.src = '#'; // 기본 이미지로 설정
+                document.getElementById('file-input').value = ''; // 파일 입력 초기화
+            }
+        </script>
 {% endblock section %}
