@@ -44,9 +44,28 @@ def signup():
 
 @application.route("/signup_post", methods=['POST'])
 def register_user():
-    data=request.form
-    pw=request.form['pw']
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    data = {
+        "id": request.form.get("id"),
+        "pw": request.form.get("pw"),
+        "email": request.form.get("email"),
+        "name": request.form.get("name"),
+        "nickname": request.form.get("nickname"),
+        "position": request.form.get("position"),
+        "phone": request.form.get("phone")
+    }
+    
+    pw_confirm = request.form.get("pw_confirm")
+    if data["pw"] != pw_confirm:
+        flash("비밀번호가 일치하지 않습니다.")
+        return redirect(url_for("signup"))
+
+    # 비밀번호 해싱
+    pw_hash = hashlib.sha256(data["pw"].encode('utf-8')).hexdigest()
+    
+    # 비밀번호를 해싱된 값으로 대체
+    data["pw"] = pw_hash
+
+
     if DB.insert_user(data, pw_hash):
         return render_template("user_login.html")
     else:

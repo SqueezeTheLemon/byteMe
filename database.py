@@ -25,13 +25,17 @@ class DBhandler:
     
     def insert_user(self, data, pw):
         user_info ={
-        "id": data['id'],
-        "pw": pw,
-        "nickname": data['nickname']
+            "id": data['id'],
+            "pw": pw,
+            "nickname": data['nickname'],
+            "email": data['email'],
+            "name": data['name'],
+            "position": data['position'],
+            "phone": data['phone']
         }
         if self.user_duplicate_check(str(data['id'])):
             self.db.child("user").push(user_info)
-            print(data)
+            print(user_info)
             return True
         else:
             return False
