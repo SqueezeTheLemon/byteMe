@@ -46,11 +46,7 @@ def signup():
 #백엔드가 없어, 우선 user mypage에만 연결. 
 @application.route("/mypage")
 def view_mypage():
-    return render_template("mypage_manager.html")
-
-@application.route("/basket")
-def view_basket():
-    return render_template("basket.html")
+    return render_template("mypage_user.html")
 
 @application.route("/customer_center")
 def view_customer_center():
@@ -132,6 +128,12 @@ def reg_item_submit_post():
     # 템플릿에 데이터 전달
     return render_template("result.html", data=data, payment=payment, img_path=img_path)
 
+@application.route("/submit_review_post", methods=['POST'])
+def reg_review_submit_post():
+    image_file=request.files["file"]
+    image_file.save("static/images/{}".format(image_file.filename))
+    data=request.form
+    return render_template("review_card.html", data=data, img_path="static/images/{}".format(image_file.filename))
 
 
 @application.route('/travel') 
