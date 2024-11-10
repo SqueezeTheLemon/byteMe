@@ -1,8 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 import sys
 from werkzeug.utils import secure_filename
 import os
+from database import DBhandler
+import hashlib
+
 application = Flask(__name__)
+application.config["SECRET_KEY"] = "helloosp"
+DB = DBhandler
 
 application.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -42,6 +47,38 @@ def signup():
     if request.method == "POST":
         return redirect(url_for('home'))
     return render_template("signup.html")
+
+DB=DBhandler()
+
+@application.route("/signup_post", methods=['POST'])
+def register_user():
+    data = {
+        "id": request.form.get("id"),
+        "pw": request.form.get("pw"),
+        "email": request.form.get("email"),
+        "name": request.form.get("name"),
+        "nickname": request.form.get("nickname"),
+        "position": request.form.get("position"),
+        "phone": request.form.get("phone")
+    }
+
+    pw_confirm = request.form.get("pw_confirm")
+    if data["pw"] != pw_confirm:
+        flash("비밀번호가 일치하지 않습니다.")
+        return redirect(url_for("signup"))
+
+    # 비밀번호 해싱
+    pw_hash = hashlib.sha256(data["pw"].encode('utf-8')).hexdigest()
+    
+    # 비밀번호를 해싱된 값으로 대체
+    data["pw"] = pw_hash
+
+
+    if DB.insert_user(data, pw=pw_hash):
+        return redirect(url_for("user_login"))
+    else:
+        flash("user id already exist!")
+        return redirect(url_for("signup"))
 
 #백엔드가 없어, 우선 user mypage에만 연결. 
 @application.route("/mypage")
@@ -124,6 +161,9 @@ def reg_item_submit_post():
     # 폼 데이터 처리
     data = request.form
     payment = data.getlist("payment")
+
+    # DB에 데이터 저장
+    DB.insert_item(data['name'], data, image_file.filename)
 
     # 템플릿에 데이터 전달
     return render_template("result.html", data=data, payment=payment, img_path=img_path)
