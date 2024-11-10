@@ -42,6 +42,8 @@ def admin_login():
 def signup():
     return render_template("signup.html")
 
+DB=DBhandler()
+
 @application.route("/signup_post", methods=['POST'])
 def register_user():
     data = {
@@ -53,7 +55,7 @@ def register_user():
         "position": request.form.get("position"),
         "phone": request.form.get("phone")
     }
-    
+
     pw_confirm = request.form.get("pw_confirm")
     if data["pw"] != pw_confirm:
         flash("비밀번호가 일치하지 않습니다.")
@@ -66,11 +68,11 @@ def register_user():
     data["pw"] = pw_hash
 
 
-    if DB.insert_user(data, pw_hash):
-        return render_template("user_login.html")
+    if DB.insert_user(data, pw=pw_hash):
+        return redirect(url_for("user_login"))
     else:
         flash("user id already exist!")
-        return render_template("signup.html")
+        return redirect(url_for("signup"))
 
 
 @application.route("/mypage")
