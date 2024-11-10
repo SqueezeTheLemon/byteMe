@@ -3,6 +3,14 @@
 {% block body_class %}logo-left{% endblock body_class %}
 
 {% block section %}
+<<<<<<< HEAD
+=======
+{% with mesg = get_flashed_messages() %}
+ {% if mesg !=[] %}
+ <script>alert("{{ mesg[0] }}")</script>
+ {% endif %}
+ {% endwith %}
+>>>>>>> front
 <div class="login-container-user">
     <h2 class="login-title-user">일반회원 로그인</h2>
     <form action="{{ url_for('user_login') }}" method="POST">

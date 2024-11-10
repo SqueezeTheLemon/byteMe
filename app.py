@@ -1,8 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import jsonify, Flask, render_template, request, flash, redirect, url_for, session, os
+from database import DBhandler
 import sys
+import hashlib
 from werkzeug.utils import secure_filename
-import os
+
 application = Flask(__name__)
+application.config["SECRET_KEY"] = "helloosp"
+DB = DBhandler
 
 application.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -14,6 +18,63 @@ def hello():
 @application.route("/home", methods=["GET", "POST"])
 def home():
     return render_template("home.html")
+
+@application.route("/login_selection")
+def login_selection():
+    return render_template("login_selection.html")
+
+@application.route("/user_login", methods=["GET", "POST"])
+def user_login():
+     if request.method == "POST":
+        # 로그인 인증 로직 (예: 사용자 이름과 비밀번호 확인)
+        # 인증 성공 시 홈으로 리디렉션
+        return redirect(url_for('home'))
+     return render_template("user_login.html")
+   
+
+@application.route("/admin_login",methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        return redirect(url_for('home'))
+    return render_template("admin_login.html")
+
+
+@application.route("/signup")
+def signup():
+    return render_template("signup.html")
+
+DB=DBhandler()
+
+@application.route("/signup_post", methods=['POST'])
+def register_user():
+    data = {
+        "id": request.form.get("id"),
+        "pw": request.form.get("pw"),
+        "email": request.form.get("email"),
+        "name": request.form.get("name"),
+        "nickname": request.form.get("nickname"),
+        "position": request.form.get("position"),
+        "phone": request.form.get("phone")
+    }
+
+    pw_confirm = request.form.get("pw_confirm")
+    if data["pw"] != pw_confirm:
+        flash("비밀번호가 일치하지 않습니다.")
+        return redirect(url_for("signup"))
+
+    # 비밀번호 해싱
+    pw_hash = hashlib.sha256(data["pw"].encode('utf-8')).hexdigest()
+    
+    # 비밀번호를 해싱된 값으로 대체
+    data["pw"] = pw_hash
+
+
+    if DB.insert_user(data, pw=pw_hash):
+        return redirect(url_for("user_login"))
+    else:
+        flash("user id already exist!")
+        return redirect(url_for("signup"))
+
 
 @application.route("/login_selection")
 def login_selection():
@@ -218,6 +279,9 @@ def ordered():
     return render_template("ordered.html")  # templates/ordered.html
 
 
+    payment=data.getlist("payment")
+    DB.insert_item(data['name'], data, image_file.filename)
+    return render_template("result.html", data=data, payment=payment, img_path="static/images/{}".format(image_file.filename))
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)

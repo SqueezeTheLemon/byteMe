@@ -10,13 +10,16 @@
 <body class="{% block body_class %}{% endblock %}">
     <header>
         <ul class="upperbar">
+            <li>eng</li>
+            <li>|</li>
             <li><a href="/customer_center">고객센터</a></li>
             <li>|</li>
             <li><a href="/travel">여행</a></li>
             <li>|</li>
-            <li><a href="/mypage">마이페이지</a></li>
+            <li><a href="/signup">회원가입</a></li>
             <li>|</li>
             <li><a href="/login_selection">로그인</a></li>
+<<<<<<< HEAD
         </ul>
     </header>
     <section>
@@ -40,6 +43,31 @@
                 <li><a href="/review_list">리뷰</a></li>
             </ul>
         </nav>
+=======
+            
+        </ul>
+    </header>
+    <section>
+    <nav>
+        <div class="navbar__logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            <a href="/home">BrEw-Ha</a>
+        </div>
+        <hr>
+        <ul class="navbar__menu">
+            <li><a href="/menu">메뉴</a>
+                <ul class="submenu">
+                    <li><a href="/drink">음료</a></li>
+                    <li><a href="/dessert">디저트</a></li>
+                    <li><a href="/gimbap">김밥</a></li>
+                </ul>
+            </li>
+            <li><a href="/store">매장 찾기</a></li>
+            <li><a href="/review">리뷰 조회</a></li>
+            <li><a href="/reg_items">상품 등록 화면</a></li>
+        </ul>
+    </nav>
+>>>>>>> front
     </section>
     <hr>
     <section>
