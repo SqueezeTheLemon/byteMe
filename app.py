@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 import sys
 from werkzeug.utils import secure_filename
 import os
@@ -7,7 +7,7 @@ import hashlib
 
 application = Flask(__name__)
 application.config["SECRET_KEY"] = "helloosp"
-DB = DBhandler
+DB=DBhandler()
 
 application.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -27,8 +27,6 @@ def login_selection():
 @application.route("/user_login", methods=["GET", "POST"])
 def user_login():
      if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
         # 로그인 인증 로직 (예: 사용자 이름과 비밀번호 확인)
         # 인증 성공 시 홈으로 리디렉션
         return redirect(url_for('home'))
@@ -42,13 +40,9 @@ def admin_login():
     return render_template("admin_login.html")
 
 
-@application.route("/signup", methods=["GET", "POST"])
+@application.route("/signup")
 def signup():
-    if request.method == "POST":
-        return redirect(url_for('home'))
     return render_template("signup.html")
-
-DB=DBhandler()
 
 @application.route("/signup_post", methods=['POST'])
 def register_user():
