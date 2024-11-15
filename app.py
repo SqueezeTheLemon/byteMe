@@ -14,11 +14,17 @@ application.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @application.route("/", methods=["GET", "POST"])
 def hello():
-    return render_template("index.html")
+    return redirect(url_for('view_list'))
+    #Index 페이지호출 대신 list 화면으로 연결하기 
 
 @application.route("/home", methods=["GET", "POST"])
 def home():
     return render_template("home.html")
+
+@application.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for('view_list')) #view_list 뭐징
 
 @application.route("/login_selection")
 def login_selection():
@@ -26,11 +32,19 @@ def login_selection():
 
 @application.route("/user_login", methods=["GET", "POST"])
 def user_login():
-     if request.method == "POST":
-        # 로그인 인증 로직 (예: 사용자 이름과 비밀번호 확인)
-        # 인증 성공 시 홈으로 리디렉션
-        return redirect(url_for('home'))
      return render_template("user_login.html")
+
+@application.route("/login.confirm", methods=['POST']) #바뀜
+def user_login_confirm():
+    id_ = request.form['id']
+    pw = request.form['pw']
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    if DB.find_user(id_, pw_hash):
+        session['id'] = id
+        return redirect(url_for('view_list'))
+    else:
+        flash("Wrong ID or PW!")
+        return render_template("user_login.html")
    
 
 @application.route("/admin_login",methods=["GET", "POST"])
@@ -85,7 +99,11 @@ def view_customer_center():
 
 @application.route("/menu")
 def view_list():
-    return render_template("menu.html")
+    data = DB.get_items()
+    tot_count = len(data)
+
+    return render_template("menu.html, datas=data.items(), total=tot_count")
+
 
 @application.route("/drink")
 def view_drink():
@@ -250,7 +268,6 @@ def order_history():
 @application.route("/ordered")
 def ordered():
     return render_template("ordered.html")  # templates/ordered.html
-
 
 
 if __name__ == "__main__":
