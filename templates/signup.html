@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-
 {% block body_class %}logo-left{% endblock body_class %}
 
 {% block section %}
@@ -22,32 +21,32 @@
                 <button type="button" class="btn-check" onclick="checkDuplicate();">중복 확인</button>
             </div>
         </div>
-        
+
         <div class="signup-field">
             <label for="password"><span class="required">*</span> 비밀번호</label>
             <input type="password" id="password" name="pw" placeholder="영문, 숫자, 특수문자 포함 8-12자리">
         </div>
-        
+
         <div class="signup-field">
             <label for="password-confirm"><span class="required">*</span> 비밀번호 확인</label>
             <input type="password" id="password-confirm" name="pw_confirm" placeholder="비밀번호 확인">
         </div>
-        
+
         <div class="signup-field">
             <label for="email"><span class="required">*</span> 이메일 주소</label>
             <input type="email" id="email" name="email" placeholder="이메일 주소">
         </div>
-        
+
         <div class="signup-field">
             <label for="name"><span class="required">*</span> 이름</label>
             <input type="text" id="name" name = "name" placeholder="이름">
         </div>
-        
+
         <div class="signup-field">
             <label for="nickname"><span class="required">*</span> 닉네임</label>
             <input type="text" id="nickname" name="nickname" placeholder="닉네임">
         </div>
-        
+
         <div class="signup-field">
             <label><span class="required">*</span> 직급</label>
             <div>
@@ -55,7 +54,7 @@
                 <label><input type="radio" name="position" value="admin"> 관리자</label>
             </div>
         </div>
-        
+
         <div class="signup-field">
             <label for="phone"><span class="required">*</span> 핸드폰 번호</label>
             <input type="tel" id="phone" name="phone" placeholder="핸드폰 번호">
@@ -64,7 +63,7 @@
         <div class="signup-buttons">
             <!-- 취소 버튼 -->
             <a href="{{ url_for('hello') }}" class="btn-cancel">취소</a>
-            
+
             <!-- 확인 버튼 -->
                 <button type="submit" class="btn-submit">확인</button>
         </div>
