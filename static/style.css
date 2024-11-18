@@ -546,12 +546,11 @@ textarea {
 
 .prd_img {
     display: table-cell;
-    width: auto !important;
-    max-width: 315px;
-    height: auto !important;
-    max-height: 315px;
+    width: 315px;
+    height: 315px;
     vertical-align: top;
 }
+
 
 .prd_name {
     margin-top: 15px;
@@ -611,6 +610,22 @@ textarea {
     text-align: left;
     display: inline;
     padding-left: 10px;
+}
+.prd_table {
+    width: 100%;
+    border-collapse: collapse; /* 테이블 셀 간 간격 제거 */
+    margin-top: 20px;
+}
+
+.prd_table .row {
+    display: table-row; /* 행을 유지 */
+}
+
+.prd_table td {
+    border: none;
+    padding: 0;
+    vertical-align: top; /* 위쪽 정렬 */
+    text-align: center;
 }
 
 .store-container {
@@ -691,25 +706,34 @@ textarea {
     text-align: center;
 }
 
-.sec_review_list {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
+.page-nation li{
+    list-style: none;
 }
 
-.sec_review_form {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
+.page-wrap{
+    text-align: center;
+    font-size: 0;
 }
 
-.sec_review_card {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
+.page-nation{
     display: flex;
     justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
+.page-nation a{
+    display: block;
+    margin: 0 3px;
+    float: left;
+    border: 1px solid #e6e6e6;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background-color: #fff;
+    font-size: 13px;
+    color: black;
+    text-decoration: none;
+    font-weight:bold;
+}
