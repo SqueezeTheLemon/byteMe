@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+
+{% block section %}
+<p>
+    item name is <b>{{name}}</b> and address is {{data['addr']}}
+    </p>
+    <p>
+    item tel. is {{data['phone']}} and category is {{data['category']}}
+    </p>
+    
+    <img src="../../static/images/{{data.img_path}}", width=140, height=140>
+
+{% endblock section %}
