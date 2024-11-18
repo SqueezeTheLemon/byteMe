@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 import sys
+
 from werkzeug.utils import secure_filename
 import os
+
 from database import DBhandler
 import hashlib
+import sys
 
 application = Flask(__name__)
 application.config["SECRET_KEY"] = "helloosp"
 DB=DBhandler()
 
 application.config['TEMPLATES_AUTO_RELOAD'] = True
-
 
 @application.route("/", methods=["GET", "POST"])
 def hello():
@@ -26,19 +28,42 @@ def login_selection():
 
 @application.route("/user_login", methods=["GET", "POST"])
 def user_login():
-     if request.method == "POST":
-        # 로그인 인증 로직 (예: 사용자 이름과 비밀번호 확인)
-        # 인증 성공 시 홈으로 리디렉션
-        return redirect(url_for('home'))
-     return render_template("user_login.html")
-   
+    if request.method == "POST":
+        id_ = request.form.get('id')  # 안전하게 값을 가져옴
+        pw = request.form.get('pw')
+        pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
+        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
+            session['id'] = id_
+            return render_template("home.html")
+        else:
+            flash("Wrong ID or PW!")
+            return render_template("user_login.html")
+
+    return render_template("user_login.html")  # GET 요청 처리
+
+     
+   
 @application.route("/admin_login",methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        return redirect(url_for('home'))
-    return render_template("admin_login.html")
+        id_ = request.form.get('id')  # 안전하게 값을 가져옴
+        pw = request.form.get('pw')
+        pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
+        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
+            session['id'] = id_
+            return render_template("home.html")
+        else:
+            flash("Wrong ID or PW!")
+            return render_template("admin_login.html")
+
+    return render_template("admin_login.html")  # GET 요청 처리
+
+@application.route("/logout")
+def logout_user():
+    session.clear()
+    return redirect(url_for('home'))
 
 @application.route("/signup")
 def signup():
@@ -55,15 +80,15 @@ def register_user():
         "position": request.form.get("position"),
         "phone": request.form.get("phone")
     }
-
     pw_confirm = request.form.get("pw_confirm")
+
     if data["pw"] != pw_confirm:
         flash("비밀번호가 일치하지 않습니다.")
         return redirect(url_for("signup"))
 
     # 비밀번호 해싱
     pw_hash = hashlib.sha256(data["pw"].encode('utf-8')).hexdigest()
-    
+
     # 비밀번호를 해싱된 값으로 대체
     data["pw"] = pw_hash
 
@@ -85,7 +110,27 @@ def view_customer_center():
 
 @application.route("/menu")
 def view_list():
-    return render_template("menu.html")
+    page=request.args.get("page", 0, type=int)
+    per_page=4
+    per_row=2
+    row_count=int(per_page/per_row)
+    start_idx=per_page*page
+    end_idx=per_page*(page+1)
+    data=DB.get_items() #read the table
+    item_counts = len(data)
+    data = dict(list(data.items())[start_idx:end_idx])
+    tot_count=len(data)
+
+    for i in range(row_count):#last row
+        if (i == row_count-1) and (tot_count%per_row != 0):
+            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
+        else:
+            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
+    return render_template("menu.html", data=data.items(), row1=locals()['data_0'].items(),
+ row2=locals()['data_1'].items(), limit=per_page,
+page=page,
+page_count=int((item_counts/per_page)+1),
+total=item_counts)
 
 @application.route("/drink")
 def view_drink():
@@ -130,7 +175,6 @@ def reg_item_submit():
     print(name,category,price,payment,seller,addr,phone,info,opt)
     #return render_template("reg_item.html")
 
-
 # static/images 폴더가 없을 경우 생성
 os.makedirs("static/images", exist_ok=True)
 
@@ -162,13 +206,24 @@ def reg_item_submit_post():
     # 템플릿에 데이터 전달
     return render_template("result.html", data=data, payment=payment, img_path=img_path)
 
+
+@application.route('/dynamicurl/<varible_name>/')
+def DynamicUrl(varible_name):
+    return str(varible_name)
+
+@application.route('/view_detail/<name>/')
+def view_item_detail(name):
+    print("###name:",name)
+    data = DB.get_item_byname(str(name))
+    print("####data:",data)
+    return render_template("detail.html", name=name, data=data)
+
 @application.route("/submit_review_post", methods=['POST'])
 def reg_review_submit_post():
     image_file=request.files["file"]
     image_file.save("static/images/{}".format(image_file.filename))
     data=request.form
     return render_template("review_card.html", data=data, img_path="static/images/{}".format(image_file.filename))
-
 
 @application.route('/travel') 
 def travel():
@@ -178,7 +233,6 @@ def travel():
 def get_order_count():
     order_count = 4 # 예시로 주문 횟수를 4로 설정
     return jsonify({'orderCount': order_count})
-
 
 # 주문 내역 페이지
 @application.route("/my-order-history")
@@ -216,6 +270,7 @@ def delete_member():
     return render_template("delete-member.html")
 
 ########################################################
+
 # 상품 관리 페이지
 @application.route("/product-manage")
 def product_manage():
@@ -251,8 +306,5 @@ def order_history():
 def ordered():
     return render_template("ordered.html")  # templates/ordered.html
 
-
-
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
-
