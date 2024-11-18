@@ -16,13 +16,17 @@
             <li>|</li>
             <li><a href="/mypage">마이페이지</a></li>
             <li>|</li>
+            {% if session['id'] %}
+            <li><a href="/logout"><b>{{session['id']}}님 반갑습니다! </b> 로그아웃</a></li>
+            {% else %}
             <li><a href="/login_selection">로그인</a></li>
+            {% endif %}
         </ul>
     </header>
     <section>
         <nav>
             <div class="navbar__logo">
-                <img src="static/images/logo.png" alt="Logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
                 <a href="/home">BrEw-Ha</a>
             </div>
             
