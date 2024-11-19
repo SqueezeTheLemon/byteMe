@@ -9,22 +9,29 @@ class DBhandler:
         self.db = firebase.database() 
 
     def insert_item(self, name, data, img_path):
-        item_info ={
-        "name": data['name'],
-        "price": data['price'],
-        "category": data['category'],
-        "payment": data['payment'],
-        "stock": data['stock'],
-        "seller": data['seller'],
-        "phone": data['phone'],
-        "addr": data['addr'],
-        "info": data['info'],
-        "opt": data['opt'],
-        "img_path": img_path
+    # payment 데이터를 문자열로 변환
+        payment = data['payment']
+        if isinstance(payment, list):
+            payment = ",".join(payment)  # 리스트를 문자열로 변환
+
+        item_info = {
+            "name": data['name'],
+            "price": data['price'],
+            "category": data['category'],
+            "payment": payment,  # 변환된 데이터를 저장
+            "stock": data['stock'],
+            "seller": data['seller'],
+            "phone": data['phone'],
+            "addr": data['addr'],
+            "info": data['info'],
+            "opt": data['opt'],
+            "img_path": img_path
         }
         self.db.child("item").child(name).set(item_info)
-        print(data,img_path)
+        print("Inserted item:", item_info)
         return True
+
+
 
     def insert_user(self, data, pw):
         user_info ={
@@ -72,10 +79,15 @@ class DBhandler:
     
     def get_item_byname(self, name):
         items = self.db.child("item").get()
-        target_value=""
-        print("###########",name)
+        target_value = ""
+        print("###########", name)
+
         for res in items.each():
             key_value = res.key()
             if key_value == name:
-                target_value=res.val()
+                target_value = res.val()
+                # payment가 문자열이라면 리스트로 변환
+                if "payment" in target_value and isinstance(target_value['payment'], str):
+                    target_value['payment'] = target_value['payment'].split(",")
+        print("Retrieved item data:", target_value)
         return target_value
