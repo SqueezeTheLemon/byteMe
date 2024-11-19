@@ -174,6 +174,11 @@ def reg_item_submit():
     opt=request.args.get("opt")
     print(name,category,price,payment,seller,addr,phone,info,opt)
     #return render_template("reg_item.html")
+# static/images 폴더가 없을 경우 생성
+os.makedirs("static/images", exist_ok=True)
+
+# static/images 폴더가 없을 경우 생성
+os.makedirs("static/images", exist_ok=True)
 
 # static/images 폴더가 없을 경우 생성
 os.makedirs("static/images", exist_ok=True)
@@ -196,15 +201,18 @@ def reg_item_submit_post():
         # 이미지 파일이 없는 경우 기본 이미지 경로 설정
         img_path = url_for('static', filename='images/default_image.jpg')
 
-    # 폼 데이터 처리
-    data = request.form
-    payment = data.getlist("payment")
+   # 폼 데이터 처리
+    data = request.form.to_dict()
+    data['payment'] = request.form.getlist("payment")  # 결제 수단을 리스트로 저장
 
     # DB에 데이터 저장
-    DB.insert_item(data['name'], data, image_file.filename)
+    DB.insert_item(data['name'], data, filename)
 
     # 템플릿에 데이터 전달
-    return render_template("result.html", data=data, payment=payment, img_path=img_path)
+    return render_template("result.html", data=data, payment=data['payment'], img_path=img_path)
+
+
+
 
 
 @application.route('/dynamicurl/<varible_name>/')
