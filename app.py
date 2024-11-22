@@ -177,12 +177,6 @@ def reg_item_submit():
 # static/images 폴더가 없을 경우 생성
 os.makedirs("static/images", exist_ok=True)
 
-# static/images 폴더가 없을 경우 생성
-os.makedirs("static/images", exist_ok=True)
-
-# static/images 폴더가 없을 경우 생성
-os.makedirs("static/images", exist_ok=True)
-
 @application.route("/submit_item_post", methods=['POST'])
 def reg_item_submit_post():
     # 이미지 파일 가져오기
@@ -212,7 +206,21 @@ def reg_item_submit_post():
     return render_template("result.html", data=data, payment=data['payment'], img_path=img_path)
 
 
+@application.route('/show_heart/<name>/', methods=['GET'])
+def show_heart(name):
+    my_heart = DB.get_heart_byname(session['id'],name)
+    print("myheart", my_heart)
+    return jsonify({'my_heart': my_heart})
 
+@application.route('/like/<name>/', methods=['POST'])
+def like(name):
+    my_heart = DB.update_heart(session['id'],'Y',name)
+    return jsonify({'msg': '좋아요 완료!'})
+
+@application.route('/unlike/<name>/', methods=['POST'])
+def unlike(name):
+    my_heart = DB.update_heart(session['id'],'N',name)
+    return jsonify({'msg': '좋아요 취소 완료!'})
 
 
 @application.route('/dynamicurl/<varible_name>/')
@@ -253,9 +261,9 @@ def my_ordered():
     return render_template("my-ordered.html")
 
 # 좋아요 페이지
-@application.route("/like")
-def like():
-    return render_template("like.html")
+@application.route("/liked_page")
+def liked_page():
+    return render_template("liked_page.html")
 
 # 나의 리뷰 페이지
 @application.route("/my-review")
