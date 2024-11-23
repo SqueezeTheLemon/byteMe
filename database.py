@@ -73,6 +73,25 @@ class DBhandler:
                 return True #입력받은 아이디와 비밀번호의 해시값이 동일한 경우가 있는지 확인한다.
         return False
     
+    def delete_user(self, user_id):
+        users = self.db.child("user").get()
+        for res in users.each():
+            if res.val()['id'] == user_id:
+                self.db.child("user").child(res.key()).remove()
+                print(f"Deleted user: {user_id}")
+                return True
+        return False
+
+    def update_user(self, user_id, updated_data):
+        users = self.db.child("user").get()
+        for res in users.each():
+            if res.val()['id'] == user_id:
+                self.db.child("user").child(res.key()).update(updated_data)
+                print(f"Updated user: {user_id}")
+                return True
+        return False
+
+    
     def get_items(self):
         items=self.db.child("item").get().val()
         return items
@@ -91,3 +110,9 @@ class DBhandler:
                     target_value['payment'] = target_value['payment'].split(",")
         print("Retrieved item data:", target_value)
         return target_value
+
+    def record_purchase(self, purchase_data):
+        # "purchases" 경로에 데이터 저장
+        self.db.child("purchases").push(purchase_data)
+        print(f"Recorded purchase: {purchase_data}")
+        return True

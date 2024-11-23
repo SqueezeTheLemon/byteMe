@@ -11,4 +11,10 @@
     
     <img src="../../static/images/{{data.img_path}}", width=140, height=140>
 
+    <!-- 구매 버튼 추가 -->
+    <form action="/purchase_item" method="POST">
+        <input type="hidden" name="item_name" value="{{name}}">
+        <button type="submit">구매</button>
+    </form>
+    
 {% endblock section %}

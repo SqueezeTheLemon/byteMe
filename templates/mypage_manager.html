@@ -171,7 +171,6 @@
         <div class="table-cell">
             <h3>박이화 님</h3>
             <p><strong>관리자</strong></p>
-            <a href="/edit-manager-info" class="edit-button">정보 수정</a>
         </div>
         <div class="table-cell">
             <h3>주문 대기</h3><br><br><br>
@@ -192,8 +191,25 @@
             <a href="/product-edit" class="menu-item">상품 수정</a>
             <a href="/product-stock" class="menu-item">재고 현황</a>
             <div class="menu-divider"></div>
-            <a href="/edit-manager-info" class="menu-item">회원 정보 수정</a>
-            <a href="/delete-manager" class="menu-item">회원 탈퇴</a>
+
+            <a href="/edit-info" class="menu-item">회원 정보 수정</a>
+
+            <form id="deleteAccountForm" action="/delete_account" method="POST" style="display: none;"></form>
+
+            <a href="#" class="menu-item" onclick="confirmDelete()">회원 탈퇴</a>
+
+            <script>
+                function confirmDelete() {
+                    const userConfirmed = confirm("정말로 탈퇴하시겠습니까?");
+                    if (userConfirmed) {
+                        // 탈퇴 요청 폼 제출
+                        document.getElementById("deleteAccountForm").submit();
+                    } else {
+                        alert("탈퇴가 취소되었습니다.");
+                    }
+                }
+            </script>
+
         </div>
     
         <div class="right-content">

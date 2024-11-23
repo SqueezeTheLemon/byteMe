@@ -212,9 +212,6 @@ def reg_item_submit_post():
     return render_template("result.html", data=data, payment=data['payment'], img_path=img_path)
 
 
-
-
-
 @application.route('/dynamicurl/<varible_name>/')
 def DynamicUrl(varible_name):
     return str(varible_name)
@@ -267,15 +264,55 @@ def my_review():
 def liked_review():
     return render_template("liked-review.html")
 
-# 회원 정보 수정 페이지
-@application.route("/edit-member-info")
-def edit_member_info():
-    return render_template("edit-member-info.html")
+# 계정 정보 수정 페이지 (일반회원, 관리자 공통)
+@application.route("/edit_account", methods=["POST"])
+def edit_account():
+    if 'id' not in session:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for("user_login"))
 
-# 회원 탈퇴 페이지
-@application.route("/delete-member")
-def delete_member():
-    return render_template("delete-member.html")
+    user_id = session["id"]
+
+    # 수정할 데이터 받기
+    updated_data = {
+        "nickname": request.form.get("nickname"),
+        "email": request.form.get("email"),
+        "name": request.form.get("name"),
+        "position": request.form.get("position"),
+        "phone": request.form.get("phone")
+    }
+
+    # 데이터베이스에서 사용자 정보 업데이트
+    if DB.update_user(user_id, updated_data):
+        flash("정보가 수정되었습니다.")
+        return redirect(url_for("view_mypage"))
+    else:
+        flash("정보 수정에 실패했습니다.")
+        return redirect(url_for("edit_member_info"))
+    
+
+# 계정 삭제 (일반회원, 관리자 공통)
+@application.route("/delete_account", methods=["POST"])
+def delete_account():
+    if 'id' not in session:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for("user_login"))
+    
+    user_id = session["id"]
+
+    # 데이터베이스에서 사용자 삭제
+    DB.delete_user(user_id)
+    
+    # 세션 종료
+    session.clear()
+    flash("계정이 삭제되었습니다.")
+    return redirect(url_for("home"))
+
+@application.route("/edit-info", methods=["GET"])
+def edit_member_info():
+    # edit-info.html 페이지 렌더링
+    return render_template("edit-info.html")
+
 
 ########################################################
 
@@ -294,15 +331,6 @@ def product_edit():
 def product_stock():
     return render_template("product-stock.html")
 
-# 매니저 회원 정보 수정 페이지
-@application.route("/edit-manager-info")
-def edit_manager_info():
-    return render_template("edit-manager-info.html")  # templates/edit_manager_info.html
-
-# 매니저 회원 탈퇴 페이지
-@application.route("/delete-manager")
-def delete_manager():
-    return render_template("delete-manager.html")  # templates/delete_manager.html
 
 # 주문 내역 페이지
 @application.route("/order-history")
@@ -313,6 +341,28 @@ def order_history():
 @application.route("/ordered")
 def ordered():
     return render_template("ordered.html")  # templates/ordered.html
+
+# 상품 구매
+@application.route("/purchase_item", methods=["POST"])
+def purchase_item():
+    if 'id' not in session:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for("user_login"))
+
+    user_id = session['id']
+    item_name = request.form.get("item_name")
+
+    # 구매 내역 데이터 생성
+    purchase_data = {
+        "user_id": user_id,
+        "item_name": item_name
+    }
+
+    # 데이터베이스에 구매 내역 저장
+    DB.record_purchase(purchase_data)
+    flash(f"{item_name} 상품을 구매했습니다!")
+    return redirect(url_for("view_mypage"))
+
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
