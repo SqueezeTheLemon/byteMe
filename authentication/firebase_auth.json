@@ -1,11 +1,11 @@
 
 {
-    "apiKey": "AIzaSyAdq990kuKBHN3ruDd0lOTcf2MChrtjAOY",
-    "authDomain": "test-498ea.firebaseapp.com",
-    "databaseURL": "https://test-498ea-default-rtdb.firebaseio.com",
-    "projectId": "test-498ea",
-    "storageBucket": "test-498ea.firebasestorage.app",
-    "messagingSenderId": "998677423536",
-    "appId": "1:998677423536:web:c858df24563f55bced2275",
-    "measurementId": "G-MXC8TDJ14P"
+  "apiKey": "AIzaSyDBKR73S46B56h_tk5SshT8TOBPx6ovk0g",
+  "authDomain": "bytemereal.firebaseapp.com",
+  "databaseURL": "https://bytemereal-default-rtdb.firebaseio.com",
+  "projectId": "bytemereal",
+  "storageBucket": "bytemereal.firebasestorage.app",
+  "messagingSenderId": "1007383499467",
+  "appId": "1:1007383499467:web:84314cf16cc759edf6814e",
+  "measurementId": "G-ZQ36W7FDJ4"
 }
