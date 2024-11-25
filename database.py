@@ -91,3 +91,30 @@ class DBhandler:
                     target_value['payment'] = target_value['payment'].split(",")
         print("Retrieved item data:", target_value)
         return target_value
+    
+    def reg_review(self, data, img_path):
+        review_info ={
+        "title": data['review_title'],
+        "id": data['id'],
+        "name": data['name'],
+        "rate": data['reviewStar'],
+        "review": data['reviewContents'],
+        "img_path": img_path
+        }
+        self.db.child("review").child(data['name']).set(review_info)
+        return True
+
+    def get_reviews(self):
+        reviews = self.db.child("review").get().val()
+        return reviews
+    
+    def get_review_byname(self, title):
+        reviews = self.db.child("review").get()
+        target_value=""
+        print("###########",title)
+        for res in reviews.each():
+            key_value = res.key()
+            if key_value == title:
+                target_value=res.val()
+        return target_value
+ 
