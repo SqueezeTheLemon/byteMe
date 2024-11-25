@@ -42,8 +42,6 @@ def user_login():
 
     return render_template("user_login.html")  # GET 요청 처리
 
-     
-   
 @application.route("/admin_login",methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
@@ -102,7 +100,10 @@ def register_user():
 #백엔드가 없어, 우선 user mypage에만 연결. 
 @application.route("/mypage")
 def view_mypage():
-    return render_template("mypage_user.html")
+    if 'id' not in session:  
+        flash("로그인이 필요합니다!")
+        return redirect(url_for("login_selection"))  
+    return render_template("mypage_user.html")  
 
 @application.route("/customer_center")
 def view_customer_center():
@@ -230,9 +231,12 @@ def reg_review_submit_post():
     data=request.form
     return render_template("review_card.html", data=data, img_path="static/images/{}".format(image_file.filename))
 
-@application.route('/travel') 
+@application.route('/travel')
 def travel():
-    return render_template("travel.html")  # 'travel.html'렌더링
+    if 'id' not in session:  # 세션에 로그인 정보가 없으면
+        flash("로그인이 필요합니다!") 
+        return redirect(url_for("login_selection"))  
+    return render_template("travel.html") 
 
 @application.route('/api/order-count', methods=['GET'])
 def get_order_count():
@@ -362,6 +366,15 @@ def purchase_item():
     DB.record_purchase(purchase_data)
     flash(f"{item_name} 상품을 구매했습니다!")
     return redirect(url_for("view_mypage"))
+
+#로그인 확인 
+@application.route('/api/check-login')
+def check_login():
+    if 'id' in session:
+        return jsonify({'is_logged_in': True})
+    else:
+        return jsonify({'is_logged_in': False})
+
 
 
 if __name__ == "__main__":
