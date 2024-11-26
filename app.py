@@ -148,13 +148,61 @@ def view_gimbap():
 def store():
     return render_template("store.html")
 
-@application.route("/review_list")
-def review_list():
-    return render_template("review_list.html")
 
-@application.route('/review_form')
-def review_form():
-    return render_template('review_form.html')
+@application.route("/reg_review")
+def reg_review():
+    return render_template("reg_reviews.html")
+
+@application.route("/reg_review_init/<name>/")
+def reg_review_init(name):
+    return render_template("reg_reviews.html", name=name)
+
+@application.route("/reg_review", methods=['POST'])
+def reg_review_post():
+    data=request.form
+    image_file=request.files["file"]
+    image_file.save("static/images/{}".format(image_file.filename))
+    print(data)
+    DB.reg_review(data, image_file.filename)
+    return redirect(url_for('view_review'))
+
+@application.route("/review_list")
+def view_review():
+    page = request.args.get("page", 0, type=int)
+    per_page=6 # item count to display per page
+    per_row=3# item count to display per row
+    row_count=int(per_page/per_row)
+    start_idx=per_page*page
+    end_idx=per_page*(page+1)
+    data = DB.get_reviews() #read the table
+    if data is None: 
+        data = {}
+    item_counts = len(data)
+    data = dict(list(data.items())[start_idx:end_idx])
+    tot_count = len(data)
+    for i in range(row_count):#last row
+        if (i == row_count-1) and (tot_count%per_row != 0):
+            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
+        else: 
+            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
+    return render_template(
+        "review.html",
+        datas=data.items(),
+        row1=locals()['data_0'].items(),
+        row2=locals()['data_1'].items(),
+        limit=per_page,
+        page=page,
+        page_count=int((item_counts/per_page)+1),
+        total=item_counts)
+
+
+@application.route("/view_review_detail/<title>/")
+def view_review_detail(title):
+    print("###title:",title)
+    data = DB.get_review_byname(str(title))
+    print("####data:",data)
+    return render_template("Review_detail.html", title=title, data=data)
+
 
 @application.route("/reg_items")
 def reg_item():
@@ -174,12 +222,6 @@ def reg_item_submit():
     opt=request.args.get("opt")
     print(name,category,price,payment,seller,addr,phone,info,opt)
     #return render_template("reg_item.html")
-# static/images 폴더가 없을 경우 생성
-os.makedirs("static/images", exist_ok=True)
-
-# static/images 폴더가 없을 경우 생성
-os.makedirs("static/images", exist_ok=True)
-
 # static/images 폴더가 없을 경우 생성
 os.makedirs("static/images", exist_ok=True)
 
@@ -212,7 +254,21 @@ def reg_item_submit_post():
     return render_template("result.html", data=data, payment=data['payment'], img_path=img_path)
 
 
+@application.route('/show_heart/<name>/', methods=['GET'])
+def show_heart(name):
+    my_heart = DB.get_heart_byname(session['id'],name)
+    print("myheart", my_heart)
+    return jsonify({'my_heart': my_heart})
 
+@application.route('/like/<name>/', methods=['POST'])
+def like(name):
+    my_heart = DB.update_heart(session['id'],'Y',name)
+    return jsonify({'msg': '좋아요 완료!'})
+
+@application.route('/unlike/<name>/', methods=['POST'])
+def unlike(name):
+    my_heart = DB.update_heart(session['id'],'N',name)
+    return jsonify({'msg': '좋아요 취소 완료!'})
 
 
 @application.route('/dynamicurl/<varible_name>/')
@@ -253,9 +309,9 @@ def my_ordered():
     return render_template("my-ordered.html")
 
 # 좋아요 페이지
-@application.route("/like")
-def like():
-    return render_template("like.html")
+@application.route("/liked_page")
+def liked_page():
+    return render_template("liked_page.html")
 
 # 나의 리뷰 페이지
 @application.route("/my-review")
