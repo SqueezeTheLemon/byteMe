@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+{% block section %}
+<style>
+    .sorting {
+        display: flex;
+        justify-content: space-between; /* 양쪽 정렬 */
+        align-items: center;
+        margin-bottom: 0px;
+    }
+    .sorting button {
+        background: none;
+        border: none;
+        color: gray;
+        padding: 10px 5px;
+        cursor: pointer;
+        transition: color 0.3s;
+        font-size: 20px; 
+        font-weight: bold;
+    }
+</style>
+{% if total > 0 %}
+<div class="sorting">
+    <div class="sorting-left">
+        <ul class="sort">
+            <li>최신순</li>
+            <li>|</li>
+            <li>오래된순</li>
+            <li>|</li>
+            <li>별점순</li>
+            <li>|</li>
+            <li>공감순</li>
+        </ul>
+    </div>
+    <div class="sorting-right">
+        <button onclick="location.href='/reg_review'">
+            <img src="{{ url_for('static', filename='images/submit.png') }}" alt="상품 등록" width="40px" height="40px">
+        </button>
+    </div>
+</div>
+<table>
+    <tr>
+    {% for key, value in row1 %}
+    <td onclick="location.href='/view_review_detail/{{key}}/';" style="cursor:pointer;"><img src="static/images/{{value.img_path}}", width=300, height=300></td>
+    {% endfor %}
+    </tr>
+    <tr>
+    {% for key, value in row1 %}
+        <td>{{value.title}}</td>
+    {% endfor %}
+    </tr>
+    <tr>
+    {% for key, value in row2 %}
+        <td onclick="location.href='/view_review_detail/{{key}}/';" style="cursor:pointer;"><img src="static/images/{{value.img_path}}", width=300, height=300></td>
+    {% endfor %}
+    </tr>
+    <tr>
+    {% for key, value in row2 %}
+        <td>{{value.title}}</td>
+    {% endfor %}
+    </tr>
+</table>
+<!--페이지네이션을 위한 코드 시작--> 
+<div class="page-wrap">
+    <div class="page-nation">
+        <ul>
+            <li>
+                {% for i in range(page_count)%}
+                    <a href="{{url_for('view_review', page=i)}}" color="black">{{i}}</a>
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+</div>
+{% else %}
+<p>등록된 리뷰가 없습니다.</p>
+{% endif %}
+{% endblock section %}
