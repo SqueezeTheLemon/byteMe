@@ -31,8 +31,6 @@ class DBhandler:
         print("Inserted item:", item_info)
         return True
 
-
-
     def insert_user(self, data, pw):
         user_info ={
             "id": data['id'],
@@ -41,7 +39,8 @@ class DBhandler:
             "email": data['email'],
             "name": data['name'],
             "position": data['position'],
-            "phone": data['phone']
+            "phone": data['phone'],
+            "num": data['num']
         }
         if self.user_duplicate_check(str(data['id'])):
             self.db.child("user").push(user_info)
@@ -116,3 +115,81 @@ class DBhandler:
         self.db.child("purchases").push(purchase_data)
         print(f"Recorded purchase: {purchase_data}")
         return True
+    
+    # 구매 횟수 카운트
+    def count_num(self, user_id):
+        num = 0
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['user_id'] == user_id:
+                num+=1
+        print("Number of Purchases:", num)
+        return num
+    
+    # 구매 횟수 업데이트
+    def update_num(self, user_id, new_num):
+        users = self.db.child("user").get()
+        for res in users.each():
+            if res.val()['id'] == user_id:
+                self.db.child("user").child(res.key()).update({"num": new_num})
+                print("Update num")
+                return True
+        return False
+    
+    # 구매 횟수 반환
+    def get_num(self, user_id):
+        users = self.db.child("user").get()
+        for res in users.each():
+            if res.val()['id'] == user_id:
+                num=self.db.child("user").child(res.key()).child("num").get().val()
+                if num == None:
+                    new_num = self.count_num(user_id)
+                    self.db.child("user").child(res.key()).update({"num": new_num})
+                    return new_num
+                return num
+        return False
+    
+    # 직급 반환
+    def get_position(self, user_id):
+        users = self.db.child("user").get()
+        for res in users.each():
+            if res.val()['id'] == user_id:
+                position=self.db.child("user").child(res.key()).child("position").get().val()
+                return position
+        return False
+    
+    # 처리 중인 주문 딕셔너리 {사용자 아이디 : 상품명} 형태로 반환
+    def get_no_complete(self):
+        items={}
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['status'] == "N":
+                items[res.val()['user_id']]=res.val()['item_name']
+        return items
+    
+    # 완료 여부 업데이트
+    def update_status(self, user_id):
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['user_id'] == user_id and res.val()['status'] == "N":
+                self.db.child("purchases").child(res.key()).update({"status": "Y"})
+                return True
+        return False
+    
+    # 완료 횟수 카운트
+    def count_complete(self):
+        complete = 0
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['status'] == "Y":
+                complete+=1
+        print("Number of Complete:", complete)
+        return complete
+    
+    # 주문 내역 확인
+    def find_purchase(self, user_id):
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['user_id'] == user_id and res.val()['status'] == "N":
+                return res.val()['item_name']
+        return False

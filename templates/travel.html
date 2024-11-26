@@ -6,6 +6,54 @@
     <title>화연이의 모험</title>
     <style>
         /*여기서부터*/
+        .large-rectangle {
+            width: 100%;
+            height: 190px; /* 직사각형 크기 */
+            background-color: white;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            color: rgb(0, 0, 0);
+            border-radius: 10px;
+            border: 3px solid #b0bdff;
+            padding-inline: 20 20;
+            margin-top: 50px;
+        }
+
+        /* 작은 직사각형 */
+        .small-rectangle {
+            width: 20%;
+            height: 35%;
+            background-color: #b0bdff;
+            position: absolute;
+            top: -55px;
+            left: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            color: rgb(0, 0, 0);
+            clip-path: inset(0 0 16% 0);
+        }
+        .next-destination {
+            width: 30%;
+            height: 35%;
+            background-color: #b0bdff; /* 색상 변경 */
+            position: absolute;
+            top: -55px;
+            left: 22%;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            color: rgb(0, 0, 0);
+            clip-path: inset(0 0 16% 0);
+            visibility: visible;
+        }
     /* 여행페이지의 배너 이미지 */
 .banner img {
     width: 100%;
@@ -18,8 +66,8 @@
 
 /* 콘텐츠 */
 .content {
-    margin-top: 20px;
-    max-width: 1500px;
+    margin-top: 30px;
+    max-width: 1500px;   
     margin: 0 auto;
 }
 
@@ -76,6 +124,7 @@ button:hover {
 .pagination {
     text-align: center;
     padding: 10px;
+    margin-bottom: 60px;
 }
 
 .dot {
@@ -92,30 +141,9 @@ button:hover {
 .dot:hover {
     background-color: #717171;
 }
-
-.order-count {
-    font-size: 30px;
-    background-color: #b0bdff;
-    padding: 10px;
-    text-align: center;
-    margin-top: 20px;
-    border-radius: 5px;
-}
-
-/* 텍스트 박스
-.text-box {
-    background-color: #f0f0f0;
-    padding: 20px;
-    text-align: center;
-    border-radius: 5px;
-    margin-top: 20px;
-} */
-
-     /* 각 요소들 간의 간격 */
-    /* section {
-     margin-bottom: 30px; }/* 각 섹션 간 간격 */
-    
     </style>
+
+
     <!--js 여기서부터-->
     <script>
     let currentIndex = 0;
@@ -123,11 +151,8 @@ button:hover {
     document.addEventListener("DOMContentLoaded", function () {
     const sliderContainer = document.querySelector('.image-container');
     const sliderImages = document.querySelectorAll('.image-slide');
-    const orderCountElement = document.getElementById('order-count');
+    const orderCountElement = document.getElementById('small-rect-text');
     const paginationDots = document.querySelectorAll('.dot');
-    
-    let orderCount = 0;  // 서버에서 주문횟수 받아야 하는데 일단 0으로 함
-    orderCountElement.textContent = `나의 주문횟수: ${orderCount}`;
 
     // 슬라이드 이동 함수
     function moveSlide(direction) {
@@ -159,38 +184,96 @@ button:hover {
     // 주문횟수에 따라 이미지 변경 함수
     function checkOrderCountAndUpdateImage(count) {
         if (count >= 4 && count < 8) {
-            sliderImages[0].querySelector('img').src = "trv1.png";
+            sliderImages[0].querySelector('img').src = "/static/trv1.png";
           } else if (count >= 8 && count < 12) {
-            sliderImages[0].querySelector('img').src = "trv1.png";
-            sliderImages[1].querySelector('img').src = "trv2-2.png";
+            sliderImages[0].querySelector('img').src = "/static/trv1.png";
+            sliderImages[1].querySelector('img').src = "/static/trv2-2.png";
           } else if (count >= 12 && count < 16) {
-            sliderImages[0].querySelector('img').src = "trv1.png";
-            sliderImages[1].querySelector('img').src = "trv2-3.png";
+            sliderImages[0].querySelector('img').src = "/static/trv1.png";
+            sliderImages[1].querySelector('img').src = "/static/trv2-3.png";
           } else if (count >= 16 && count < 20) {
-            sliderImages[0].querySelector('img').src = "trv1.png";
-            sliderImages[1].querySelector('img').src = "trv2.png";
-            sliderImages[2].querySelector('img').src = "trv3-1.png";
+            sliderImages[0].querySelector('img').src = "/static/trv1.png";
+            sliderImages[1].querySelector('img').src = "/static/trv2.png";
+            sliderImages[2].querySelector('img').src = "/static/trv3-1.png";
           } else if (count >= 20 && count < 24) {
-            sliderImages[0].querySelector('img').src = "trv1.png";
-            sliderImages[1].querySelector('img').src = "trv2.png";
-            sliderImages[2].querySelector('img').src = "trv3-2.png"; 
+            sliderImages[0].querySelector('img').src = "/static/trv1.png";
+            sliderImages[1].querySelector('img').src = "/static/trv2.png";
+            sliderImages[2].querySelector('img').src = "/staltic/trv3-2.png"; 
           } else if (count >=24 ){
-            sliderImages[0].querySelector('img').src = "trv1.png";
-            sliderImages[1].querySelector('img').src = "trv2.png";
-            sliderImages[2].querySelector('img').src = "trv3.png";
+            sliderImages[0].querySelector('img').src = "/static/trv1.png";
+            sliderImages[1].querySelector('img').src = "/static/trv2.png";
+            sliderImages[2].querySelector('img').src = "/static/trv3.png";
           }
     }
+       
+    //밑글상자 주문횟수에 따라 update
+    function updateDescription(count) {
+        const largeRectElement = document.getElementById('large-rect-text');
+        const nextDestinationElement = document.getElementById('next-destination-text');
+        const descriptions = [ 
+            `<strong>커피 숲에 도착했어요!</strong><br>
+            이곳은 커피 향으로 가득 찬 신비로운 숲이에요. 커다란 커피콩 나무가 빽빽이 들어서 있고, 나뭇가지마다 싱그러운 초록빛 잎들이 바람에 흔들려요. 나무 사이로 따뜻한 햇살이 내려와 길을 비춰주고 있어요.<br>
+            ➡️ 주변 이화상점에서 원하는 커피를 받을 수 있어요.`,
 
-    
-    // // 주문횟수 증가 후 이미지 변경 = = = 테스트 코드
-    // setInterval(() => {
-    //     orderCount += 1;
-    //     orderCountElement.textContent = `나의 주문횟수: ${orderCount}`;
-    //     checkOrderCountAndUpdateImage(orderCount);  // 주문횟수에 맞춰 이미지 변경
+            `<strong>소다 호수에 도착했어요!</strong><br>
+            호수는 맑고 반짝이며, 푸른 물결 속에서 수많은 작은 기포들이 올라와 톡톡 튀어요. 잔잔한 물소리가 마음을 편안하게 만들어줍니다.<br>
+            ➡️ 주변 이화상점에서 원하는 메뉴를 받을 수 있어요.`,
 
-    //     // 이미지 변경 후에도 슬라이드가 올바르게 동작하도록 유지
-    //     sliderContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-    // }, 5000); //테스트: 5초마다 주문횟수를 증가시킴
+            `<strong>우유 마을에 도착했어요!</strong><br>
+            초록 들판 위로 펼쳐진 아기자기한 마을이에요. 이곳에서는 언제나 신선한 우유로 만든 간식을 맛볼 수 있답니다.<br>
+            ➡️ 주변 이화상점에서 원하는 메뉴를 받을 수 있어요.`,
+
+            `<strong>라떼 폭포에 도착했어요!</strong><br>
+            부드러운 라떼가 끊임없이 쏟아지는 장관이에요! 따뜻한 커피향이 가득한 이곳에서는 누구든 폭포 아래에서 라떼를 마실 수 있답니다.<br>
+            ➡️ 주변 이화상점에서 원하는 메뉴를 받을 수 있어요.`,
+
+            `<strong>아아메 섬에 도착했어요!</strong><br>
+            시원한 바닷바람이 부는 아름다운 섬이에요. 하늘빛과 닮은 청량한 아메리카노 한 잔을 마시며 더위를 잊어버려요.<br>
+            ➡️ 주변 이화상점에서 시원한 아이스 아메리카노 한 잔을 받을 수 있어요.`,
+
+            `<strong>디저트 성에 도착했어요!</strong><br>
+            이곳은 달콤함으로 가득 찬 꿈의 성이에요! 성 안에는 무수한 디저트로 가득한 방이 있고, 반짝이는 샹들리에가 성을 밝히고 있어요.<br>
+            ➡️ <strong>2024 화연이의 모험을 완료했습니다 🥳</strong> 주변 이화상점에서 원하는 메뉴를 받을 수 있어요.`
+        ];
+
+        const midDescriptions = [
+            "화연이는 첫 발걸음을 내디뎠어요!<br>이 신비로운 숲의 끝에는 어떤 이야기가 기다리고 있을까요? 설렘을 안고 다음 장소로 나아갑니다.",
+            "화연이는 여전히 모험 중이에요!<br>소다 호수의 물결을 지나며 마음을 가다듬습니다. 이제 새로운 도전이 기다리고 있어요.",
+            "화연이는 잠시 숨을 고릅니다.<br>마을의 따뜻한 분위기 속에서 에너지를 충전하며 다시 길을 떠납니다.",
+            "화연이는 마음을 다잡았어요!<br>폭포의 기운을 가득 담아 다음 목적지를 향해 발걸음을 옮깁니다.",
+            "화연이는 모험의 끝이 다가옴을 느껴요.<br>마지막 도전을 준비하며 힘찬 발걸음을 내딛습니다.",
+            "화연이는 마침내 여정을 완수했습니다!<br>디저트 성의 문이 활짝 열리고, 화연이를 축하합니다. 내년의 새로운 이야기를 기다려주세요!"
+        ];
+
+        // 다음 목적지까지 남은 구매 횟수
+        const nextStep = 4 - (count % 4);
+
+        if (count > 24) { //여행 끝
+            largeRectElement.innerHTML = `<strong>모험이 완료되었습니다!</strong><br>
+            화연이는 모든 여정을 성공적으로 끝마쳤습니다. 내년에 올 새로운 이야기를 기대해주세요!`;
+            nextDestinationElement.innerHTML = `다음 목적지까지 0회 남았어요!`;
+        } 
+        //각 목적지 도착
+        else if (count % 4 === 0 && count <= 24) { 
+            if(count==0){ //여행시작
+                largeRectElement.innerHTML = "화연이의 모험에 함께하세요! 이화상점에서 메뉴를 주문하면 여정이 시작됩니다.";
+            }else{
+                const index = count / 4 - 1; 
+                largeRectElement.innerHTML = descriptions[index];
+            }
+        } 
+        else { //중간 여정
+            const index = Math.floor(count / 4); 
+            largeRectElement.innerHTML = midDescriptions[index];    
+        }
+        nextDestinationElement.innerHTML = `다음 목적지까지 ${nextStep}회 남았어요!`;
+    }
+
+    // 구매 횟수
+    orderCount = {{ num }};
+    orderCountElement.textContent = `나의 구매 횟수: ${orderCount}회`;
+    checkOrderCountAndUpdateImage(orderCount); // 주문횟수에 맞춰 이미지 변경
+    updateDescription(orderCount);
 
     // 슬라이드 이동 버튼 클릭 이벤트
     document.querySelector('.prev').addEventListener('click', () => moveSlide(-1));
@@ -202,7 +285,7 @@ button:hover {
             currentIndex = index;
             sliderContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
             updatePagination();
-            updateDescription(currentIndex);
+            
         });
     });
 
@@ -243,11 +326,18 @@ button:hover {
             <span class="dot" onclick="currentSlide(2)"></span>
             <span class="dot" onclick="currentSlide(3)"></span>
         </div>
-
-        <div class="order-count">
-            <p><strong><span id="order-count"></span>회</strong></p>
+    <br>
+        <div class="container">
+            <!-- 큰 직사각형 -->
+            <div class="large-rectangle">
+                <p class="order-count-text" id="large-rect-text"></p>
+                <div class="small-rectangle">
+                    <p class="order-count-text" id="small-rect-text"></p>
+                </div>
+                <div class="next-destination">
+                    <p class="order-count-text" id="next-destination-text"></p>
+                </div>
         </div>
-
     </section>
     
 </body>

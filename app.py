@@ -67,8 +67,11 @@ def logout_user():
 def signup():
     return render_template("signup.html")
 
+# 회원가입
 @application.route("/signup_post", methods=['POST'])
 def register_user():
+    # 구매 횟수 초기화
+    num = 0
     data = {
         "id": request.form.get("id"),
         "pw": request.form.get("pw"),
@@ -76,7 +79,9 @@ def register_user():
         "name": request.form.get("name"),
         "nickname": request.form.get("nickname"),
         "position": request.form.get("position"),
-        "phone": request.form.get("phone")
+        "phone": request.form.get("phone"),
+        # 구매 횟수
+        "num": num
     }
     pw_confirm = request.form.get("pw_confirm")
 
@@ -97,13 +102,37 @@ def register_user():
         flash("user id already exist!")
         return redirect(url_for("signup"))
 
-#백엔드가 없어, 우선 user mypage에만 연결. 
+# 마이페이지
 @application.route("/mypage")
 def view_mypage():
     if 'id' not in session:  
         flash("로그인이 필요합니다!")
-        return redirect(url_for("login_selection"))  
-    return render_template("mypage_user.html")  
+        return redirect(url_for("login_selection"))
+    
+    user_id=session["id"]
+    
+    # 일반회원인지 관리자인지 확인
+    position = DB.get_position(user_id)
+
+    # 관리자일 때
+    if position == "admin":
+        item = DB.get_no_complete()
+        tot_count = len(item)
+        data=DB.get_items()
+        new_complete=DB.count_complete()
+        return render_template("mypage_manager.html", items=item.items(), total=tot_count, datas=data.items(), complete=new_complete)
+    # 일반회원일 때
+    else:
+        if position == "user":
+            item_name = DB.find_purchase(user_id)
+            if item_name != False:
+                total=1
+            else:
+                total=0
+            data=DB.get_items()
+            # 구매 횟수
+            num = DB.get_num(user_id)
+            return render_template("mypage_user.html", item_name=item_name, total=total, datas=data.items(), num=num)  
 
 @application.route("/customer_center")
 def view_customer_center():
@@ -231,17 +260,17 @@ def reg_review_submit_post():
     data=request.form
     return render_template("review_card.html", data=data, img_path="static/images/{}".format(image_file.filename))
 
+# 여행 화면
 @application.route('/travel')
 def travel():
     if 'id' not in session:  # 세션에 로그인 정보가 없으면
         flash("로그인이 필요합니다!") 
-        return redirect(url_for("login_selection"))  
-    return render_template("travel.html") 
+        return redirect(url_for("login_selection"))
+    
+    # 구매 횟수
+    num = DB.get_num(session["id"])
 
-@application.route('/api/order-count', methods=['GET'])
-def get_order_count():
-    order_count = 4 # 예시로 주문 횟수를 4로 설정
-    return jsonify({'orderCount': order_count})
+    return render_template("travel.html", num=num) 
 
 # 주문 내역 페이지
 @application.route("/my-order-history")
@@ -283,7 +312,7 @@ def edit_account():
         "email": request.form.get("email"),
         "name": request.form.get("name"),
         "position": request.form.get("position"),
-        "phone": request.form.get("phone")
+        "phone": request.form.get("phone"),
     }
 
     # 데이터베이스에서 사용자 정보 업데이트
@@ -355,17 +384,47 @@ def purchase_item():
 
     user_id = session['id']
     item_name = request.form.get("item_name")
+    # 완료 여부 초기화
+    status = "N"
 
     # 구매 내역 데이터 생성
     purchase_data = {
         "user_id": user_id,
-        "item_name": item_name
+        "item_name": item_name,
+        # 완료 여부
+        "status": status
     }
 
     # 데이터베이스에 구매 내역 저장
     DB.record_purchase(purchase_data)
+
+    # 구매 횟수 업데이트
+    new_num=DB.count_num(user_id)
+    DB.update_num(user_id, new_num)
+
     flash(f"{item_name} 상품을 구매했습니다!")
+
     return redirect(url_for("view_mypage"))
+
+# 처리 완료
+@application.route("/complete_item", methods=["POST"])
+def complete_item():
+    user_id = request.form.get("user_id")
+
+    # 완료 여부 업데이트
+    DB.update_status(user_id)
+
+    # 완료 횟수 업데이트
+    new_complete=DB.count_complete()
+
+    # 대기 주문 횟수 업데이트
+    item = DB.get_no_complete()
+    tot_count = len(item)
+
+    data=DB.get_items()
+
+    return render_template("mypage_manager.html", complete=new_complete, total=tot_count, items=item.items(), datas=data.items())
+
 
 #로그인 확인 
 @application.route('/api/check-login')

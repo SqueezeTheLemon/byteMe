@@ -172,7 +172,7 @@
         </div>
         <div class="table-cell">
             <h3>구매 횟수</h3><br><br><br>
-            <div class="bottom-right"><strong>총 9회</strong></div>
+            <div class="bottom-right"><strong>총 {{num}}회</strong></div>
         </div>
         <div class="table-cell">
             <h3>리뷰 수</h3><br><br><br>
@@ -214,18 +214,25 @@
         </div>
         <div class="right-content">
             <div class="product-container">
-                <div class="product-image">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="상품 이미지">
-                </div>
-                <div class="product-details">
-                    <div class="detail-item"><h2>핫티노/아이스티노</h2></div><br><br>
-                    <div class="detail-item">옵션 | ICE</div>
-                    <div class="detail-item">수량 | 1</div>
-                    <div class="detail-item">가격 | 2900원</div>
-                    <div class="detail-item">결제수단 | 카드</div>
-                </div>
-            </div>
-            <a href="#" class="complete-button">1 번째로 준비중</a>
+                {% if total > 0 %}
+                <table>
+                    <tr>
+                        {% for key, value in datas %}
+                            {% if item_name == value['name'] %}
+                            <div class="product-image">
+                                <img src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
+                            </div>
+                            <div class="product-details">
+                                <div class="detail-item"><h2>{{ item_name }}</h2></div><br><br>
+                                <div class="detail-item">설명</div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </table>
+                {% else %}
+                    <p>주문이 모두 완료되었습니다.</p>
+                {% endif %}
         </div>
     </div>
 </div>

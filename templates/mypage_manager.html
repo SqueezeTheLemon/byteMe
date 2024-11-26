@@ -174,11 +174,11 @@
         </div>
         <div class="table-cell">
             <h3>주문 대기</h3><br><br><br>
-            <div class="bottom-right"><strong>총 3건</strong></div>
+            <div class="bottom-right"><strong>총 {{ total }}건</strong></div>
         </div>
         <div class="table-cell">
             <h3>제조 완료</h3><br><br><br>
-            <div class="bottom-right"><strong>총 4건</strong></div>
+            <div class="bottom-right"><strong>총 {{ complete }}건</strong></div>
         </div>
     </div>
 
@@ -211,21 +211,36 @@
             </script>
 
         </div>
-    
         <div class="right-content">
             <div class="product-container">
-                <div class="product-image">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="상품 이미지">
-                </div>
-                <div class="product-details">
-                    <div class="detail-item"><h2>핫티노/아이스티노</h2></div><br><br>
-                    <div class="detail-item">옵션 | ICE</div>
-                    <div class="detail-item">수량 | 1</div>
-                    <div class="detail-item">가격 | 2900원</div>
-                    <div class="detail-item">결제수단 | 카드</div>
-                </div>
+                {% if total > 0 %}
+                <table>
+                    <tr>
+                        {% for user_id, item_name in items %}
+                            {% for key, value in datas %}
+                                {% if item_name == value['name'] %}
+                                <div class="product-image">
+                                    <img src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
+                                </div>
+                                <div class="product-details">
+                                    <div class="detail-item"><h2>{{ item_name }}</h2></div><br><br>
+                                    <div class="detail-item">주문자 | {{ user_id }}</div>
+                                    <div class="detail-item">설명</div>
+                                    <!-- 완료 버튼 추가 -->
+                                    <form action="/complete_item" method="POST">
+                                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                                        <button type="submit" class="complete-button">완료</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </table>
+                {% else %}
+                    <p>주문이 없습니다.</p>
+                {% endif %}
             </div>
-            <a href="#" class="complete-button">완료</a>
         </div>
     </div>
     </div>
