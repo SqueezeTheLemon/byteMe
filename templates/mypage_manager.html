@@ -211,6 +211,7 @@
         </div>
         <div class="right-content">
             <div class="product-container">
+                {% block content %}
                 {% if total > 0 %}
                 <table>
                     <tr>
@@ -238,6 +239,7 @@
                 {% else %}
                     <p>주문이 없습니다.</p>
                 {% endif %}
+                {% endblock %}
             </div>
         </div>
     </div>

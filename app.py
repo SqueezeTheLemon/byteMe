@@ -310,7 +310,16 @@ def travel():
 # 주문 내역 페이지
 @application.route("/my-order-history")
 def my_order_history():
-    return render_template("my-order-history.html")
+    user_id=session["id"]
+    item_name = DB.find_purchase(user_id)
+    if item_name != False:
+          total=1
+    else:
+        total=0
+    data=DB.get_items()
+    # 구매 횟수
+    num = DB.get_num(user_id)
+    return render_template("my-order-history.html", item_name=item_name, total=total, datas=data.items(), num=num)
 
 # 구매 내역 페이지
 @application.route("/my-ordered")
@@ -387,7 +396,11 @@ def edit_member_info():
 # 주문 내역 페이지
 @application.route("/order-history")
 def order_history():
-    return render_template("order-history.html")  # templates/order_history.html
+    item = DB.get_no_complete()
+    tot_count = len(item)
+    data=DB.get_items()
+    new_complete=DB.count_complete()
+    return render_template("order-history.html", items=item.items(), total=tot_count, datas=data.items(), complete=new_complete)
 
 # 완료 내역 페이지
 @application.route("/ordered")
