@@ -109,6 +109,31 @@ class DBhandler:
                     target_value['payment'] = target_value['payment'].split(",")
         print("Retrieved item data:", target_value)
         return target_value
+    
+    # 상품 정보 수정
+    def update_item(self, updated_data, img_path):
+        payment = updated_data['payment']
+        if isinstance(payment, list):
+            payment = ",".join(payment)  # 리스트를 문자열로 변환
+        
+        items=self.db.child('item').get()
+        for res in items.each():
+            if res.key()==updated_data['name']:
+                item_info = {
+                    "price": updated_data['price'],
+                    "category": updated_data['category'],
+                    "payment": payment,  # 변환된 데이터를 저장
+                    "stock": updated_data['stock'],
+                    "seller": updated_data['seller'],
+                    "phone": updated_data['phone'],
+                    "addr": updated_data['addr'],
+                    "info": updated_data['info'],
+                    "opt": updated_data['opt'],
+                    "img_path": img_path
+                }
+                self.db.child("item").child(res.key()).update(item_info)
+                print("Inserted item:", item_info)
+        return True
 
     def record_purchase(self, purchase_data):
         # "purchases" 경로에 데이터 저장

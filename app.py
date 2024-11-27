@@ -202,7 +202,7 @@ def reg_item_submit():
     phone=request.args.get("phone")
     info=request.args.get("info")
     opt=request.args.get("opt")
-    print(name,category,price,payment,seller,addr,phone,info,opt)
+    print(name,category,price,payment,stock,seller,addr,phone,info,opt)
     #return render_template("reg_item.html")
 # static/images 폴더가 없을 경우 생성
 os.makedirs("static/images", exist_ok=True)
@@ -241,6 +241,41 @@ def reg_item_submit_post():
     # 템플릿에 데이터 전달
     return render_template("result.html", data=data, payment=data['payment'], img_path=img_path)
 
+@application.route("/product_edit")
+def product_edit():
+    return render_template("product_edit.html")
+
+# 상품 정보 수정
+@application.route("/edit_item_post", methods=['POST'])
+def edit_item_post():
+    # 이미지 파일 가져오기
+    image_file = request.files.get("file")
+    if image_file and image_file.filename:
+        # 파일 이름을 안전하게 설정하고 경로 구성
+        filename = secure_filename(image_file.filename)
+        save_path = os.path.join("static", "images", filename)
+        
+        # 이미지 저장
+        image_file.save(save_path)
+
+        # img_path에 템플릿에서 접근 가능한 경로 설정
+        img_path = url_for('static', filename=f'images/{filename}')
+    else:
+        # 이미지 파일이 없는 경우 기본 이미지 경로 설정
+        img_path = url_for('static', filename='images/default_image.jpg')
+
+    # 폼 데이터 처리
+    updated_data = request.form.to_dict()
+    updated_data['payment'] = request.form.getlist("payment")  # 결제 수단을 리스트로 저장
+
+    # 데이터베이스에서 사용자 정보 업데이트
+    if DB.update_item(updated_data, filename):
+        flash("상품 정보가 수정되었습니다.")
+        # 템플릿에 데이터 전달
+        return render_template("result.html", data=updated_data, payment=updated_data['payment'], img_path=img_path)
+    else:
+        flash("상품 정보 수정에 실패했습니다.")
+        return redirect(url_for("product_edit"))
 
 @application.route('/dynamicurl/<varible_name>/')
 def DynamicUrl(varible_name):
@@ -348,22 +383,6 @@ def edit_member_info():
 
 
 ########################################################
-
-# 상품 관리 페이지
-@application.route("/product-manage")
-def product_manage():
-    return render_template("product-manage.html")
-
-# 상품 수정 페이지
-@application.route("/product-edit")
-def product_edit():
-    return render_template("product-edit.html")
-
-# 재고 현황 페이지
-@application.route("/product-stock")
-def product_stock():
-    return render_template("product-stock.html")
-
 
 # 주문 내역 페이지
 @application.route("/order-history")
