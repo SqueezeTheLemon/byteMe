@@ -123,7 +123,7 @@ class DBhandler:
         "review": data['reviewContents'],
         "img_path": img_path
         }
-        self.db.child("review").child(data['name']).set(review_info)
+        self.db.child("review").child(data['review_title']).set(review_info)
         return True
 
     def get_reviews(self):
