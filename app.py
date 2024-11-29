@@ -33,7 +33,7 @@ def user_login():
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
+        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회  
             session['id'] = id_
             return render_template("home.html")
         else:
