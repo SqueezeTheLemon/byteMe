@@ -280,7 +280,10 @@ def view_item_detail(name):
     print("###name:",name)
     data = DB.get_item_byname(str(name))
     print("####data:",data)
-    return render_template("detail.html", name=name, data=data)
+
+    average_rating = DB.get_average_rating(name)
+    return render_template("detail.html", name=name, data=data,
+                           average_rating=average_rating if average_rating is not None else "No ratings yet")
 
 @application.route("/submit_review_post", methods=['POST'])
 def reg_review_submit_post():
