@@ -53,13 +53,21 @@
         showHeart();
     });
     </script>
-<p>
-    item name is <b>{{name}}</b> and address is {{data['addr']}}
-    </p>
     <p>
-    Seller tel. is {{data['phone']}} and category is {{data['category']}} <br>
-    You can pay by {{data['payment']}}
-    </p>
+    <h2>{{ name }}</h2>
+    <p><b>주소:</b> {{ data['addr'] }}</p>
+    <p><b>가격:</b> {{ data['price'] }} 원</p>
+    <p><b>카테고리:</b> {{ data['category'] }}</p>
+    <p>
+        <b>평균 별점:</b>
+        {% if average_rating %}
+            {{ average_rating }}
+        {% else %}
+            "평점이 없습니다."
+        {% endif %}
+    </p>>
+    
+
     
     <img src="../../static/images/{{data.img_path}}", width=140, height=140>
 
