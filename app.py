@@ -4,6 +4,7 @@ import sys
 from werkzeug.utils import secure_filename
 import os
 
+from flask import get_flashed_messages
 from database import DBhandler
 import hashlib
 import sys
@@ -33,9 +34,14 @@ def user_login():
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
-            session['id'] = id_
-            return render_template("home.html")
+        if DB.find_user(id_, pw_hash):
+            position = DB.get_position(id_)
+            if position == "user":  # 일반 사용자만 로그인 허용
+                session['id'] = id_
+                return render_template("home.html")
+            else:
+                flash("관리자 계정으로는 일반 사용자 페이지에 로그인할 수 없습니다!")
+                return render_template("user_login.html")
         else:
             flash("Wrong ID or PW!")
             return render_template("user_login.html")
@@ -49,9 +55,14 @@ def admin_login():
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
-            session['id'] = id_
-            return render_template("home.html")
+        if DB.find_user(id_, pw_hash):
+            position = DB.get_position(id_)
+            if position == "admin":  # 관리자만 로그인 허용
+                session['id'] = id_
+                return render_template("home.html")
+            else:
+                flash("일반 사용자 계정으로는 관리자 페이지에 로그인할 수 없습니다!")
+                return render_template("admin_login.html")
         else:
             flash("Wrong ID or PW!")
             return render_template("admin_login.html")
@@ -107,12 +118,20 @@ def register_user():
 def view_mypage():
     if 'id' not in session:  
         flash("로그인이 필요합니다!")
+        session.modified = True
         return redirect(url_for("login_selection"))
     
+    # Flash 메시지 디버깅
+    if "_flashes" in session:
+        print("Flash 메시지 확인:", session["_flashes"])  # 세션 내 Flash 메시지 확인
+
     user_id=session["id"]
     
     # 일반회원인지 관리자인지 확인
     position = DB.get_position(user_id)
+
+    # 닉네임 반환
+    nickname = DB.get_nickname(user_id)
 
     # 관리자일 때
     if position == "admin":
@@ -120,19 +139,19 @@ def view_mypage():
         tot_count = len(item)
         data=DB.get_items()
         new_complete=DB.count_complete()
-        return render_template("mypage_manager.html", items=item.items(), total=tot_count, datas=data.items(), complete=new_complete)
+        return render_template("mypage_manager.html", items=item, total=tot_count, datas=data.items(), complete=new_complete, nickname=nickname)
     # 일반회원일 때
     else:
         if position == "user":
-            item_name = DB.find_purchase(user_id)
-            if item_name != False:
+            item = DB.find_purchase(user_id)
+            if item != []:
                 total=1
             else:
                 total=0
             data=DB.get_items()
             # 구매 횟수
             num = DB.get_num(user_id)
-            return render_template("mypage_user.html", item_name=item_name, total=total, datas=data.items(), num=num)  
+            return render_template("mypage_user.html", item=item, total=total, datas=data.items(), num=num, nickname=nickname)  
 
 @application.route("/customer_center")
 def view_customer_center():
@@ -243,7 +262,8 @@ def reg_item_submit_post():
 
 @application.route("/product_edit")
 def product_edit():
-    return render_template("product_edit.html")
+    nickname = DB.get_nickname(session["id"])
+    return render_template("product_edit.html", nickname=nickname)
 
 # 상품 정보 수정
 @application.route("/edit_item_post", methods=['POST'])
@@ -311,35 +331,52 @@ def travel():
 @application.route("/my-order-history")
 def my_order_history():
     user_id=session["id"]
-    item_name = DB.find_purchase(user_id)
-    if item_name != False:
+    item = DB.find_purchase(user_id)
+    if item != []:
           total=1
     else:
         total=0
     data=DB.get_items()
     # 구매 횟수
     num = DB.get_num(user_id)
-    return render_template("my-order-history.html", item_name=item_name, total=total, datas=data.items(), num=num)
+    nickname = DB.get_nickname(user_id)
+    return render_template("my-order-history.html", item=item, total=total, datas=data.items(), num=num, nickname=nickname)
 
 # 구매 내역 페이지
 @application.route("/my-ordered")
 def my_ordered():
-    return render_template("my-ordered.html")
+    user_id=session["id"]
+    item = DB.find_buy(user_id)
+    if item != []:
+          total=1
+    else:
+        total=0
+    data=DB.get_items()
+    # 구매 횟수
+    num = DB.get_num(user_id)
+    nickname = DB.get_nickname(user_id)
+    return render_template("my-ordered.html", item=item, total=total, datas=data.items(), num=num, nickname=nickname)
 
 # 좋아요 페이지
 @application.route("/like")
 def like():
-    return render_template("like.html")
+    num = DB.get_num(session['id'])
+    nickname = DB.get_nickname(session['id'])
+    return render_template("like.html", num=num, nickname=nickname)
 
 # 나의 리뷰 페이지
 @application.route("/my-review")
 def my_review():
-    return render_template("my-review.html")
+    num = DB.get_num(session['id'])
+    nickname = DB.get_nickname(session['id'])
+    return render_template("my-review.html", num=num, nickname=nickname)
 
 # 공감 리뷰 페이지
 @application.route("/liked-review")
 def liked_review():
-    return render_template("liked-review.html")
+    num = DB.get_num(session['id'])
+    nickname = DB.get_nickname(session['id'])
+    return render_template("liked-review.html", num=num, nickname=nickname)
 
 # 계정 정보 수정 페이지 (일반회원, 관리자 공통)
 @application.route("/edit_account", methods=["POST"])
@@ -383,12 +420,14 @@ def delete_account():
     # 세션 종료
     session.clear()
     flash("계정이 삭제되었습니다.")
+
     return redirect(url_for("home"))
 
 @application.route("/edit-info", methods=["GET"])
 def edit_member_info():
+    nickname = DB.get_nickname(session["id"])
     # edit-info.html 페이지 렌더링
-    return render_template("edit-info.html")
+    return render_template("edit-info.html", nickname=nickname)
 
 
 ########################################################
@@ -400,12 +439,22 @@ def order_history():
     tot_count = len(item)
     data=DB.get_items()
     new_complete=DB.count_complete()
-    return render_template("order-history.html", items=item.items(), total=tot_count, datas=data.items(), complete=new_complete)
+    nickname = DB.get_nickname(session["id"])
+    return render_template("order-history.html", items=item, total=tot_count, datas=data.items(), complete=new_complete, nickname=nickname)
 
 # 완료 내역 페이지
 @application.route("/ordered")
 def ordered():
-    return render_template("ordered.html")  # templates/ordered.html
+    item = DB.find_complete()
+    if item != []:
+        total=1
+    else:
+        total=0
+    data=DB.get_items()
+    new_complete=DB.count_complete()
+    tot_count=len(DB.get_no_complete())
+    nickname = DB.get_nickname(session["id"])
+    return render_template("ordered.html", items=item, total=tot_count, datas=data.items(), complete=new_complete, tot=total, nickname=nickname)  # templates/ordered.html
 
 # 상품 구매
 @application.route("/purchase_item", methods=["POST"])
@@ -416,6 +465,8 @@ def purchase_item():
 
     user_id = session['id']
     item_name = request.form.get("item_name")
+    # 구매 수량
+    num_item = request.form.get("num_item")
     # 완료 여부 초기화
     status = "N"
 
@@ -423,28 +474,34 @@ def purchase_item():
     purchase_data = {
         "user_id": user_id,
         "item_name": item_name,
+        # 구매 수량
+        "num_item": num_item,
         # 완료 여부
         "status": status
     }
-
-    # 데이터베이스에 구매 내역 저장
-    DB.record_purchase(purchase_data)
 
     # 구매 횟수 업데이트
     new_num=DB.count_num(user_id)
     DB.update_num(user_id, new_num)
 
-    flash(f"{item_name} 상품을 구매했습니다!")
-
-    return redirect(url_for("view_mypage"))
+    # 구매 정보 저장
+    if DB.record_purchase(purchase_data):
+        # 구매 성공 처리
+        message = f"{item_name} 구매가 완료되었습니다!"
+        return jsonify({"success": True, "message": message, "redirect_url": url_for("view_mypage")})
+    else:
+        # 실패 처리
+        message = "구매 처리에 실패했습니다. 다시 시도해주세요."
+        return jsonify({"success": False, "message": message})
 
 # 처리 완료
 @application.route("/complete_item", methods=["POST"])
 def complete_item():
     user_id = request.form.get("user_id")
+    item_name = request.form.get("item_name")
 
     # 완료 여부 업데이트
-    DB.update_status(user_id)
+    DB.update_status(user_id, item_name)
 
     # 완료 횟수 업데이트
     new_complete=DB.count_complete()
@@ -455,7 +512,7 @@ def complete_item():
 
     data=DB.get_items()
 
-    return render_template("mypage_manager.html", complete=new_complete, total=tot_count, items=item.items(), datas=data.items())
+    return render_template("mypage_manager.html", complete=new_complete, total=tot_count, items=item, datas=data.items())
 
 
 #로그인 확인 
@@ -465,8 +522,6 @@ def check_login():
         return jsonify({'is_logged_in': True})
     else:
         return jsonify({'is_logged_in': False})
-
-
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)

@@ -183,21 +183,33 @@ class DBhandler:
                 return position
         return False
     
-    # 처리 중인 주문 딕셔너리 {사용자 아이디 : 상품명} 형태로 반환
+    # 닉네임 반환
+    def get_nickname(self, user_id):
+        users = self.db.child("user").get()
+        for res in users.each():
+            if res.val()['id'] == user_id:
+                nickname=self.db.child("user").child(res.key()).child("nickname").get().val()
+                return nickname
+        return False
+    
+    # 처리 중인 주문 튜플 (사용자 아이디, 상품명, 구매 수량) 형태로 반환
     def get_no_complete(self):
-        items={}
+        items=[]
         purchases=self.db.child("purchases").get()
         for res in purchases.each():
             if res.val()['status'] == "N":
-                items[res.val()['user_id']]=res.val()['item_name']
+                if 'num_item' not in res.val():
+                    res.val()['num_item'] = 1
+                items.append((res.val()['user_id'], res.val()['item_name'], res.val()['num_item']))
         return items
     
     # 완료 여부 업데이트
-    def update_status(self, user_id):
+    def update_status(self, user_id, item_name):
         purchases=self.db.child("purchases").get()
         for res in purchases.each():
-            if res.val()['user_id'] == user_id and res.val()['status'] == "N":
+            if res.val()['user_id'] == user_id and res.val()['status'] == "N" and res.val()['item_name'] == item_name:
                 self.db.child("purchases").child(res.key()).update({"status": "Y"})
+                print("Complete ", res.val()['item_name'], " : ", res.val()['user_id'])
                 return True
         return False
     
@@ -213,8 +225,33 @@ class DBhandler:
     
     # 주문 내역 확인
     def find_purchase(self, user_id):
+        item=[]
         purchases=self.db.child("purchases").get()
         for res in purchases.each():
             if res.val()['user_id'] == user_id and res.val()['status'] == "N":
-                return res.val()['item_name']
-        return False
+                if 'num_item' not in res.val():
+                    res.val()['num_item'] = 1
+                item.append((res.val()['item_name'], res.val()['num_item']))
+        return item
+    
+    # 구매 내역 확인
+    def find_buy(self, user_id):
+        item=[]
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['user_id'] == user_id and res.val()['status'] == "Y":
+                if 'num_item' not in res.val():
+                    res.val()['num_item'] = 1
+                item.append((res.val()['item_name'], res.val()['num_item']))
+        return item
+    
+    # 완료 내역 확인
+    def find_complete(self):
+        item=[]
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['status'] == "Y":
+                if 'num_item' not in res.val():
+                    res.val()['num_item'] = 1
+                item.append((res.val()['item_name'], res.val()['num_item']))
+        return item

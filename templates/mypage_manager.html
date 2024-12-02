@@ -166,10 +166,11 @@
     </style>
 
     <div class="mypage-wrapper">
+        
     <!-- 상단 테이블 -->
     <div class="table-container">
         <div class="table-cell">
-            <h3>박이화 님</h3>
+            <h3>{{ nickname }} 님</h3>
             <p><strong>관리자</strong></p>
         </div>
         <div class="table-cell">
@@ -215,7 +216,7 @@
                 {% if total > 0 %}
                 <table>
                     <tr>
-                        {% for user_id, item_name in items %}
+                        {% for user_id, item_name, num_item in items %}
                             {% for key, value in datas %}
                                 {% if item_name == value['name'] %}
                                 <div class="product-image">
@@ -224,10 +225,11 @@
                                 <div class="product-details">
                                     <div class="detail-item"><h2>{{ item_name }}</h2></div><br><br>
                                     <div class="detail-item">주문자 | {{ user_id }}</div>
-                                    <div class="detail-item">설명</div>
+                                    <div class="detail-item">구매 수량 | {{ num_item }}</div>
                                     <!-- 완료 버튼 추가 -->
                                     <form action="/complete_item" method="POST">
                                         <input type="hidden" name="user_id" value="{{ user_id }}">
+                                        <input type="hidden" name="item_name" value="{{ item_name }}">
                                         <button type="submit" class="complete-button">완료</button>
                                     </form>
                                 </div>

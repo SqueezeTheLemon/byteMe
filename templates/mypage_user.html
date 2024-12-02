@@ -164,10 +164,11 @@
     </style>
 
 <div class="mypage-wrapper">
+    
     <!-- 상단 테이블 -->
     <div class="table-container">
         <div class="table-cell">
-            <h3>박이화 님</h3>
+            <h3>{{ nickname }} 님</h3>
             <p><strong>일반 회원</strong></p>
         </div>
         <div class="table-cell">
@@ -218,6 +219,7 @@
                 {% if total > 0 %}
                 <table>
                     <tr>
+                        {% for item_name, num_item in item %}
                         {% for key, value in datas %}
                             {% if item_name == value['name'] %}
                             <div class="product-image">
@@ -225,9 +227,11 @@
                             </div>
                             <div class="product-details">
                                 <div class="detail-item"><h2>{{ item_name }}</h2></div><br><br>
-                                <div class="detail-item">설명</div>
+                                <div class="detail-item">{{ value['info'] }}</div>
+                                <div class="detail-item">구매 수량 | {{ num_item }}</div>
                             </div>
                             {% endif %}
+                        {% endfor %}
                         {% endfor %}
                     </tr>
                 </table>

@@ -3,7 +3,7 @@
 {% block content %}
                 {% if total > 0 %}
                 <table>
-                    <tr>
+                    <tr>{% for item_name, num_item in item %}
                         {% for key, value in datas %}
                             {% if item_name == value['name'] %}
                             <div class="product-image">
@@ -11,9 +11,11 @@
                             </div>
                             <div class="product-details">
                                 <div class="detail-item"><h2>{{ item_name }}</h2></div><br><br>
-                                <div class="detail-item">설명</div>
+                                <div class="detail-item">{{ value['info'] }}</div>
+                                <div class="detail-item">구매 수량 | {{ num_item }}</div>
                             </div>
                             {% endif %}
+                        {% endfor %}
                         {% endfor %}
                     </tr>
                 </table>
