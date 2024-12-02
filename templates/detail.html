@@ -1,5 +1,3 @@
-{% extends "index.html" %}
-
 {% block section %}
 <p>
     Item name is <b>{{ name }}</b> and address is {{ data['addr'] }}
@@ -8,12 +6,15 @@
     Seller tel. is {{ data['phone'] }} and category is {{ data['category'] }} <br>
     You can pay by {{ data['payment'] }}
 </p>
+
 <img src="../../static/images/{{ data.img_path }}" width="140" height="140">
+
 <!-- 구매 버튼 -->
 <form id="purchase-form" method="POST">
     <input type="hidden" name="item_name" value="{{ name }}">
     <button type="button" id="purchase-button">구매</button>
 </form>
+
 <script>
     document.getElementById('purchase-button').addEventListener('click', function () {
         const form = document.getElementById('purchase-form');

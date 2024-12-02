@@ -3,7 +3,6 @@ import sys
 
 from werkzeug.utils import secure_filename
 import os
-
 from flask import get_flashed_messages
 from database import DBhandler
 import hashlib
@@ -30,7 +29,7 @@ def login_selection():
 @application.route("/user_login", methods=["GET", "POST"])
 def user_login():
     if request.method == "POST":
-        id_ = request.form.get('id')  # 안전하게 값을 가져옴
+        id_ = request.form.get('id')
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
@@ -51,7 +50,7 @@ def user_login():
 @application.route("/admin_login",methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        id_ = request.form.get('id')  # 안전하게 값을 가져옴
+        id_ = request.form.get('id')
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
@@ -124,7 +123,7 @@ def view_mypage():
     # Flash 메시지 디버깅
     if "_flashes" in session:
         print("Flash 메시지 확인:", session["_flashes"])  # 세션 내 Flash 메시지 확인
-
+    
     user_id=session["id"]
     
     # 일반회원인지 관리자인지 확인
@@ -525,3 +524,4 @@ def check_login():
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
+
