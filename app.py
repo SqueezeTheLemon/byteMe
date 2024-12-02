@@ -3,7 +3,7 @@ import sys
 
 from werkzeug.utils import secure_filename
 import os
-
+from flask import get_flashed_messages
 from database import DBhandler
 import hashlib
 import sys
@@ -29,13 +29,18 @@ def login_selection():
 @application.route("/user_login", methods=["GET", "POST"])
 def user_login():
     if request.method == "POST":
-        id_ = request.form.get('id')  # 안전하게 값을 가져옴
+        id_ = request.form.get('id')
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
-            session['id'] = id_
-            return render_template("home.html")
+        if DB.find_user(id_, pw_hash):
+            position = DB.get_position(id_)
+            if position == "user":  # 일반 사용자만 로그인 허용
+                session['id'] = id_
+                return render_template("home.html")
+            else:
+                flash("관리자 계정으로는 일반 사용자 페이지에 로그인할 수 없습니다!")
+                return render_template("user_login.html")
         else:
             flash("Wrong ID or PW!")
             return render_template("user_login.html")
@@ -45,13 +50,18 @@ def user_login():
 @application.route("/admin_login",methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        id_ = request.form.get('id')  # 안전하게 값을 가져옴
+        id_ = request.form.get('id')
         pw = request.form.get('pw')
         pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-        if DB.find_user(id_, pw_hash):  # 데이터베이스 조회
-            session['id'] = id_
-            return render_template("home.html")
+        if DB.find_user(id_, pw_hash):
+            position = DB.get_position(id_)
+            if position == "admin":  # 관리자만 로그인 허용
+                session['id'] = id_
+                return render_template("home.html")
+            else:
+                flash("일반 사용자 계정으로는 관리자 페이지에 로그인할 수 없습니다!")
+                return render_template("admin_login.html")
         else:
             flash("Wrong ID or PW!")
             return render_template("admin_login.html")
@@ -107,7 +117,12 @@ def register_user():
 def view_mypage():
     if 'id' not in session:  
         flash("로그인이 필요합니다!")
+        session.modified = True
         return redirect(url_for("login_selection"))
+    
+    # Flash 메시지 디버깅
+    if "_flashes" in session:
+        print("Flash 메시지 확인:", session["_flashes"])  # 세션 내 Flash 메시지 확인
     
     user_id=session["id"]
     
@@ -434,9 +449,14 @@ def purchase_item():
     new_num=DB.count_num(user_id)
     DB.update_num(user_id, new_num)
 
-    flash(f"{item_name} 상품을 구매했습니다!")
-
-    return redirect(url_for("view_mypage"))
+    if DB.record_purchase(purchase_data):
+        # 구매 성공 처리
+        message = f"{item_name} 구매가 완료되었습니다!"
+        return jsonify({"success": True, "message": message, "redirect_url": url_for("view_mypage")})
+    else:
+        # 실패 처리
+        message = "구매 처리에 실패했습니다. 다시 시도해주세요."
+        return jsonify({"success": False, "message": message})
 
 # 처리 완료
 @application.route("/complete_item", methods=["POST"])
@@ -470,3 +490,4 @@ def check_login():
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
+

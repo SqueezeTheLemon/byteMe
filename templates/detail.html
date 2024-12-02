@@ -1,20 +1,42 @@
-{% extends "index.html" %}
-
 {% block section %}
 <p>
-    item name is <b>{{name}}</b> and address is {{data['addr']}}
-    </p>
-    <p>
-    Seller tel. is {{data['phone']}} and category is {{data['category']}} <br>
-    You can pay by {{data['payment']}}
-    </p>
-    
-    <img src="../../static/images/{{data.img_path}}", width=140, height=140>
+    Item name is <b>{{ name }}</b> and address is {{ data['addr'] }}
+</p>
+<p>
+    Seller tel. is {{ data['phone'] }} and category is {{ data['category'] }} <br>
+    You can pay by {{ data['payment'] }}
+</p>
 
-    <!-- 구매 버튼 추가 -->
-    <form action="/purchase_item" method="POST">
-        <input type="hidden" name="item_name" value="{{name}}">
-        <button type="submit">구매</button>
-    </form>
-    
+<img src="../../static/images/{{ data.img_path }}" width="140" height="140">
+
+<!-- 구매 버튼 -->
+<form id="purchase-form" method="POST">
+    <input type="hidden" name="item_name" value="{{ name }}">
+    <button type="button" id="purchase-button">구매</button>
+</form>
+
+<script>
+    document.getElementById('purchase-button').addEventListener('click', function () {
+        const form = document.getElementById('purchase-form');
+        const formData = new FormData(form);
+
+        fetch('/purchase_item', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.href = data.redirect_url;
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        });
+    });
+</script>
 {% endblock section %}
