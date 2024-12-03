@@ -198,7 +198,7 @@ button:hover {
           } else if (count >= 20 && count < 24) {
             sliderImages[0].querySelector('img').src = "/static/trv1.png";
             sliderImages[1].querySelector('img').src = "/static/trv2.png";
-            sliderImages[2].querySelector('img').src = "/staltic/trv3-2.png"; 
+            sliderImages[2].querySelector('img').src = "/static/trv3-2.png"; 
           } else if (count >=24 ){
             sliderImages[0].querySelector('img').src = "/static/trv1.png";
             sliderImages[1].querySelector('img').src = "/static/trv2.png";
@@ -232,26 +232,25 @@ button:hover {
             ➡️ 주변 이화상점에서 시원한 아이스 아메리카노 한 잔을 받을 수 있어요.`,
 
             `<strong>디저트 성에 도착했어요!</strong><br>
-            이곳은 달콤함으로 가득 찬 꿈의 성이에요! 성 안에는 무수한 디저트로 가득한 방이 있고, 반짝이는 샹들리에가 성을 밝히고 있어요.<br>
-            ➡️ <strong>2024 화연이의 모험을 완료했습니다 🥳</strong> 주변 이화상점에서 원하는 메뉴를 받을 수 있어요.`
+            이곳은 달콤함으로 가득 찬 꿈의 성이에요! 달콤함으로 가득한 디저트 성의 문이 활짝 열리고, 화연이를 축하합니다.<br>
+            ➡️ <strong>마침내 2024 화연이의 모험을 완수했습니다! 🥳</strong> 주변 이화상점에서 원하는 메뉴를 받을 수 있어요.`
         ];
 
         const midDescriptions = [
-            "화연이는 첫 발걸음을 내디뎠어요!<br>이 신비로운 숲의 끝에는 어떤 이야기가 기다리고 있을까요? 설렘을 안고 다음 장소로 나아갑니다.",
+            "설레는 모험의 시작! 첫 번째 목적지로 나아갑니다.",
+            "이 신비로운 숲의 끝에는 어떤 목적지가 기다리고 있을까요? 기대를 품고 다음 장소로 나아갑니다.",
             "화연이는 여전히 모험 중이에요!<br>소다 호수의 물결을 지나며 마음을 가다듬습니다. 이제 새로운 도전이 기다리고 있어요.",
             "화연이는 잠시 숨을 고릅니다.<br>마을의 따뜻한 분위기 속에서 에너지를 충전하며 다시 길을 떠납니다.",
             "화연이는 마음을 다잡았어요!<br>폭포의 기운을 가득 담아 다음 목적지를 향해 발걸음을 옮깁니다.",
-            "화연이는 모험의 끝이 다가옴을 느껴요.<br>마지막 도전을 준비하며 힘찬 발걸음을 내딛습니다.",
-            "화연이는 마침내 여정을 완수했습니다!<br>디저트 성의 문이 활짝 열리고, 화연이를 축하합니다. 내년의 새로운 이야기를 기다려주세요!"
+            "화연이는 섬에서 한숨 돌리고, 모험의 끝이 다가옴을 느껴요.<br>마지막 도전을 준비하며 힘찬 발걸음을 내딛습니다.",
         ];
 
         // 다음 목적지까지 남은 구매 횟수
         const nextStep = 4 - (count % 4);
 
         if (count > 24) { //여행 끝
-            largeRectElement.innerHTML = `<strong>모험이 완료되었습니다!</strong><br>
+            largeRectElement.innerHTML = `<strong>모험을 완료했습니다!</strong><br>
             화연이는 모든 여정을 성공적으로 끝마쳤습니다. 내년에 올 새로운 이야기를 기대해주세요!`;
-            nextDestinationElement.innerHTML = `다음 목적지까지 0회 남았어요!`;
         } 
         //각 목적지 도착
         else if (count % 4 === 0 && count <= 24) { 
@@ -266,7 +265,13 @@ button:hover {
             const index = Math.floor(count / 4); 
             largeRectElement.innerHTML = midDescriptions[index];    
         }
-        nextDestinationElement.innerHTML = `다음 목적지까지 ${nextStep}회 남았어요!`;
+        
+        if(count>=24){
+            nextDestinationElement.innerHTML=`모험 완료!`;
+        }else{
+            nextDestinationElement.innerHTML = `다음 목적지까지 ${nextStep}회 남았어요!`;
+        }
+        
     }
 
     // 구매 횟수
