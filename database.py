@@ -1,6 +1,7 @@
 import pyrebase
 import json
 import re
+from datetime import datetime
 
 class DBhandler:
     def __init__(self):
@@ -284,13 +285,15 @@ class DBhandler:
     
     def reg_review(self, data, img_path):
         #sanitized_title = self.sanitize_path(data['review_title'])
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         review_info ={
         "title": data['review_title'],
         "id": data['id'],
         "name": data['name'],
         "rate": data['reviewStar'],
         "review": data['reviewContents'],
-        "img_path": img_path
+        "img_path": img_path,
+        "timestamp": current_time
         }
         self.db.child("review").push(review_info)
         #self.db.child("review").child(sanitized_title).set(review_info)
