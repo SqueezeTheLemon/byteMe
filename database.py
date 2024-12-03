@@ -253,5 +253,5 @@ class DBhandler:
             if res.val()['status'] == "Y":
                 if 'num_item' not in res.val():
                     res.val()['num_item'] = 1
-                item.append((res.val()['item_name'], res.val()['num_item']))
+                item.append((res.val()['item_name'], res.val()['user_id'], res.val()['num_item']))
         return item

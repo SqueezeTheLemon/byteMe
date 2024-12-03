@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block section %}
+<main id="main-content">
 <form action="/edit_item_post" method="post" enctype="multipart/form-data">
         <br><br>
         <div class="column left">
@@ -45,5 +46,5 @@
             <input type="submit" value="수정" id="edit"><br><br>
         </div>
     </form>
-
+</main>
 {% endblock section %}
