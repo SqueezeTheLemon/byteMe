@@ -1,0 +1,194 @@
+{% extends "index.html" %}
+{% block section %}
+    <style>
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            width: 1100px;
+            max-width: 100%;
+            margin: 20px auto; /* 화면 가운데 정렬 */
+            background-color: #ffffff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 350px;
+            height: 350px;
+            background-color: rgb(184,198,191);
+            position: relative;
+        }
+        .upload-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .upload-button {
+            background-color: white;
+            color: rgb(0,70,42);
+            border: 4px solid rgb(0,70,42);
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            font-size: 120%;
+        }
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: calc(100% - 370px);
+        }
+        .form-section label {
+            margin-right: 10px;
+            font-size: 18px;
+            color: black;
+        }
+        .inline-inputs div {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .form-section input, .form-section textarea {
+            padding: 10px;
+            width: 100%;
+            margin-top: 5px;
+            border: 1.5px solid gray;
+            border-radius: 5px;
+        }
+        .star-rating {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 20px;
+            color: #ccc;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .cancel-button {
+            background-color: rgb(0,70,42);
+            color: white;
+            padding: 10px 20px;
+            width: 120px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 120%;
+            align-self: flex-end;
+        }
+        .inline-inputs {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .file-input {
+            display: none;
+        }
+        
+        @media (max-width: 800px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+            }
+            .upload-section {
+                width: 100%;
+                height: auto;
+            }
+            .form-section {
+                width: 100%;
+            }
+        }
+    </style>
+    <form  class="mb-3" name="myform" id="myform" method="post" action="/reg_review" enctype="multipart/form-data">
+        <section class="sec_review_form">
+            <div class="container">
+                <div class="upload-section">
+                    <img src="static/images/image.png" alt="사진 업로드">
+                    <label for="img"><span style="color:red;">*</span> 사진 업로드 : </label>
+                    <input type="file" name="file" id="file"/>
+                </div>
+                <div class="form-section">
+                    <div class="inline-inputs">
+                        <div>
+                            <label><d style="color:red;">*</d> 상품명</label>
+                            <input type="text" id="name" name="name"  value="{{name}}" required>
+                        </div>
+                        <div>
+                            <label><d style="color:red;">*</d> 리뷰자 아이디</label>
+                            <input type="text" id="id" name="id" value="" required>
+                        </div>
+                    </div>
+
+                    <label><d style="color:red;">*</d> 별점</label>
+                    <div class="star-rating">
+                        <input type="radio" id="rate1" name="reviewStar" value="1" required onclick="setRating(1)">
+                        <label for="rate1">★</label>
+                        <input type="radio" id="rate2" name="reviewStar" value="2" onclick="setRating(2)">
+                        <label for="rate2">★</label>
+                        <input type="radio" id="rate3" name="reviewStar" value="3" onclick="setRating(3)">
+                        <label for="rate3">★</label>
+                        <input type="radio" id="rate4" name="reviewStar" value="4" onclick="setRating(4)">
+                        <label for="rate4">★</label>
+                        <input type="radio" id="rate5" name="reviewStar" value="5" onclick="setRating(5)">
+                        <label for="rate5">★</label>
+                    </div>
+
+                    <label><d style="color:red;">*</d> 제목</label>
+                    <input type="text" id="review-title" name="review_title" required>
+
+                    <label><d style="color:red;">*</d> 내용</label>
+                    <textarea  class="col-auto form-control" type="text" name="reviewContents"
+                    placeholder="리뷰를 남겨주세요 감사합니다!" id="reviewContent" rows="4" required></textarea>
+
+                    <input type="submit" value="등록" id="submit"><br>
+                    <div class="button-container">
+                        <button class="cancel-button" onclick="submitForm()">취소</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+
+    <script>
+        function setRating(rating) {
+            const labels = document.querySelectorAll('.star-rating label');
+            labels.forEach((label, index) => {
+                if (index < rating) {
+                    label.style.color = 'green'; // 초록색
+                } else {
+                    label.style.color = 'gray'; // 회색
+                }
+            });
+        }
+        
+        function submitForm() {
+            // 입력 필드 초기화
+            document.getElementById('name').value = ''; // 상품명 초기화
+            document.getElementById('id').value = ''; // 리뷰자 아이디 초기화
+            const starInputs = document.querySelectorAll('input[name="reviewStar"]');
+            starInputs.forEach(input => input.checked = false); // 별점 초기화
+            
+            // 별점 색상 초기화
+            setRating(0); // 별점 색상 초기화
+            
+            document.getElementById('title').value = ''; // 제목 초기화
+            document.querySelector('textarea[name="review_content"]').value = ''; // 내용 초기화
+            
+            // 이미지 미리보기를 지우고 파일 입력 초기화
+            const imgElement = document.querySelector('.upload-section img');
+            imgElement.src = 'static/images/image.png'; // 기본 이미지로 설정 (기본 이미지 경로로 변경)
+            document.querySelector('input[type="file"]').value = ''; // 파일 입력 초기화
+        }
+    </script>>
+{% endblock section %}

@@ -1,5 +1,6 @@
 import pyrebase
 import json
+import re
 
 class DBhandler:
     def __init__(self):
@@ -255,3 +256,84 @@ class DBhandler:
                     res.val()['num_item'] = 1
                 item.append((res.val()['item_name'], res.val()['user_id'], res.val()['num_item']))
         return item
+
+    def get_heart_byname(self, uid, name):
+        hearts = self.db.child("heart").child(uid).get()
+        target_value=""
+        if hearts.val() == None:
+            return target_value
+
+        for res in hearts.each():
+            key_value = res.key()
+
+            if key_value == name:
+                target_value=res.val()
+        return target_value
+
+
+    def update_heart(self, user_id, isHeart, item):
+        heart_info ={
+            "interested": isHeart
+        }
+        self.db.child("heart").child(user_id).child(item).set(heart_info)
+        return True
+    
+    def sanitize_path(self, path):
+        # 허용되지 않는 문자를 제거하고, 공백은 `_`로 대체
+        return re.sub(r'[.#$[\]/]', '_', path.strip())
+    
+    def reg_review(self, data, img_path):
+        #sanitized_title = self.sanitize_path(data['review_title'])
+        review_info ={
+        "title": data['review_title'],
+        "id": data['id'],
+        "name": data['name'],
+        "rate": data['reviewStar'],
+        "review": data['reviewContents'],
+        "img_path": img_path
+        }
+        self.db.child("review").push(review_info)
+        #self.db.child("review").child(sanitized_title).set(review_info)
+        return True
+
+    def get_reviews(self):
+        reviews = self.db.child("review").get().val()
+        return reviews
+
+
+    def get_review_byname(self, title):
+        reviews = self.db.child("review").get()
+        target_value=""
+        print("###########",title)
+        for res in reviews.each():
+            key_value = res.key()
+            if key_value == title:
+                target_value=res.val()
+        return target_value
+    
+    
+    def get_average_rating(self, name):
+            try:
+                reviews = self.db.child("review").get()
+                if not reviews.val():
+                    print(f"No reviews found in the database.")
+                    return None
+
+                # 아이템 이름에 해당하는 리뷰 데이터 필터링
+                ratings = [
+                    int(res.val().get("rate", 0))
+                    for res in reviews.each()
+                    if res.val().get("name") == name and "rate" in res.val()
+                ]
+
+                if not ratings:
+                    print(f"No ratings found in reviews for item: {name}")
+                    return None
+                
+                average_rating = sum(ratings) / len(ratings)
+                formatted_average = round(average_rating, 2)  # 소수점 두 자리로 반올림
+                print(f"Average rating for {name}: {formatted_average}")
+                return formatted_average
+            except Exception as e:
+                print(f"Error while calculating average rating: {e}")
+                return None

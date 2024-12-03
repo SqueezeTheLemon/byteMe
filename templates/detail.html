@@ -1,11 +1,100 @@
+{% extends "index.html" %}
+
 {% block section %}
+
+<script>
+    function showHeart() {
+        $.ajax({
+            type: 'GET',
+            url: '/show_heart/{{name}}/',
+            data: {},
+            success: function (response) {
+            let my_heart = response['my_heart'];
+            if (my_heart['interested'] == 'Y')
+            {
+            $("#heart").css("color","red");
+            $("#heart").off("click").on("click", unlike);
+            }
+            else
+            {
+            $("#heart").css("color","grey");
+            $("#heart").off("click").on("click", like);
+            }
+            }
+        });
+    }
+    function like() {
+        $.ajax({
+        type: 'POST',
+        url: '/like/{{name}}/',
+        data: {
+        interested : "Y"
+        },
+        success: function (response) {
+        alert(response['msg']);
+        showHeart();
+        }
+        });
+    }
+    function unlike() {
+        $.ajax({
+        type: 'POST',
+        url: '/unlike/{{name}}/',
+        data: {
+        interested : "N"
+        },
+        success: function (response) {
+        alert(response['msg']);
+        showHeart();
+        }
+        });
+    }
+    $(document).ready(function () {
+        showHeart();
+    });
+    $(document).ready(function () {
+        console.log(document.getElementById('purchase-button')); // 콘솔로 버튼 존재 여부 확인
+        document.getElementById('purchase-button').addEventListener('click', function () {
+            const form = document.getElementById('purchase-form');
+            const formData = new FormData(form);
+
+            fetch('/purchase_item', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            });
+        });
+    });
+</script>
+
 <p>
-    Item name is <b>{{ name }}</b> and address is {{ data['addr'] }}
-</p>
-<p>
-    Seller tel. is {{ data['phone'] }} and category is {{ data['category'] }} <br>
-    You can pay by {{ data['payment'] }}
-</p>
+    <h2>{{ name }}</h2>
+    <i class="fa fa-heart" id="heart" ></i>
+    <p><b>카테고리 | </b> {{ data['category'] }}</p>
+    <p><b>판매 주소 | </b> {{ data['addr'] }}</p>
+    <p><b>판매자 번호 | </b> {{ data['phone'] }}</p>
+    <p><b>가격 | </b> {{ data['price'] }} 원</p>
+    <p><b>결제수단 | </b> {{ data['payment'] }}</p>
+    <p>
+        <b>평균 별점:</b>
+        {% if average_rating %}
+            {{ average_rating }}
+        {% else %}
+            "평점이 없습니다."
+        {% endif %}
+    </p>
 
 <img src="../../static/images/{{ data.img_path }}" width="140" height="140">
 
@@ -15,29 +104,6 @@
     <button type="button" id="purchase-button">구매</button>
 </form>
 
-<script>
-    document.getElementById('purchase-button').addEventListener('click', function () {
-        const form = document.getElementById('purchase-form');
-        const formData = new FormData(form);
+<button onclick="location.href='/reg_review_init/{{name}}/';">리뷰등록</button>
 
-        fetch('/purchase_item', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                window.location.href = data.redirect_url;
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
-        });
-    });
-</script>
-    
 {% endblock section %}
