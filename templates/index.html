@@ -27,12 +27,14 @@ ome.min.css">
     <header>
         <ul class="upperbar">
             <li><a href="/customer_center">고객센터</a></li>
+            {% if not session.get('id') or (session.get('position') != 'admin') %}
             <li>|</li>
             <li><a href="#" onclick="checkLogin('/travel')">여행</a></li>
+            {% endif %}
             <li>|</li>
             <li><a href="#" onclick="checkLogin('/mypage')">마이페이지</a></li>
             <li>|</li>
-            {% if session['id'] %}
+            {% if session.get('id') %}
             <li><a href="/logout"><b>{{ session['id'] }}님 반갑습니다! </b> 로그아웃</a></li>
             {% else %}
             <li><a href="/login_selection">로그인</a></li>

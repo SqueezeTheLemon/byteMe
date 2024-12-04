@@ -47,7 +47,7 @@ def user_login():
 
     return render_template("user_login.html")  # GET 요청 처리
 
-@application.route("/admin_login",methods=["GET", "POST"])
+@application.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         id_ = request.form.get('id')
@@ -58,6 +58,7 @@ def admin_login():
             position = DB.get_position(id_)
             if position == "admin":  # 관리자만 로그인 허용
                 session['id'] = id_
+                session['position'] = position  # position 정보 추가
                 return render_template("home.html")
             else:
                 flash("일반 사용자 계정으로는 관리자 페이지에 로그인할 수 없습니다!")
@@ -96,8 +97,7 @@ def register_user():
     pw_confirm = request.form.get("pw_confirm")
 
     if data["pw"] != pw_confirm:
-        flash("비밀번호가 일치하지 않습니다.")
-        return redirect(url_for("signup"))
+        return redirect(url_for("signup", message="password_mismatch"))
 
     # 비밀번호 해싱
     pw_hash = hashlib.sha256(data["pw"].encode('utf-8')).hexdigest()
@@ -107,10 +107,9 @@ def register_user():
 
 
     if DB.insert_user(data, pw=pw_hash):
-        return redirect(url_for("user_login"))
+        return redirect(url_for("signup", message="success"))
     else:
-        flash("user id already exist!")
-        return redirect(url_for("signup"))
+        return redirect(url_for("signup", message="user_exists"))
 
 # 마이페이지
 @application.route("/mypage")
