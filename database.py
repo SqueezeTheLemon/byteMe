@@ -112,20 +112,35 @@ class DBhandler:
         print("Retrieved item data:", target_value)
         return target_value
     
-    def get_items_bycategory(self, cate):
-        items = self.db.child("item").get()
-        target_value=[]
-        target_key=[]
-        for res in items.each():
-            value = res.val()
-            key_value = res.key()
-            if value['category'] == cate:
-            #넘겨준카테고리에해당하는값들리스트에저장
-                target_value.append(value)
-                target_key.append(key_value)
-        print("######target_value",target_value)
+    #카테고리별로 상품 가져오기
+    def get_items_bycategory(self, cate, sort_by=None):
+            # 카테고리가 "All"인 경우, 모든 아이템을 가져옵니다.
+        if cate == "All":
+            items = self.db.child("item").get().val()
+            target_value = [item for item in items.values()]
+            target_key = list(items.keys())
+        else:
+        # 카테고리별로 아이템을 가져옵니다.
+            items = self.db.child("item").get()
+            target_value=[]
+            target_key=[]
+        
+            for res in items.each():
+                value = res.val()
+                key_value = res.key()
+                if value['category'] == cate:
+                    target_value.append(value)
+                    target_key.append(key_value)
+        # print("######target_value",target_value) #디버깅 코드
+        # for item in target_value:
+        #     print(f"Item Name: {item['name']}, Price: {item['price']}")
+        
+        #가격순 정렬
+        if sort_by == "low_to_high":  # 낮은 가격순
+            target_value.sort(key=lambda x: int(x['price']))
+        elif sort_by == "high_to_low":  # 높은 가격순
+            target_value.sort(key=lambda x: int(x['price']), reverse=True)
         new_dict={}
-
         for k,v in zip(target_key,target_value):
             new_dict[k]=v
         return new_dict

@@ -503,12 +503,6 @@ textarea {
     text-decoration: none;
 }
 
-
-.sort li:hover {
-    color: rgb(0, 70, 42);
-    font-weight: bold;
-}
-
 .submit_prd {
     position: absolute;
     top: 310px;

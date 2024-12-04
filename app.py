@@ -159,21 +159,20 @@ def view_customer_center():
 @application.route("/menu")
 def view_list():
     page = request.args.get("page", 0, type=int)  # 페이지 번호 가져오기
-    category = request.args.get("category", "All")
+    category = request.args.get("category", "All") #카테고리 가져오기
+    sort_by = request.args.get("sort_by", None) #정렬기준 가져오기
     per_page = 4  # 한 페이지에 보여줄 아이템 수
     per_row = 4  # 한 행에 보여줄 아이템 수(1*4)
     row_count = int(per_page / per_row)  # 전체 행 수
     start_idx = per_page * page  # 시작 인덱스
     end_idx = per_page * (page + 1)  # 끝 인덱스
 
-    # 카테고리별 아이템 가져오기
-    #data = DB.get_items_bycategory(category)  # 카테고리에 맞는 데이터 가져오기
-    if category=="All":
-        data = DB.get_items() #read the table
-    else:
-        data = DB.get_items_bycategory(category)
+    # 카테고리에 맞는 데이터 가져오기
+    data = DB.get_items_bycategory(category, sort_by=sort_by)
+
     data = dict(sorted(data.items(), key=lambda x: x[0], reverse=False))
     item_counts = len(data)
+    
     if item_counts<=per_page:
         data = dict(list(data.items())[:item_counts])
     else:
@@ -193,7 +192,8 @@ def view_list():
         page=page,
         page_count=int(math.ceil(item_counts/per_page)),  # 총 페이지 수 계산
         total=item_counts,
-        category=category #카테고리 html코드로 넘겨줌
+        category=category, #카테고리 html코드로 넘겨줌
+        sort_by=sort_by
         )
     
 

@@ -3,13 +3,35 @@
 {% block section %}
 
 <style>
+    .sort a { 
+    font-weight: normal; /* 기본 폰트 두께 */
+    text-decoration: none;
+    float: left;
+    display: block;
+    color: #505050;
+    text-align: center;
+    padding: 0px 8px;
+    text-decoration: none;
+    }
+
+    .sort a:hover {
+    color: rgb(0, 70, 42);
+    font-weight: bold;
+    }
+
+    .sort a.selected {
+    color: rgb(0, 70, 42); /* 선택된 항목 색상 */
+    font-weight: bold; /* 선택된 항목 폰트 두께 */
+    text-decoration: underline; /* 선택된 항목 강조 (옵션) */
+    }
+
     .sorting {
         display: flex;
         justify-content: space-between; /* 양쪽 정렬 */
         align-items: center;
         margin-bottom: 0px;
     }
-    .sorting button {
+    /* .sorting button {
         background: none;
         border: none;
         color: gray;
@@ -18,7 +40,7 @@
         transition: color 0.3s;
         font-size: 20px; 
         font-weight: bold;
-    }
+    } */
     .pagination {
         display: flex;
         justify-content: center; /* Center-aligns the pagination bar */
@@ -73,9 +95,11 @@
         <ul class="sort">
             <li>인기순</li>
             <li>|</li>
-            <li>낮은 가격순</li>
+            <li><a href="{{url_for('view_list', page=i, category=category, sort_by='low_to_high')}}"
+                class="{% if sort_by == 'low_to_high' %}selected{% endif %}">낮은 가격순</a></li>
             <li>|</li>
-            <li>높은 가격순</li>
+            <li><a href="{{url_for('view_list', page=i, category=category, sort_by='high_to_low')}}"
+                class="{% if sort_by == 'high_to_low' %}selected{% endif %}">높은 가격순</a></li>
             <li>|</li>
             <li>리뷰 많은순</li>
         </ul>
@@ -151,7 +175,7 @@
         <ul>
             <li>
             {% for i in range(page_count) %}
-            <a href="{{ url_for('view_list', page=i, category=category) }}" style="color: black;">
+            <a href="{{ url_for('view_list', page=i, category=category, sort_by=sort_by) }}" style="color: black;">
                 {{ i + 1 }}
             </a>
         {% endfor %}
