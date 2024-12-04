@@ -58,7 +58,7 @@
     <ul class="submenu__under">
         <li><a href="/menu">메뉴</a></li>
         <li>|</li>
-        <li><a href="{{url_for('view_list', category='All')}}">전체</a></li>
+        <li><a href="{{url_for('view_list', page=i, category='All')}}">전체</a></li>
         {% if category != "All" %}
             <li>|</li>
             <li><strong>{{ category }}</strong></li> <!-- 현재 선택된 카테고리 -->
@@ -150,9 +150,13 @@
     <div class="page-nation">
         <ul>
             <li>
-            {% for i in range(page_count)%}
-                <a href="{{url_for('view_list', page=i)}}" color="black">{{i}}</a>
-            {% endfor %} </li>
+            {% for i in range(page_count) %}
+            <a href="{{ url_for('view_list', page=i, category=category) }}" style="color: black;">
+                {{ i + 1 }}
+            </a>
+        {% endfor %}
+            </li>
+            
         </ul>
     </div>
 </div>

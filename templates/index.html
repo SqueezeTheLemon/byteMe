@@ -51,11 +51,11 @@ ome.min.css">
             
             <hr>
             <ul class="navbar__menu">
-                <li><a href="{{url_for('view_list', category='All')}}">메뉴</a>
+                <li><a href="{{url_for('view_list',page=i, category='All')}}">메뉴</a>
                     <ul class="submenu">
-                        <li><a href="{{ url_for('view_list', category='음료') }}">음료</a></li>
-                        <li><a href="{{ url_for('view_list', category='디저트') }}">디저트</a></li>
-                        <li><a href="{{ url_for('view_list', category='김밥') }}">김밥</a></li>
+                        <li><a href="{{ url_for('view_list',page=i, category='음료') }}">음료</a></li>
+                        <li><a href="{{ url_for('view_list',page=i, category='디저트') }}">디저트</a></li>
+                        <li><a href="{{ url_for('view_list', page=i,category='김밥') }}">김밥</a></li>
                     </ul>
                 </li>
                 <li><a href="/store">매장 찾기</a></li>
