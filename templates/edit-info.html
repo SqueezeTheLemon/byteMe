@@ -1,36 +1,25 @@
 {% extends "index.html" %}
 {% block section %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원 정보 수정</title>
-</head>
-<body>
 <main id="main-content">
-    <h1>회원 정보 수정</h1>
-    <p>여기서 회원 정보를 수정할 수 있습니다.</p>
-    <form action="/edit_account" method="POST">
-        <label for="nickname">닉네임:</label>
-        <input type="text" id="nickname" name="nickname" placeholder="변경할 닉네임 입력">
-    
-        <label for="email">이메일:</label>
-        <input type="email" id="email" name="email" placeholder="변경할 이메일 입력">
-    
-        <label for="name">이름:</label>
-        <input type="text" id="name" name="name" placeholder="변경할 이름 입력">
-    
-        <label>직급:</label>
-        <label><input type="radio" name="position" value="user"> 일반회원</label>
-        <label><input type="radio" name="position" value="admin"> 관리자</label>
-    
-        <label for="phone">핸드폰 번호:</label>
-        <input type="tel" id="phone" name="phone" placeholder="변경할 핸드폰 번호 입력">
-    
-        <button type="submit">수정 완료</button>
-    </form>
+        <h1>회원 정보 수정</h1>
+        <form action="/edit_account" method="POST">
+            <label for="nickname">닉네임:</label>
+            <input type="text" id="nickname" name="nickname" placeholder="변경할 닉네임 입력">
+        
+            <label for="email">이메일:</label>
+            <input type="email" id="email" name="email" placeholder="변경할 이메일 입력">
+        
+            <label for="name">이름:</label>
+            <input type="text" id="name" name="name" placeholder="변경할 이름 입력">
+        
+            <label>직급:</label>
+            <label><input type="radio" name="position" value="user"> 일반회원</label>
+            <label><input type="radio" name="position" value="admin"> 관리자</label>
+        
+            <label for="phone">핸드폰 번호:</label>
+            <input type="tel" id="phone" name="phone" placeholder="변경할 핸드폰 번호 입력">
+        
+            <button type="submit">수정 완료</button>
+        </form>    
 </main>
-</body>
-</html>
 {% endblock section %}

@@ -1,6 +1,7 @@
 import pyrebase
 import json
 import re
+from datetime import datetime
 
 class DBhandler:
     def __init__(self):
@@ -256,6 +257,15 @@ class DBhandler:
                     res.val()['num_item'] = 1
                 item.append((res.val()['item_name'], res.val()['user_id'], res.val()['num_item']))
         return item
+    
+    # 리뷰 반환
+    def find_review(self, user_id):
+        review = []
+        reviews = self.db.child("review").get()
+        for res in reviews.each():
+            if res.val()['id'] == user_id:
+                review.append((res.key(), self.db.child("review").child(res.key()).get().val()))
+        return review
 
     def get_heart_byname(self, uid, name):
         hearts = self.db.child("heart").child(uid).get()
@@ -284,13 +294,15 @@ class DBhandler:
     
     def reg_review(self, data, img_path):
         #sanitized_title = self.sanitize_path(data['review_title'])
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         review_info ={
         "title": data['review_title'],
         "id": data['id'],
         "name": data['name'],
         "rate": data['reviewStar'],
         "review": data['reviewContents'],
-        "img_path": img_path
+        "img_path": img_path,
+        "timestamp": current_time
         }
         self.db.child("review").push(review_info)
         #self.db.child("review").child(sanitized_title).set(review_info)

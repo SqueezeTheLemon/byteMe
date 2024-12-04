@@ -427,9 +427,11 @@ def liked_page():
 # 나의 리뷰 페이지
 @application.route("/my-review")
 def my_review():
-    num = DB.get_num(session['id'])
-    nickname = DB.get_nickname(session['id'])
-    return render_template("my-review.html", num=num, nickname=nickname)
+    user_id=session["id"]
+    review = DB.find_review(user_id)
+    num = DB.get_num(user_id)
+    nickname = DB.get_nickname(user_id)
+    return render_template("my-review.html", num=num, nickname=nickname, review=review)
 
 # 공감 리뷰 페이지
 @application.route("/liked-review")
