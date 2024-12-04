@@ -112,6 +112,24 @@ class DBhandler:
         print("Retrieved item data:", target_value)
         return target_value
     
+    def get_items_bycategory(self, cate):
+        items = self.db.child("item").get()
+        target_value=[]
+        target_key=[]
+        for res in items.each():
+            value = res.val()
+            key_value = res.key()
+            if value['category'] == cate:
+            #넘겨준카테고리에해당하는값들리스트에저장
+                target_value.append(value)
+                target_key.append(key_value)
+        print("######target_value",target_value)
+        new_dict={}
+
+        for k,v in zip(target_key,target_value):
+            new_dict[k]=v
+        return new_dict
+
     # 상품 정보 수정
     def update_item(self, updated_data, img_path):
         payment = updated_data['payment']

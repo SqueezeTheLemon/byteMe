@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 import sys
+import math
 
 from werkzeug.utils import secure_filename
 import os
@@ -157,39 +158,59 @@ def view_customer_center():
 
 @application.route("/menu")
 def view_list():
-    page=request.args.get("page", 0, type=int)
-    per_page=4
-    per_row=2
-    row_count=int(per_page/per_row)
-    start_idx=per_page*page
-    end_idx=per_page*(page+1)
-    data=DB.get_items() #read the table
-    item_counts = len(data)
-    data = dict(list(data.items())[start_idx:end_idx])
-    tot_count=len(data)
+    page = request.args.get("page", 0, type=int)  # 페이지 번호 가져오기
+    category = request.args.get("category", "All")
+    per_page = 4  # 한 페이지에 보여줄 아이템 수
+    per_row = 4  # 한 행에 보여줄 아이템 수(1*4)
+    row_count = int(per_page / per_row)  # 전체 행 수
+    start_idx = per_page * page  # 시작 인덱스
+    end_idx = per_page * (page + 1)  # 끝 인덱스
 
+    # 카테고리별 아이템 가져오기
+    #data = DB.get_items_bycategory(category)  # 카테고리에 맞는 데이터 가져오기
+    if category=="All":
+        data = DB.get_items() #read the table
+    else:
+        data = DB.get_items_bycategory(category)
+    data = dict(sorted(data.items(), key=lambda x: x[0], reverse=False))
+    item_counts = len(data)
+    if item_counts<=per_page:
+        data = dict(list(data.items())[:item_counts])
+    else:
+        data = dict(list(data.items())[start_idx:end_idx])
+    tot_count = len(data)  # 페이지네이션 후 데이터의 총 개수
     for i in range(row_count):#last row
         if (i == row_count-1) and (tot_count%per_row != 0):
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
-        else:
+        else: 
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
-    return render_template("menu.html", data=data.items(), row1=locals()['data_0'].items(),
- row2=locals()['data_1'].items(), limit=per_page,
-page=page,
-page_count=int((item_counts/per_page)+1),
-total=item_counts)
+    # 템플릿 렌더링
+    return render_template(
+        "menu.html", 
+        data=data.items(), 
+        row1=locals()['data_0'].items(),
+        limit=per_page,
+        page=page,
+        page_count=int(math.ceil(item_counts/per_page)),  # 총 페이지 수 계산
+        total=item_counts,
+        category=category #카테고리 html코드로 넘겨줌
+        )
+    
 
-@application.route("/drink")
-def view_drink():
-    return render_template("drink.html")
 
-@application.route("/dessert")
-def view_dessert():
-    return render_template("dessert.html")
+# @application.route("/drink")
+# def view_drink():
+#     # 특정 카테고리 데이터를 가져옴
+#     items = DB.get_items_bycategory("음료")
+#     return render_template("drink.html")
 
-@application.route("/gimbap")
-def view_gimbap():
-    return render_template("gimbap.html")
+# @application.route("/dessert")
+# def view_dessert():
+#     return render_template("dessert.html")
+
+# @application.route("/gimbap")
+# def view_gimbap():
+#     return render_template("gimbap.html")
 
 @application.route("/store")
 def store():
