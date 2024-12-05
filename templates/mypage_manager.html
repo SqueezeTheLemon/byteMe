@@ -214,7 +214,149 @@
         color: rgb(0, 70, 42);
     }
 
+    /* edit-css 클래스 안의 form */
+.edit-css form {
+    width: 100%; 
+    max-width: 900px;
+    height: auto; 
+    min-height: 50vh; 
+    margin: 10px auto; 
+    padding: 10px; 
+    background-color: #ffffff; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+/* 라벨 스타일 */
+.edit-css label {
+    display: block;
+    font-weight: bold; 
+    margin-bottom: 5px; 
+    color: rgb(0, 70, 42); 
+}
+
+/* 입력 필드 스타일 */
+.edit-css input[type="text"],
+.edit-css input[type="email"],
+.edit-css input[type="tel"] {
+    width: 100%;
+    padding: 10px; 
+    margin-bottom: 15px; 
+    border: 2px solid rgb(134, 182, 162); 
+    border-radius: 5px; 
+    font-size: 0.9rem; 
+    box-sizing: border-box; 
+}
+
+/* 라디오 버튼 */
+.edit-css input[type="radio"] {
+    margin-right: 5px; 
+}
+/* 버튼 스타일 */
+.edit-css button {
+    width: 100%; 
+    padding: 10px; 
+    background-color: rgb(0, 70, 42);
+    color: #ffffff; 
+    border: none; 
+    border-radius: 5px; 
+    font-size: 1rem; 
+    cursor: pointer; 
+}
+
+/* 버튼 호버 효과 */
+.edit-css button:hover {
+    background-color: rgb(134, 182, 162); 
+    color: rgb(0, 70, 42); 
+}
+
+/* Main container styling */
+.product-edit-css {
+    background-color: #ffffff; /* 흰색 배경 */
+    max-width: 900px; /* 가로폭 설정 */
+    margin: 1px auto; /* 중앙 정렬 */
+    padding: 10px; /* 내부 여백 */
+    color: rgb(0, 70, 42); /* 어두운 녹색 텍스트 */
+    font-family: Arial, sans-serif; /* 글꼴 */
+}
+
+
+.product-edit-css img {
+   width: 200px;
+   height: 200px;
+}
+
+.product-edit-css label {
+    font-weight: bold;
+    color: rgb(0, 70, 42); 
+    white-space: nowrap;
+    }
+
+.product-edit-css input[type="text"],
+.product-edit-css input[type="number"],
+.product-edit-css textarea {
+    width: 100%; 
+    padding: 10px;
+    margin: 10px 0; 
+    border: 2px solid rgb(134, 182, 162); 
+    border-radius: 5px;
+    box-sizing: border-box; 
     
+}
+
+
+.product-edit-css  input[type="radio"],
+.product-edit-css  input[type="checkbox"] {
+    margin-right: 5px; 
+}
+
+
+.product-edit-css  textarea {
+    height: 100px; 
+    resize: vertical; 
+}
+
+
+.product-edit-css  input[type="submit"] {
+    background-color: rgb(0, 70, 42); 
+    color: #ffffff; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1rem;
+    display: block;
+    margin: 20px auto; 
+}
+
+.product-edit-css  input[type="submit"]:hover {
+    background-color: rgb(134, 182, 162); 
+    color: rgb(0, 70, 42); 
+}
+
+/* Column styling */
+.product-edit-css  .column {
+    margin-bottom: 10px; 
+}
+
+.product-edit-css .column.left {
+    float: left;
+    width: 30%; 
+    text-align: center; 
+}
+
+.product-edit-css .column.right {
+    float: right;
+    width: 70%; 
+}
+
+
+
+
+
+
+
 
     @media (max-width: 1024px) {
         .order-history-container {
