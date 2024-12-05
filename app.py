@@ -158,21 +158,28 @@ def view_customer_center():
 
 @application.route("/menu")
 def view_list():
+    user_id = session.get("id", None) #로그인 여부 확인
+    
     page = request.args.get("page", 0, type=int)  # 페이지 번호 가져오기
     category = request.args.get("category", "All") #카테고리 가져오기
     sort_by = request.args.get("sort_by", None) #정렬기준 가져오기
+    
     per_page = 4  # 한 페이지에 보여줄 아이템 수
     per_row = 4  # 한 행에 보여줄 아이템 수(1*4)
     row_count = int(per_page / per_row)  # 전체 행 수
     start_idx = per_page * page  # 시작 인덱스
     end_idx = per_page * (page + 1)  # 끝 인덱스
 
+    # 로그인 여부를 전달하며, sort_by가 'liked'일 때만 user_id를 사용
+    if sort_by == "liked" and user_id is None:
+        flash("로그인이 필요합니다!")
+        return render_template("menu.html")  # 로그인 페이지로 리디렉션
+    
     # 카테고리에 맞는 데이터 가져오기
-    data = DB.get_items_bycategory(category, sort_by=sort_by)
+    data = DB.get_items_bycategory(category, sort_by=sort_by, user_id=user_id)
 
     data = dict(sorted(data.items(), key=lambda x: x[0], reverse=False))
     item_counts = len(data)
-    
     if item_counts<=per_page:
         data = dict(list(data.items())[:item_counts])
     else:
@@ -183,7 +190,7 @@ def view_list():
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
         else: 
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
-    # 템플릿 렌더링
+        # 템플릿 렌더링
     return render_template(
         "menu.html", 
         data=data.items(), 
@@ -237,31 +244,39 @@ def reg_review_post():
 @application.route("/review_list")
 def view_review():
     page = request.args.get("page", 0, type=int)
+    sort_by = request.args.get("sort_by", None) #정렬기준 가져오기
+
     per_page=6 # item count to display per page
     per_row=3# item count to display per row
     row_count=int(per_page/per_row)
     start_idx=per_page*page
     end_idx=per_page*(page+1)
-    data = DB.get_reviews() #read the table
-    if data is None: 
-        data = {}
+    
+    data = DB.get_reviews_sorted(sort_by=sort_by)
+    data = dict(sorted(data.items(), key=lambda x: x[0], reverse=False))
     item_counts = len(data)
-    data = dict(list(data.items())[start_idx:end_idx])
-    tot_count = len(data)
+    if item_counts<=per_page:
+        data = dict(list(data.items())[:item_counts])
+    else:
+        data = dict(list(data.items())[start_idx:end_idx])
+    tot_count = len(data)  # 페이지네이션 후 데이터의 총 개수
     for i in range(row_count):#last row
         if (i == row_count-1) and (tot_count%per_row != 0):
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
         else: 
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
+
     return render_template(
-        "review.html",
-        datas=data.items(),
+        "review_list.html",
+        data=data.items(),
         row1=locals()['data_0'].items(),
         row2=locals()['data_1'].items(),
         limit=per_page,
-        page=page,
-        page_count=int((item_counts/per_page)+1),
-        total=item_counts)
+        page=page, 
+        page_count=int(math.ceil(item_counts/per_page)),  # 총 페이지 수 계산
+        total=item_counts,
+        sort_by=sort_by)
+
 
 
 @application.route("/view_review_detail/<title>/")

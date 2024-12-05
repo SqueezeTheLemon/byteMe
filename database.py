@@ -1,3 +1,4 @@
+from flask import flash, render_template
 import pyrebase
 import json
 import re
@@ -113,7 +114,7 @@ class DBhandler:
         return target_value
     
     #카테고리별로 상품 가져오기
-    def get_items_bycategory(self, cate, sort_by=None):
+    def get_items_bycategory(self, cate, sort_by=None, user_id=None):
             # 카테고리가 "All"인 경우, 모든 아이템을 가져옵니다.
         if cate == "All":
             items = self.db.child("item").get().val()
@@ -140,6 +141,22 @@ class DBhandler:
             target_value.sort(key=lambda x: int(x['price']))
         elif sort_by == "high_to_low":  # 높은 가격순
             target_value.sort(key=lambda x: int(x['price']), reverse=True)
+        
+        if sort_by == "liked": #좋아요한 메뉴
+            target_value=[item for item in target_value if item.get('interested') == "Y" and item.get('user_id') == user_id]
+        
+         # 좋아요한 메뉴 필터링
+        if sort_by == "liked" and user_id:
+        # "liked" 정렬 시, "heart" 테이블에서 "user_id"가 "Y"인 항목만 필터링
+            target_value = [
+                item for item, key in zip(target_value, target_key) 
+                if self.db.child("heart").child(user_id).child(key).val() == "Y"
+            ]
+            target_key = [
+                key for key, item in zip(target_key, target_value) 
+                if self.db.child("heart").child(user_id).child(key).val() == "Y"
+            ]
+    
         new_dict={}
         for k,v in zip(target_key,target_value):
             new_dict[k]=v
@@ -336,6 +353,7 @@ class DBhandler:
         "review": data['reviewContents'],
         "img_path": img_path,
         "timestamp": current_time
+        #"like-count": data 
         }
         self.db.child("review").push(review_info)
         #self.db.child("review").child(sanitized_title).set(review_info)
@@ -356,6 +374,31 @@ class DBhandler:
                 target_value=res.val()
         return target_value
     
+
+    #리뷰 가져오기
+    def get_reviews_sorted(self, sort_by=None):
+        reviews = self.db.child("review").get().val()
+        target_value=[]
+        target_key=[]
+        
+        for res in reviews.each():
+            value = res.val()
+            key_value = res.key()
+            target_value.append(value)
+            target_key.append(key_value)# 정렬 조건에 따른 정렬
+            
+        if sort_by == "newest":  # 최신순
+            target_value.sort(key=lambda x: datetime.strptime(x[1]['timestamp'], "%Y-%m-%d %H:%M:%S"), reverse=True)
+        elif sort_by == "oldest":  # 오래된순
+            target_value.sort(key=lambda x: datetime.strptime(x[1]['timestamp'], "%Y-%m-%d %H:%M:%S"))
+        elif sort_by == "rate":  # 별점순 (높은 별점순)
+            target_value.sort(key=lambda x: int(x[1]['rate']), reverse=True)
+    
+        new_dict={}
+        for k,v in zip(target_key,target_value):
+            new_dict[k]=v
+        return new_dict
+
     
     def get_average_rating(self, name):
             try:

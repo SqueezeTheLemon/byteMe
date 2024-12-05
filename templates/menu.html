@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-
 {% block section %}
 
 <style>
@@ -41,10 +40,10 @@
         font-size: 20px; 
         font-weight: bold;
     } */
-    .pagination {
+    /* .pagination {
         display: flex;
         justify-content: center; /* Center-aligns the pagination bar */
-        align-items: center;
+        /* align-items: center;
         margin-top: 20px;
         width: 100%;
     }
@@ -73,7 +72,7 @@
     }
     .pagination button.active {
         color: green; 
-    }
+    } */ 
 </style>
 
 <nav>
@@ -102,7 +101,15 @@
                 class="{% if sort_by == 'high_to_low' %}selected{% endif %}">높은 가격순</a></li>
             <li>|</li>
             <li>리뷰 많은순</li>
-        </ul>
+            <li>|</li>
+            <li>
+                {% if session.get('id') %}
+                    <a href="{{url_for('view_list', page=i, category=category, sort_by='liked')}}"
+                        class="{% if sort_by == 'liked' %}selected{% endif %}">좋아요한 메뉴</a></li>
+                {% else %}
+                    <a href="#" onclick="alert('로그인이 필요합니다!');">좋아요한 메뉴</a>
+                {% endif %}
+                    </ul>
     </div>
     <div class="sorting-right">
         <button onclick="location.href='/reg_items'">

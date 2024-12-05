@@ -72,7 +72,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h2 class="review-title">{{data['title']}}</h2>
                     <div class="review-rating" id="rating">
-                        ★x {{data['rate']}} | 👍 <span id="like-count">0</span>
+                        ★x {{data['rate']}} | 👍 <span id="like-count">{{data['like_count']}}</span>
                     </div>
                 </div>
                 <div class="review-box">
@@ -96,5 +96,6 @@
                 document.getElementById('like-count').textContent = likeCount;
             });
         </script>
+        
     </body>
 {% endblock section %}
