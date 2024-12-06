@@ -156,6 +156,20 @@ def view_mypage():
 def view_customer_center():
     return render_template("customer_center.html")
 
+# @application.route("/drink")
+# def view_drink():
+#     # 특정 카테고리 데이터를 가져옴
+#     items = DB.get_items_bycategory("음료")
+#     return render_template("drink.html")
+
+# @application.route("/dessert")
+# def view_dessert():
+#     return render_template("dessert.html")
+
+# @application.route("/gimbap")
+# def view_gimbap():
+#     return render_template("gimbap.html")
+
 @application.route("/menu")
 def view_list():
     user_id = session.get("id", None) #로그인 여부 확인
@@ -204,21 +218,6 @@ def view_list():
         )
     
 
-
-# @application.route("/drink")
-# def view_drink():
-#     # 특정 카테고리 데이터를 가져옴
-#     items = DB.get_items_bycategory("음료")
-#     return render_template("drink.html")
-
-# @application.route("/dessert")
-# def view_dessert():
-#     return render_template("dessert.html")
-
-# @application.route("/gimbap")
-# def view_gimbap():
-#     return render_template("gimbap.html")
-
 @application.route("/store")
 def store():
     return render_template("store.html")
@@ -246,8 +245,8 @@ def view_review():
     page = request.args.get("page", 0, type=int)
     sort_by = request.args.get("sort_by", None) #정렬기준 가져오기
 
-    per_page=6 # item count to display per page
-    per_row=3# item count to display per row
+    per_page=4 # item count to display per page
+    per_row=4 # item count to display per row
     row_count=int(per_page/per_row)
     start_idx=per_page*page
     end_idx=per_page*(page+1)
