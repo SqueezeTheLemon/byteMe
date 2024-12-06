@@ -1,11 +1,10 @@
 
 {
-  "apiKey": "AIzaSyDBKR73S46B56h_tk5SshT8TOBPx6ovk0g",
-  "authDomain": "bytemereal.firebaseapp.com",
-  "databaseURL": "https://bytemereal-default-rtdb.firebaseio.com",
-  "projectId": "bytemereal",
-  "storageBucket": "bytemereal.firebasestorage.app",
-  "messagingSenderId": "1007383499467",
-  "appId": "1:1007383499467:web:84314cf16cc759edf6814e",
-  "measurementId": "G-ZQ36W7FDJ4"
+  "apiKey": "AIzaSyB0nAEYWVvALRySy66ptY7Tbza-GXj-PbE",
+  "authDomain": "byteme-oswf.firebaseapp.com",
+  "databaseURL": "https://byteme-oswf-default-rtdb.firebaseio.com",
+  "projectId": "byteme-oswf",
+  "storageBucket": "byteme-oswf.firebasestorage.app",
+  "messagingSenderId": "974413364103",
+  "appId": "1:974413364103:web:fcd07f818b6d559febf122"
 }
