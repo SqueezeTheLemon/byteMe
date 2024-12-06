@@ -398,3 +398,28 @@ class DBhandler:
             except Exception as e:
                 print(f"Error while calculating average rating: {e}")
                 return None
+    
+    def get_thumb_byname(self, uid, name):
+        thumbs = self.db.child("thumb").child(uid).get()
+        target_value = {"interested": "N", "count": 0}
+        
+        if thumbs.val() is None:
+            return target_value
+    
+        for res in thumbs.each():
+            key_value = res.key()
+            if key_value == name:
+                target_value = {
+                    "interested": res.val().get("interested", "N"),
+                    "count": res.val().get("count", 0)
+                }
+        return target_value
+    
+    def update_thumb(self, user_id, isThumb, item):
+        thumb_info = {
+            "interested": isThumb,
+            "count": self.db.child("thumb").child(user_id).child(item).child("count").get().val() + (1 if isThumb == "Y" else -1)
+        }
+        self.db.child("thumb").child(user_id).child(item).set(thumb_info)
+        return True
+    

@@ -1,5 +1,58 @@
 {% extends "index.html" %}
 {% block section %}
+
+<script>
+    function showThumb() {
+    $.ajax({
+        type: 'GET',
+        url: '/show_thumb/{{name}}/',
+        data: {},
+        success: function (response) {
+            let my_thumb = response['my_thumb'];
+            $("#thumb-count").text(my_thumb['count']);
+            if (my_thumb['interested'] == 'Y') {
+                $("#thumb").css("color", "green");
+                $("#thumb").off("click").on("click", unlikeThumb); // 수정된 부분
+            } else {
+                $("#thumb").css("color", "gray");
+                $("#thumb").off("click").on("click", likeThumb); // 수정된 부분
+            }
+        }
+    });
+}
+
+    function likeThumb() {
+    $.ajax({
+        type: 'POST',
+        url: '/like_thumb/{{name}}/',
+        data: {
+            interested: "Y"
+        },
+        success: function (response) {
+            alert(response['msg']);
+            showThumb();
+        }
+    });
+}           
+
+function unlikeThumb() {
+    $.ajax({
+        type: 'POST',
+        url: '/unlike_thumb/{{name}}/',
+        data: {
+            interested: "N"
+        },
+        success: function (response) {
+            alert(response['msg']);
+            showThumb();
+        }
+    });
+}
+$(document).ready(function () {
+showThumb();
+});
+
+</script>
     <style>
         .review-card {
             padding: 20px;
@@ -62,6 +115,20 @@
             margin: 10px 10px;
         }
 
+        #thumb {
+        font-size: 30px;
+        cursor: pointer;
+        }
+
+        #thumb.green {
+            color: green;
+        }
+
+        #thumb.gray {
+            color: gray;
+        }
+
+
     </style>
     <section class="sec_review_card">
         <div class="review-card">
@@ -72,7 +139,9 @@
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h2 class="review-title">{{data['title']}}</h2>
                     <div class="review-rating" id="rating">
-                        ★x {{data['rate']}} | 👍 <span id="like-count">0</span>
+                        ★x {{data['rate']}} | <i class="fa fa-thumbs-up" id="thumb" style="color: gray;"></i>
+                        <span id="thumb-count">0</span>
+                        
                     </div>
                 </div>
                 <div class="review-box">
@@ -87,14 +156,6 @@
             </div>
         </div>
 
-        <script>
-            // 좋아요 수를 증가시키는 함수
-            let likeCount = 0;
 
-            document.getElementById('rating').addEventListener('click', function() {
-                likeCount++;
-                document.getElementById('like-count').textContent = likeCount;
-            });
-        </script>
     </body>
-{% endblock section %}
+    {% endblock section %}

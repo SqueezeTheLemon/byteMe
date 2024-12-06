@@ -612,6 +612,31 @@ def check_login():
         return jsonify({'is_logged_in': True})
     else:
         return jsonify({'is_logged_in': False})
+    
+@application.route('/show_thumb/<name>/', methods=['GET'])
+def show_thumb(name):
+    my_thumb = DB.get_thumb_byname(session['id'], name)
+    print("mythumb", my_thumb)
+    return jsonify({'my_thumb': my_thumb})
+
+
+
+@application.route('/like_thumb/<name>/', methods=['POST'])
+def like_thumb(name):
+    success = DB.update_thumb(session.get('id'), 'Y', name)
+    if success:
+        return jsonify({'msg': '따봉 완료!', 'status': 'liked'})
+    else:
+        return jsonify({'msg': '따봉 처리 실패!', 'status': 'error'})
+
+@application.route('/unlike_thumb/<name>/', methods=['POST'])
+def unlike_thumb(name):
+    success = DB.update_thumb(session.get('id'), 'N', name)
+    if success:
+        return jsonify({'msg': '따봉 취소 완료!', 'status': 'unliked'})
+    else:
+        return jsonify({'msg': '따봉 취소 실패!', 'status': 'error'})
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
+
