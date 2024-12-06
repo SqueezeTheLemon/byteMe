@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 
 {% block section %}
+{% include "nav_bar.html" %}
 
 <script>
     function showHeart() {
@@ -79,31 +80,161 @@
     });
 </script>
 
-<p>
-    <h2>{{ name }}</h2>
-    <i class="fa fa-heart" id="heart" ></i>
-    <p><b>카테고리 | </b> {{ data['category'] }}</p>
-    <p><b>판매 주소 | </b> {{ data['addr'] }}</p>
-    <p><b>판매자 번호 | </b> {{ data['phone'] }}</p>
-    <p><b>가격 | </b> {{ data['price'] }} 원</p>
-    <p><b>결제수단 | </b> {{ data['payment'] }}</p>
-    <p>
-        <b>평균 별점:</b>
-        {% if average_rating %}
-            {{ average_rating }}
-        {% else %}
-            "평점이 없습니다."
-        {% endif %}
-    </p>
+<style>
+    .product-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        border: 1px solid #2c6a2c;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
 
-<img src="../../static/images/{{ data.img_path }}" width="140" height="140">
+    .product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #ddd;
+    }
 
-<!-- 구매 버튼 -->
-<form id="purchase-form" method="POST">
-    <input type="hidden" name="item_name" value="{{ name }}">
-    <button type="button" id="purchase-button">구매</button>
-</form>
+    .product-header h1 {
+        font-size: 1.5rem;
+        color: #2c6a2c;
+        margin: 0;
+    }
 
-<button onclick="location.href='/reg_review_init/{{name}}/';">리뷰등록</button>
+    .product-header .rating {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2c6a2c;
+        display: flex;
+        align-items: center;
+    }
 
-{% endblock section %}
+    .product-header .rating .star {
+        margin-right: 5px;
+    }
+
+    .product-body {
+        display: flex;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .product-image {
+        flex: 1;
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f7f7f7;
+    }
+
+    .product-image img {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+    }
+
+    .product-details {
+        flex: 2;
+        font-size: 0.9rem;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .product-details p {
+        margin: 5px 0;
+    }
+
+    .product-details b {
+        color: #2c6a2c;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between; /* 기존 flex-end를 space-between으로 변경 */
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f8f8f8;
+        border-top: 1px solid #ddd;
+    }
+
+    .product-footer .stock {
+        font-size: 1rem;
+        color: #2c6a2c;
+        font-weight: bold;
+    }
+
+    .product-footer .actions {
+        display: flex;
+        gap: 10px; /* 버튼 간격 */
+    }
+
+    .product-footer .actions button {
+        background-color: #2c6a2c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 15px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .product-footer .actions button:hover {
+        background-color: #1e4b1e;
+    }
+
+</style>
+
+<section>
+    <hr>
+</section>
+<div class="product-container">
+    <!-- Header -->
+    <div class="product-header">
+        <h1>{{ name }}</h1>
+        <div class="rating">
+            <span class="star">★</span>
+            {{ average_rating if average_rating else "0.0" }}
+        </div>
+    </div>
+
+    <!-- Body -->
+    <div class="product-body">
+        <!-- Image -->
+        <div class="product-image">
+            <img src="../../static/images/{{ data.img_path }}" alt="{{ name }}">
+            <p>상품 사진</p>
+        </div>
+
+        <!-- Details -->
+        <div class="product-details">
+            <p><b>상품 설명 |</b> {{ data['info'] }}</p>
+            <p><b>가격 |</b> {{ data['price'] }} 원</p>
+            <p><b>추가 옵션 |</b> {{ data['opt'] }}</p>
+            <p><b>결제 수단 |</b> {{ data['payment'] }}</p>
+            <p><b>판매 주소 |</b> {{ data['addr'] }}</p>
+            <p><b>문의 번호 |</b> {{ data['phone'] }}</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="product-footer">
+        <!-- Stock Display -->
+        <span class="stock">재고: {{ data['stock'] }} 개</span>
+    
+        <!-- Actions -->
+        <div class="actions">
+            <form id="purchase-form" method="POST">
+                <input type="hidden" name="item_name" value="{{ name }}">
+                <button type="button" id="purchase-button">구매</button>
+            </form>
+            <button onclick="location.href='/reg_review_init/{{name}}/';">리뷰등록</button>
+        </div>
+    </div>    
+</div>
+{% endblock %}

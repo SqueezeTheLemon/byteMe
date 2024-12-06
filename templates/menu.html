@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block section %}
-
+{% include "nav_bar.html" %}
 <style>
     .sort a { 
     font-weight: normal; /* 기본 폰트 두께 */
@@ -76,20 +76,10 @@
     }
 </style>
 
-<nav>
-    <ul class="submenu__under">
-        <li><a href="/menu">메뉴</a></li>
-        <li>|</li>
-        <li><a href="{{url_for('view_list', page=i, category='All')}}">전체</a></li>
-        {% if category != "All" %}
-            <li>|</li>
-            <li><strong>{{ category }}</strong></li> <!-- 현재 선택된 카테고리 -->
-        {% endif %}
-    </ul>
-</nav>
 <section>
-<hr>
+    <hr>
 </section>
+
 <div class="sorting">
     <div class="sorting-left">
         <ul class="sort">
@@ -128,7 +118,6 @@
                         <p>{{ value['name'] }}</p>
                     </a>
                 </div>
-                <button class="btn_jjim"></button>
                 <!--<div class="prd_star">
                     <a href="#">
                         <button class="btn_star"></button>
@@ -154,7 +143,6 @@
                         <p>{{ value['name'] }}</p>
                     </a>
                 </div>
-                <button class="btn_jjim"></button>
                 <!--<div class="prd_star">
                     <a href="#">
                         <button class="btn_star"></button>

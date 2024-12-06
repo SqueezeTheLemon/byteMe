@@ -3,10 +3,12 @@
     <form action="/submit_item_post" method="post" enctype="multipart/form-data">
         <br><br>
         <div class="column left">
-            <img src="static/images/image.png" alt="Image Upload" style="margin: 20px;height: 300px;">
+            <!-- id="preview" 추가 -->
+            <img id="preview" src="static/images/image.png" alt="Image Upload" style="margin: 20px; height: 300px;">
             <br>
-            <label for="img"><span style="color:red;">*</span> 상품 이미지 업로드 : </label>
-            <input type="file" name="file" /><br><br>
+            <label for="file"><span style="color:red;">*</span> 상품 이미지 업로드 : </label>
+            <!-- id="file" 및 onchange 이벤트 추가 -->
+            <input type="file" name="file" id="file" accept="image/*" onchange="readURL(this)" /><br><br>
         </div>
         <div class="column right">
             <label for="name"><span style="color:red;">*</span> 상품명 : </label>
@@ -45,4 +47,21 @@
             <input type="submit" value="등록" id="submit"><br><br>
         </div>
     </form>
+
+    <!-- JavaScript 코드 추가 -->
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    // 미리보기 이미지를 업데이트
+                    document.getElementById('preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                // 파일이 없으면 기본 이미지로 되돌림
+                document.getElementById('preview').src = "static/images/image.png";
+            }
+        }
+    </script>
 {% endblock section %}

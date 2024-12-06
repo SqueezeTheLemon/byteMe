@@ -1,3 +1,4 @@
+
 import pyrebase
 import json
 import re
@@ -229,14 +230,27 @@ class DBhandler:
     
     # 처리 중인 주문 튜플 (사용자 아이디, 상품명, 구매 수량) 형태로 반환
     def get_no_complete(self):
-        items=[]
-        purchases=self.db.child("purchases").get()
-        for res in purchases.each():
-            if res.val()['status'] == "N":
-                if 'num_item' not in res.val():
-                    res.val()['num_item'] = 1
-                items.append((res.val()['user_id'], res.val()['item_name'], res.val()['num_item']))
+        items = []
+        results = self.db.child("purchases").get()
+
+        if results.each():  # 데이터가 있을 경우
+            for res in results.each():
+                data = res.val()
+                print(f"Retrieved record: {data}")  # 디버깅용 출력
+
+                # 데이터 유효성 검사
+                if 'item_name' in data and 'user_id' in data:
+                    # num_item 필드가 없는 경우 기본값 추가
+                    num_item = data.get('num_item', 1)  # 기본값을 1로 설정
+                    items.append((data['user_id'], data['item_name'], num_item))
+                else:
+                    print(f"Missing fields in record: {data}")
+        else:
+            print("No purchases found in database.")
         return items
+        
+
+
     
     # 완료 여부 업데이트
     def update_status(self, user_id, item_name):

@@ -95,7 +95,9 @@
         .file-input {
             display: none;
         }
-        
+        .upload-button {
+            display: block; /* 버튼 표시 */
+        }
         @media (max-width: 800px) {
             .container {
                 flex-direction: column;
@@ -114,9 +116,11 @@
         <section class="sec_review_form">
             <div class="container">
                 <div class="upload-section">
-                    <img src="static/images/image.png" alt="사진 업로드">
-                    <label for="img"><span style="color:red;">*</span> 사진 업로드 : </label>
-                    <input type="file" name="file" id="file"/>
+                    <img id="preview" src="static/images/image.png" alt="사진 업로드">
+                    <label for="file" class="upload-button">
+                        <span style="color:red;">*</span> 사진 업로드
+                    </label>
+                    <input type="file" name="file" id="file" class="file-input" accept="image/*" onchange="readURL(this)" />
                 </div>
                 <div class="form-section">
                     <div class="inline-inputs">
@@ -161,34 +165,45 @@
     </form>
 
     <script>
-        function setRating(rating) {
-            const labels = document.querySelectorAll('.star-rating label');
-            labels.forEach((label, index) => {
-                if (index < rating) {
-                    label.style.color = 'green'; // 초록색
-                } else {
-                    label.style.color = 'gray'; // 회색
-                }
-            });
+        function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result; // 업로드된 이미지 미리보기 설정
+            };
+            reader.readAsDataURL(input.files[0]); // 파일 읽기
+        } else {
+            document.getElementById('preview').src = "static/images/image.png"; // 기본 이미지로 복구
         }
-        
-        function submitForm() {
-            // 입력 필드 초기화
-            document.getElementById('name').value = ''; // 상품명 초기화
-            document.getElementById('id').value = ''; // 리뷰자 아이디 초기화
-            const starInputs = document.querySelectorAll('input[name="reviewStar"]');
-            starInputs.forEach(input => input.checked = false); // 별점 초기화
-            
-            // 별점 색상 초기화
-            setRating(0); // 별점 색상 초기화
-            
-            document.getElementById('title').value = ''; // 제목 초기화
-            document.querySelector('textarea[name="review_content"]').value = ''; // 내용 초기화
-            
-            // 이미지 미리보기를 지우고 파일 입력 초기화
-            const imgElement = document.querySelector('.upload-section img');
-            imgElement.src = 'static/images/image.png'; // 기본 이미지로 설정 (기본 이미지 경로로 변경)
-            document.querySelector('input[type="file"]').value = ''; // 파일 입력 초기화
-        }
+    }
+
+    function setRating(rating) {
+        const labels = document.querySelectorAll('.star-rating label');
+        labels.forEach((label, index) => {
+            if (index < rating) {
+                label.style.color = 'green'; // 초록색
+            } else {
+                label.style.color = 'gray'; // 회색
+            }
+        });
+    }
+
+    function submitForm() {
+        // 입력 필드 초기화
+        document.getElementById('name').value = ''; // 상품명 초기화
+        document.getElementById('id').value = ''; // 리뷰자 아이디 초기화
+        const starInputs = document.querySelectorAll('input[name="reviewStar"]');
+        starInputs.forEach(input => input.checked = false); // 별점 초기화
+
+        // 별점 색상 초기화
+        setRating(0); // 별점 색상 초기화
+
+        document.getElementById('review-title').value = ''; // 제목 초기화
+        document.querySelector('textarea[name="reviewContents"]').value = ''; // 내용 초기화
+
+        // 이미지 미리보기를 지우고 파일 입력 초기화
+        document.getElementById('preview').src = "static/images/image.png"; // 기본 이미지로 설정
+        document.getElementById('file').value = ""; // 파일 입력 초기화
+    }
     </script>
 {% endblock section %}
