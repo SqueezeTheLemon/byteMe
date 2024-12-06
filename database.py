@@ -232,27 +232,14 @@ class DBhandler:
     
     # 처리 중인 주문 튜플 (사용자 아이디, 상품명, 구매 수량) 형태로 반환
     def get_no_complete(self):
-        items = []
-        results = self.db.child("purchases").get()
-
-        if results.each():  # 데이터가 있을 경우
-            for res in results.each():
-                data = res.val()
-                #print(f"Retrieved record: {data}")  # 디버깅용 출력
-
-                # 데이터 유효성 검사
-                if 'item_name' in data and 'user_id' in data:
-                    # num_item 필드가 없는 경우 기본값 추가
-                    num_item = data.get('num_item', 1)  # 기본값을 1로 설정
-                    items.append((data['user_id'], data['item_name'], num_item))
-                else:
-                    print(f"Missing fields in record: {data}")
-        else:
-            print("No purchases found in database.")
+        items=[]
+        purchases=self.db.child("purchases").get()
+        for res in purchases.each():
+            if res.val()['status'] == "N":
+                if 'num_item' not in res.val():
+                    res.val()['num_item'] = 1
+                items.append((res.val()['user_id'], res.val()['item_name'], res.val()['num_item']))
         return items
-        
-
-
     
     # 완료 여부 업데이트
     def update_status(self, user_id, item_name):
@@ -351,7 +338,8 @@ class DBhandler:
         "rate": data['reviewStar'],
         "review": data['reviewContents'],
         "img_path": img_path,
-        "timestamp": current_time
+        "timestamp": current_time,
+        "ddabong_count":data['ddabong_count']
         }
         self.db.child("review").push(review_info)
         #self.db.child("review").child(sanitized_title).set(review_info)
@@ -362,16 +350,14 @@ class DBhandler:
         return reviews
 
 
-    def get_review_byname(self, title):
+    def get_review_byname(self, key):
         reviews = self.db.child("review").get()
         target_value=""
-        print("###########",title)
+        print("###########",key)
         for res in reviews.each():
-            key_value = res.key()
-            if key_value == title:
+            if res.key() == key:
                 target_value=res.val()
         return target_value
-    
     
     def get_average_rating(self, name):
             try:
@@ -399,29 +385,34 @@ class DBhandler:
                 print(f"Error while calculating average rating: {e}")
                 return None
     
-    def get_thumb_bytitle(self, uid, title):
-        thumbs = self.db.child("thumb").child(uid).get()
-        target_value = {"interested": "N", "count": 0}
-        
-        if thumbs.val() is None:
+    # 따봉 정보 반환
+    def get_ddabong_bytitle(self, uid, key):
+        ddabongs = self.db.child("ddabong").child(uid).get()
+        target_value={
+            "ddabong_count": self.db.child("review").child(key).child("ddabong_count").get().val()
+        }
+        if ddabongs.val() == None:
             return target_value
-    
-        for res in thumbs.each():
+
+        for res in ddabongs.each():
             key_value = res.key()
-            if key_value == title:
-                target_value = {
-                    "interested": res.val().get("interested", "N"),
-                    "count": res.val().get("count", 0)
+            if key_value == key:
+                target_value={
+                    "interested": res.val()['interested'],
+                    "ddabong_count": self.db.child("review").child(key).child("ddabong_count").get().val()
                 }
         return target_value
     
-    def update_thumb(self, user_id, isThumb, item):
-        current_count = self.db.child("thumb").child(user_id).child(item).child("count").get().val()
-        current_count = current_count if current_count is not None else 0  # None일 경우 0으로 설정
-    
-        thumb_info = {
-            "interested": isThumb,
-            "count": current_count + (1 if isThumb == "Y" else -1)
-        }
-        self.db.child("thumb").child(user_id).child(item).set(thumb_info)
+    # 따봉 수 업데이트
+    def update_ddabong(self, user_id, isThumb, key):    
+        self.db.child("ddabong").child(user_id).child(key).update({"interested": isThumb})
+        reviews=self.db.child("review").get()
+        for res in reviews.each():
+            if res.key()==key:
+                count=int(res.val()['ddabong_count'])
+                if isThumb == 'Y':
+                    count += 1
+                else:
+                    count -= 1
+                self.db.child("review").child(res.key()).update({"ddabong_count": count})
         return True

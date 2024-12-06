@@ -2,56 +2,58 @@
 {% block section %}
 <script>
     function showThumb() {
-    $.ajax({
-        type: 'GET',
-        url: '/show_thumb/{{title}}/',
-        data: {},
-        success: function (response) {
-            let my_thumb = response['my_thumb'];
-            $("#thumb-count").text(my_thumb['count']);
-            if (my_thumb['interested'] == 'Y') {
-                $("#thumb").css("color", "green");
-                $("#thumb").off("click").on("click", unlikeThumb); // 수정된 부분
-            } else {
-                $("#thumb").css("color", "gray");
-                $("#thumb").off("click").on("click", likeThumb); // 수정된 부분
+        $.ajax({
+            type: 'GET',
+            url: '/show_ddabong/{{key}}/',
+            data: {},
+            success: function (response) {
+                let my_thumb = response['my_thumb'];
+                $("#thumb-count").text(my_thumb['ddabong_count']);
+                if (my_thumb['interested'] == 'Y') {
+                    $("#thumb").css("color", "green");
+                    $("#thumb").off("click").on("click", unlikeThumb); // 수정된 부분
+                } else {
+                    $("#thumb").css("color", "gray");
+                    $("#thumb").off("click").on("click", likeThumb); // 수정된 부분
+                }
             }
-        }
-    });
-}
+        });
+    }
 
     function likeThumb() {
-    $.ajax({
-        type: 'POST',
-        url: '/like_thumb/{{title}}/',
-        data: {
-            interested: "Y"
-        },
-        success: function (response) {
-            alert(response['msg']);
-            showThumb();
-        }
-    });
-}           
+        $.ajax({
+            type: 'POST',
+            url: '/like_ddabong/{{key}}/',
+            data: {
+                interested: "Y"
+            },
+            success: function (response) {
+                alert(response['msg']);
+                showThumb();
+            }
+        });
+    }           
 
-function unlikeThumb() {
-    $.ajax({
-        type: 'POST',
-        url: '/unlike_thumb/{{title}}/',
-        data: {
-            interested: "N"
-        },
-        success: function (response) {
-            alert(response['msg']);
-            showThumb();
-        }
+    function unlikeThumb() {
+        $.ajax({
+            type: 'POST',
+            url: '/unlike_ddabong/{{key}}/',
+            data: {
+                interested: "N"
+            },
+            success: function (response) {
+                alert(response['msg']);
+                showThumb();
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        showThumb();
     });
-}
-$(document).ready(function () {
-showThumb();
-});
 
 </script>
+
     <style>
         .review-card {
             padding: 20px;
