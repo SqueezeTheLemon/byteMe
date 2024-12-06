@@ -323,41 +323,42 @@ def reg_item_submit_post():
 
 @application.route("/product_edit")
 def product_edit():
-    nickname = DB.get_nickname(session["id"])
-    return render_template("product_edit.html", nickname=nickname)
+    nickname = DB.get_nickname(session.get("id"))  # 세션 키 존재 여부 확인
+    data = {"img_path": "image.png"}  # 기본값 설정
+    print(f"Rendering product_edit.html with nickname={nickname} and data={data}")  # 디버깅
+    return render_template("product_edit.html", nickname=nickname, data=data)
+
 
 # 상품 정보 수정
 @application.route("/edit_item_post", methods=['POST'])
 def edit_item_post():
-    # 이미지 파일 가져오기
     image_file = request.files.get("file")
     if image_file and image_file.filename:
-        # 파일 이름을 안전하게 설정하고 경로 구성
+        # 안전한 파일 이름 처리
         filename = secure_filename(image_file.filename)
         save_path = os.path.join("static", "images", filename)
         
         # 이미지 저장
         image_file.save(save_path)
-
-        # img_path에 템플릿에서 접근 가능한 경로 설정
-        img_path = url_for('static', filename=f'images/{filename}')
+        img_path = filename  # 데이터베이스에 저장할 경로는 파일 이름
     else:
-        # 이미지 파일이 없는 경우 기본 이미지 경로 설정
-        img_path = url_for('static', filename='images/default_image.jpg')
+        img_path = "default_image.jpg"  # 기본 이미지 파일 이름
 
     # 폼 데이터 처리
     updated_data = request.form.to_dict()
-    updated_data['payment'] = request.form.getlist("payment")  # 결제 수단을 리스트로 저장
+    updated_data["payment"] = request.form.getlist("payment")  # 결제 수단 리스트로 저장
+    updated_data["img_path"] = img_path  # 이미지 경로 포함
 
-    # 데이터베이스에서 사용자 정보 업데이트
-    if DB.update_item(updated_data, filename):
+    print(f"Updated Data: {updated_data}")  # 디버깅용 출력
+
+    # 데이터베이스 업데이트
+    if DB.update_item(updated_data, img_path):
         flash("상품 정보가 수정되었습니다.")
-        # 템플릿에 데이터 전달
-        return render_template("result.html", data=updated_data, payment=updated_data['payment'], img_path=img_path)
+        return render_template("result.html", data=updated_data, payment=updated_data["payment"], img_path=img_path)
     else:
         flash("상품 정보 수정에 실패했습니다.")
         return redirect(url_for("product_edit"))
-    
+   
 @application.route('/show_heart/<name>/', methods=['GET'])
 def show_heart(name):
     my_heart = DB.get_heart_byname(session['id'],name)
@@ -366,13 +367,20 @@ def show_heart(name):
 
 @application.route('/like/<name>/', methods=['POST'])
 def like(name):
-    my_heart = DB.update_heart(session['id'],'Y',name)
-    return jsonify({'msg': '좋아요 완료!'})
+    success = DB.update_heart(session.get('id'), 'Y', name)
+    if success:
+        return jsonify({'msg': '좋아요 완료!', 'status': 'liked'})
+    else:
+        return jsonify({'msg': '좋아요 처리 실패!', 'status': 'error'})
 
 @application.route('/unlike/<name>/', methods=['POST'])
 def unlike(name):
-    my_heart = DB.update_heart(session['id'],'N',name)
-    return jsonify({'msg': '좋아요 취소 완료!'})
+    success = DB.update_heart(session.get('id'), 'N', name)
+    if success:
+        return jsonify({'msg': '좋아요 취소 완료!', 'status': 'unliked'})
+    else:
+        return jsonify({'msg': '좋아요 취소 실패!', 'status': 'error'})
+
 
 @application.route('/dynamicurl/<varible_name>/')
 def DynamicUrl(varible_name):

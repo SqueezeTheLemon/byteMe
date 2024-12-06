@@ -95,10 +95,13 @@
         </ul>
     </div>
     <div class="sorting-right">
-        <button onclick="location.href='/reg_items'">
-            <img src="{{ url_for('static', filename='images/submit.png') }}" alt="상품 등록" width="40px" height="40px">
-        </button>
+        {% if session.get('position') == 'admin' %}
+            <button onclick="location.href='/reg_items'">
+                <img src="{{ url_for('static', filename='images/submit.png') }}" alt="상품 등록" width="40px" height="40px">
+            </button>
+        {% endif %}
     </div>
+    
 </div>
 
 {% if total > 0 %}

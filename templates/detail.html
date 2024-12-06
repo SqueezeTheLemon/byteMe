@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-
 {% block section %}
 {% include "nav_bar.html" %}
 
@@ -121,12 +120,13 @@
 
     .product-body {
         display: flex;
-        padding: 20px;
         gap: 20px;
+        padding: 20px;
     }
 
     .product-image {
         flex: 1;
+        max-width: 300px;
         text-align: center;
         border: 1px solid #ddd;
         padding: 10px;
@@ -135,7 +135,7 @@
 
     .product-image img {
         max-width: 100%;
-        max-height: 200px;
+        height: auto;
         object-fit: cover;
     }
 
@@ -156,7 +156,7 @@
 
     .product-footer {
         display: flex;
-        justify-content: space-between; /* 기존 flex-end를 space-between으로 변경 */
+        justify-content: space-between;
         align-items: center;
         padding: 10px 20px;
         background-color: #f8f8f8;
@@ -171,7 +171,7 @@
 
     .product-footer .actions {
         display: flex;
-        gap: 10px; /* 버튼 간격 */
+        gap: 10px;
     }
 
     .product-footer .actions button {
@@ -188,6 +188,31 @@
         background-color: #1e4b1e;
     }
 
+
+    .product-title {
+    display: flex;
+    align-items: center; /* 이름과 하트를 수직으로 정렬 */
+    gap: 10px; /* 이름과 하트 사이 간격 */
+}
+
+.product-title h1 {
+    margin: 0; /* 기본 여백 제거 */
+    font-size: 1.5rem; /* 이름의 글꼴 크기 */
+    color: #2c6a2c;
+}
+
+    #heart {
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    #heart.red {
+        color: red;
+    }
+
+    #heart.grey {
+        color: grey;
+    }
 </style>
 
 <section>
@@ -196,7 +221,10 @@
 <div class="product-container">
     <!-- Header -->
     <div class="product-header">
-        <h1>{{ name }}</h1>
+        <div class="product-title">
+            <h1>{{ name }}</h1>
+            <i class="fa fa-heart" id="heart"></i> <!-- 이름 옆으로 이동 -->
+        </div>
         <div class="rating">
             <span class="star">★</span>
             {{ average_rating if average_rating else "0.0" }}
@@ -208,18 +236,22 @@
         <!-- Image -->
         <div class="product-image">
             <img src="../../static/images/{{ data.img_path }}" alt="{{ name }}">
-            <p>상품 사진</p>
         </div>
 
         <!-- Details -->
         <div class="product-details">
             <p><b>상품 설명 |</b> {{ data['info'] }}</p>
             <p><b>가격 |</b> {{ data['price'] }} 원</p>
-            <p><b>추가 옵션 |</b> {{ data['opt'] }}</p>
-            <p><b>결제 수단 |</b> {{ data['payment'] }}</p>
+            <p><b>결제 수단 |</b>
+                {% for method in data['payment'] %}
+                    <span>{{ method }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
             <p><b>판매 주소 |</b> {{ data['addr'] }}</p>
             <p><b>문의 번호 |</b> {{ data['phone'] }}</p>
+            <p><b>추가 옵션 |</b> {{ data['opt'] }}</p>
         </div>
+        
     </div>
 
     <!-- Footer -->

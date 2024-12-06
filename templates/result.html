@@ -1,25 +1,79 @@
 {% extends "index.html" %}
 
 {% block section %}
-    <img src="{{img_path}}" align="left" style="margin-right: 20px;">
-    <p>
-        상품명  |  {{data.name}}<br>
-        카테고리  |  {{data.category}}<br>
-        재고 | {{data.stock}}개<br>
-        <br>
-        상품 설명  |  {{data.info}}<br>
-        <br>
-        가격  |  {{data.price}}원<br>
-        추가 옵션  |  {{data.opt}}<br>
+<style>
+    .product-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        max-width: 800px;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .product-image {
+        flex: 1;
+        max-width: 250px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-right: 20px;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: auto;
+    }
+
+    .product-details {
+        flex: 2;
+    }
+
+    .product-details p {
+        margin: 5px 0;
+    }
+
+    .product-details div {
+        margin: 10px 0;
+    }
+
+    .product-details b {
+        color: #2c6a2c;
+    }
+
+    .product-details span {
+        font-weight: bold;
+    }
+</style>
+
+<div class="product-container">
+    <div class="product-image">
+        <img src="{{img_path}}" alt="{{data.name}}">
+    </div>
+    <div class="product-details">
+        <p><span>상품명:</span> {{data.name}}</p>
+        <p><span>카테고리:</span> {{data.category}}</p>
+        <p><span>재고:</span> {{data.stock}}개</p>
+        <p><span>상품 설명:</span> {{data.info}}</p>
+        <p><span>가격:</span> {{data.price}}원</p>
+        <p><span>추가 옵션:</span> {{data.opt}}</p>
         <div>
-        결제 가능 수단  | 
-        {% for pay in payment %}
-            {{ pay }}{% if not loop.last %}, {% endif %}
-        {% endfor %}
+            <span>결제 가능 수단:</span>
+            {% for pay in payment %}
+                {{ pay }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
         </div>
-        <br>
-        판매자 아이디  |  {{data.seller}}<br>
-        문의 번호  |  {{data.phone}}<br>
-        판매 주소  |  {{data.addr}}<br>
-    </p>
+        <p><span>판매자 아이디:</span> {{data.seller}}</p>
+        <p><span>문의 번호:</span> {{data.phone}}</p>
+        <p><span>판매 주소:</span> {{data.addr}}</p>
+    </div>
+</div>
 {% endblock section %}
