@@ -399,7 +399,7 @@ class DBhandler:
                 print(f"Error while calculating average rating: {e}")
                 return None
     
-    def get_thumb_byname(self, uid, name):
+    def get_thumb_bytitle(self, uid, title):
         thumbs = self.db.child("thumb").child(uid).get()
         target_value = {"interested": "N", "count": 0}
         
@@ -408,7 +408,7 @@ class DBhandler:
     
         for res in thumbs.each():
             key_value = res.key()
-            if key_value == name:
+            if key_value == title:
                 target_value = {
                     "interested": res.val().get("interested", "N"),
                     "count": res.val().get("count", 0)
@@ -416,10 +416,12 @@ class DBhandler:
         return target_value
     
     def update_thumb(self, user_id, isThumb, item):
+        current_count = self.db.child("thumb").child(user_id).child(item).child("count").get().val()
+        current_count = current_count if current_count is not None else 0  # None일 경우 0으로 설정
+    
         thumb_info = {
             "interested": isThumb,
-            "count": self.db.child("thumb").child(user_id).child(item).child("count").get().val() + (1 if isThumb == "Y" else -1)
+            "count": current_count + (1 if isThumb == "Y" else -1)
         }
         self.db.child("thumb").child(user_id).child(item).set(thumb_info)
         return True
-    

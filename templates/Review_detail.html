@@ -1,11 +1,10 @@
 {% extends "index.html" %}
 {% block section %}
-
 <script>
     function showThumb() {
     $.ajax({
         type: 'GET',
-        url: '/show_thumb/{{name}}/',
+        url: '/show_thumb/{{title}}/',
         data: {},
         success: function (response) {
             let my_thumb = response['my_thumb'];
@@ -24,7 +23,7 @@
     function likeThumb() {
     $.ajax({
         type: 'POST',
-        url: '/like_thumb/{{name}}/',
+        url: '/like_thumb/{{title}}/',
         data: {
             interested: "Y"
         },
@@ -38,7 +37,7 @@
 function unlikeThumb() {
     $.ajax({
         type: 'POST',
-        url: '/unlike_thumb/{{name}}/',
+        url: '/unlike_thumb/{{title}}/',
         data: {
             interested: "N"
         },
