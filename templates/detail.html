@@ -262,6 +262,8 @@
         <!-- Actions -->
         <div class="actions">
             <form id="purchase-form" method="POST">
+                <label for="num_item">구매 수량 | </label>
+                <input type="number" name="num_item" id="num_item" min="1" value="1">
                 <input type="hidden" name="item_name" value="{{ name }}">
                 <button type="button" id="purchase-button">구매</button>
             </form>
