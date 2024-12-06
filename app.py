@@ -251,9 +251,9 @@ def view_review():
     start_idx=per_page*page
     end_idx=per_page*(page+1)
     
-    data = DB.get_reviews_sorted(sort_by=sort_by)
-    data = dict(sorted(data.items(), key=lambda x: x[0], reverse=False))
-    item_counts = len(data)
+    data=DB.get_reviews_sorted(sort_by=sort_by)
+    data= dict(sorted(data.items(), key=lambda x:x[0], reverse=False))
+    item_counts=len(data)
     if item_counts<=per_page:
         data = dict(list(data.items())[:item_counts])
     else:
@@ -264,17 +264,18 @@ def view_review():
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
         else: 
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
-
+            
+    # 데이터를 반환
     return render_template(
-        "review_list.html",
-        data=data.items(),
+        "review.html",
+        data=data.items,  # 각 행 데이터를 `reviews`로 전달
+        page=page,
         row1=locals()['data_0'].items(),
-        row2=locals()['data_1'].items(),
         limit=per_page,
-        page=page, 
-        page_count=int(math.ceil(item_counts/per_page)),  # 총 페이지 수 계산
-        total=item_counts,
-        sort_by=sort_by)
+        page_count=int(math.ceil(item_counts/per_page)),
+        total=item_counts,  # 전체 아이템 수
+        sort_by=sort_by  # 정렬 기준 전달
+    )
 
 
 

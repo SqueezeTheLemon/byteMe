@@ -376,16 +376,18 @@ class DBhandler:
     
 
     #리뷰 가져오기
-    def get_reviews_sorted(self, sort_by=None):
-        reviews = self.db.child("review").get().val()
+    def get_reviews_sorted(self, sort_by):
+        reviews = self.db.child("review").get()
         target_value=[]
         target_key=[]
-        
         for res in reviews.each():
             value = res.val()
             key_value = res.key()
+            #print(f"Review ID (Key): {key_value}")
+            print(f"Review Details (Value): {value}")
+            
             target_value.append(value)
-            target_key.append(key_value)# 정렬 조건에 따른 정렬
+            target_key.append(key_value)
             
         if sort_by == "newest":  # 최신순
             target_value.sort(key=lambda x: datetime.strptime(x[1]['timestamp'], "%Y-%m-%d %H:%M:%S"), reverse=True)
