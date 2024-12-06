@@ -264,12 +264,14 @@ def view_review():
         total=item_counts)
 
 
-@application.route("/view_review_detail/<title>/")
-def view_review_detail(title):
-    print("###title:",title)
-    data = DB.get_review_byname(str(title))
+@application.route("/view_review_detail/<key>/")
+def view_review_detail(key):
+    print("###key:",key)
+    data = DB.get_review_byname(str(key))
+    print("###title:",data['title'])
     print("####data:",data)
-    return render_template("Review_detail.html", title=title, data=data)
+    print("####ddabong_conut",data['ddabong_count'])
+    return render_template("Review_detail.html", key=key, data=data)
 
 
 @application.route("/reg_items")
@@ -570,14 +572,15 @@ def purchase_item():
         "status": status
     }
 
-    # 구매 횟수 업데이트
-    new_num=DB.count_num(user_id)
-    DB.update_num(user_id, new_num)
-
     # 구매 정보 저장
     if DB.record_purchase(purchase_data):
         # 구매 성공 처리
         message = f"{item_name} 구매가 완료되었습니다!"
+
+        # 구매 횟수 업데이트
+        new_num=DB.count_num(user_id)
+        DB.update_num(user_id, new_num)
+        
         return jsonify({"success": True, "message": message, "redirect_url": url_for("view_mypage")})
     else:
         # 실패 처리
@@ -604,7 +607,6 @@ def complete_item():
 
     return render_template("mypage_manager.html", complete=new_complete, total=tot_count, items=item, datas=data.items())
 
-
 #로그인 확인 
 @application.route('/api/check-login')
 def check_login():
@@ -613,25 +615,23 @@ def check_login():
     else:
         return jsonify({'is_logged_in': False})
     
-@application.route('/show_thumb/<title>/', methods=['GET'])
-def show_thumb(title):
-    my_thumb = DB.get_thumb_bytitle(session['id'], title)
+@application.route('/show_ddabong/<key>/', methods=['GET'])
+def show_ddabong(key):
+    my_thumb = DB.get_ddabong_bytitle(session['id'], key)
     print("mythumb", my_thumb)
     return jsonify({'my_thumb': my_thumb})
 
-
-
-@application.route('/like_thumb/<title>/', methods=['POST'])
-def like_thumb(title):
-    success = DB.update_thumb(session.get('id'), 'Y', title)
+@application.route('/like_ddabong/<key>/', methods=['POST'])
+def like_ddabong(key):
+    success = DB.update_ddabong(session['id'], 'Y', key)
     if success:
         return jsonify({'msg': '따봉 완료!', 'status': 'liked'})
     else:
         return jsonify({'msg': '따봉 처리 실패!', 'status': 'error'})
 
-@application.route('/unlike_thumb/<title>/', methods=['POST'])
-def unlike_thumb(title):
-    success = DB.update_thumb(session.get('id'), 'N', title)
+@application.route('/unlike_ddabong/<key>/', methods=['POST'])
+def unlike_ddabong(key):
+    success = DB.update_ddabong(session['id'], 'N', key)
     if success:
         return jsonify({'msg': '따봉 취소 완료!', 'status': 'unliked'})
     else:
