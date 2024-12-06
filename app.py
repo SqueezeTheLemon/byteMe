@@ -82,8 +82,6 @@ def signup():
 # 회원가입
 @application.route("/signup_post", methods=['POST'])
 def register_user():
-    # 구매 횟수 초기화
-    num = 0
     data = {
         "id": request.form.get("id"),
         "pw": request.form.get("pw"),
@@ -92,25 +90,32 @@ def register_user():
         "nickname": request.form.get("nickname"),
         "position": request.form.get("position"),
         "phone": request.form.get("phone"),
-        # 구매 횟수
-        "num": num
+        "num": 0
     }
     pw_confirm = request.form.get("pw_confirm")
 
     if data["pw"] != pw_confirm:
         return redirect(url_for("signup", message="password_mismatch"))
 
-    # 비밀번호 해싱
+    if not DB.user_duplicate_check(data["id"]):
+        return redirect(url_for("signup", message="user_exists"))
+
     pw_hash = hashlib.sha256(data["pw"].encode('utf-8')).hexdigest()
-
-    # 비밀번호를 해싱된 값으로 대체
     data["pw"] = pw_hash
-
 
     if DB.insert_user(data, pw=pw_hash):
         return redirect(url_for("signup", message="success"))
     else:
-        return redirect(url_for("signup", message="user_exists"))
+        return redirect(url_for("signup", message="error"))
+
+@application.route("/api/check-duplicate", methods=["GET"])
+def api_check_duplicate():
+    id_ = request.args.get("id")
+    print(f"Checking duplicate for ID: {id_}")
+    if DB.user_duplicate_check(id_):
+        return jsonify({"exists": False})  # 아이디 사용 가능
+    else:
+        return jsonify({"exists": True})  # 아이디 중복
 
 # 마이페이지
 @application.route("/mypage")

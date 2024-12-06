@@ -55,7 +55,6 @@ class DBhandler:
 
     def user_duplicate_check(self, id_string):
             users = self.db.child("user").get()
-            print("users###",users.val())
             if str(users.val()) == "None": # first registration
                 return True
             else:
@@ -63,6 +62,7 @@ class DBhandler:
                     value = res.val()
 
                     if value['id'] == id_string:
+                        print(f"Duplicate ID found: {id_string}")
                         return False
             return True
     

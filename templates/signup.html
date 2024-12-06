@@ -2,17 +2,10 @@
 {% block body_class %}logo-left{% endblock body_class %}
 
 {% block section %}
-
-{% with mesg = get_flashed_messages() %}
-{% if mesg !=[] %}
-<script>alert("{{ mesg[0] }}")</script>
-{% endif %}
-{% endwith %}
-
 <main class="signup-main">
     <h2 class="signup-title">회원가입</h2>
 
-    <form class="signup-form" action="/signup_post" method="POST">
+    <form class="signup-form" action="/signup_post" method="POST" onsubmit="return validateSignup();">
 
         <div class="signup-field">
             <label for="username"><span class="required">*</span> 아이디</label>
@@ -39,7 +32,7 @@
 
         <div class="signup-field">
             <label for="name"><span class="required">*</span> 이름</label>
-            <input type="text" id="name" name = "name" placeholder="이름">
+            <input type="text" id="name" name="name" placeholder="이름">
         </div>
 
         <div class="signup-field">
@@ -60,39 +53,74 @@
             <input type="tel" id="phone" name="phone" placeholder="핸드폰 번호">
         </div>
 
-        <div class="signup-buttons">
-            <!-- 취소 버튼 -->
-            <a href="{{ url_for('hello') }}" class="btn-cancel">취소</a>
+        <script>
+            // URL 쿼리에서 메시지를 읽어 처리
+            const params = new URLSearchParams(window.location.search);
+            const message = params.get("message");
 
-            <!-- 확인 버튼 -->
-                <button type="submit" class="btn-submit">확인</button>
+            if (message) {
+                if (message === "success") {
+                    const userChoice = confirm("회원가입이 완료되었습니다.\n'확인'을 누르면 로그인 페이지로, '취소'를 누르면 홈으로 이동합니다.");
+                    if (userChoice) {
+                        window.location.href = "/login_selection"; // 로그인 페이지로 이동
+                    } else {
+                        window.location.href = "/home"; // 홈 페이지로 이동
+                    }
+                } else if (message === "password_mismatch") {
+                    alert("비밀번호가 일치하지 않습니다.");
+                } else if (message === "user_exists") {
+                    alert("이미 존재하는 아이디입니다.");
+                } else {
+                    alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+                }
+            }
+
+            let isDuplicateChecked = false;
+
+            function checkDuplicate() {
+                const username = document.getElementById("username").value;
+                if (!username) {
+                    alert("아이디를 입력해주세요.");
+                    return;
+                }
+
+                fetch(`/api/check-duplicate?id=${encodeURIComponent(username)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            alert("이미 존재하는 아이디입니다.");
+                            isDuplicateChecked = false;
+                        } else {
+                            alert("사용 가능한 아이디입니다.");
+                            isDuplicateChecked = true;
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function validateSignup() {
+                if (!isDuplicateChecked) {
+                    alert("아이디 중복체크를 해주세요.");
+                    return false;
+                }
+
+                const password = document.getElementById("password").value;
+                const passwordConfirm = document.getElementById("password-confirm").value;
+
+                if (password !== passwordConfirm) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return false;
+                }
+
+                return true;
+            }
+        </script>
+
+        <div class="signup-buttons">
+            <a href="{{ url_for('hello') }}" class="btn-cancel">취소</a>
+            <button type="submit" class="btn-submit">확인</button>
         </div>
     </form>
 </main>
 
-
-<!-- 메시지 처리 -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // URL의 쿼리 매개변수(message) 읽기
-        const urlParams = new URLSearchParams(window.location.search);
-        const message = urlParams.get("message");
-
-        if (message === "success") {
-            if (confirm("회원가입이 완료되었습니다!\n\n로그인 페이지로 이동하려면 '확인', 홈 화면으로 이동하려면 '취소'를 누르세요.")) {
-                window.location.href = "{{ url_for('login_selection') }}";
-            } else {
-                window.location.href = "{{ url_for('home') }}";
-            }
-        } else if (message === "password_mismatch") {
-            alert("비밀번호가 일치하지 않습니다. 다시 시도해주세요.");
-        } else if (message === "user_exists") {
-            alert("이미 존재하는 아이디입니다. 다른 아이디를 사용해주세요.");
-        }
-    });
-
-    function checkDuplicate() {
-        alert("중복이 아닙니다");
-    }
-</script>
 {% endblock section %}
