@@ -185,14 +185,20 @@ def view_list():
     end_idx = per_page * (page + 1)  # 끝 인덱스
 
     # 로그인 여부를 전달하며, sort_by가 'liked'일 때만 user_id를 사용
-    if sort_by == "liked" and user_id is None:
-        flash("로그인이 필요합니다!")
-        return render_template("menu.html")  # 로그인 페이지로 리디렉션
+    # if sort_by == "liked" and user_id is None:
+    #     flash("로그인이 필요합니다!")
+    #     return render_template("menu.html")  # 로그인 페이지로 리디렉션
     
     # 카테고리에 맞는 데이터 가져오기
-    data = DB.get_items_bycategory(category, sort_by=sort_by, user_id=user_id)
+    if sort_by=="liked":
+        data=DB.sort_liked(user_id)
+        print(data)
+    else:
+        data = DB.get_items_bycategory(category)
+    
+        if sort_by != None and sort_by!="liked":
+            data=DB.sort_item(data, sort_by)
 
-    data = dict(sorted(data.items(), key=lambda x: x[0], reverse=False))
     item_counts = len(data)
     if item_counts<=per_page:
         data = dict(list(data.items())[:item_counts])
@@ -214,7 +220,8 @@ def view_list():
         page_count=int(math.ceil(item_counts/per_page)),  # 총 페이지 수 계산
         total=item_counts,
         category=category, #카테고리 html코드로 넘겨줌
-        sort_by=sort_by
+        sort_by=sort_by,
+        user_id=user_id
         )
     
 
