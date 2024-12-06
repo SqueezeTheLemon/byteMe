@@ -56,8 +56,6 @@
             <li>|</li>
             <li><a href="{{url_for('view_review', page=i, sort_by='rate')}}"
                 class="{% if sort_by == 'rate' %}selected{% endif %}">별점순</a></li>
-            <li>|</li>
-            <li>공감순</li>
         </ul>
     </div>
     <div class="sorting-right">
@@ -74,7 +72,7 @@
     </tr>
     <tr>
     {% for key, value in row1 %}
-        <td>{{value.title}}</td>
+        <td>{{value.title}} ★{{value.rate}}</td>
     {% endfor %}
     </tr>
     <tr>
@@ -84,7 +82,7 @@
     </tr>
     <tr>
     {% for key, value in row2 %}
-        <td>{{value.title}}</td>
+        <td>{{value.title}} ★{{value.rate}}</td>
     {% endfor %}
     </tr>
 </table>

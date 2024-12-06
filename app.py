@@ -251,7 +251,7 @@ def view_review():
     start_idx=per_page*page
     end_idx=per_page*(page+1)
     
-    data=DB.get_reviews_sorted(sort_by=sort_by)
+    data=DB.get_reviews_sorted(sort_by)
     data= dict(sorted(data.items(), key=lambda x:x[0], reverse=False))
     item_counts=len(data)
     if item_counts<=per_page:

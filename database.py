@@ -381,20 +381,20 @@ class DBhandler:
         target_value=[]
         target_key=[]
         for res in reviews.each():
-            value = res.val()
-            key_value = res.key()
-            #print(f"Review ID (Key): {key_value}")
-            print(f"Review Details (Value): {value}")
+            value = res.val()  #rate, title같은거 
+            key_value = res.key() #리뷰글 고유 id
+            #print(f"Review ID (Key): {key_value}") #리뷰글 고유 id
+            #print(f"Review Details (Value): {value}") #rate, title같은거 
             
-            target_value.append(value)
+            target_value.append(value) 
             target_key.append(key_value)
             
         if sort_by == "newest":  # 최신순
-            target_value.sort(key=lambda x: datetime.strptime(x[1]['timestamp'], "%Y-%m-%d %H:%M:%S"), reverse=True)
+            target_value.sort(key=lambda x: datetime.strptime(x['timestamp'], "%Y-%m-%d %H:%M:%S"), reverse=True)
         elif sort_by == "oldest":  # 오래된순
-            target_value.sort(key=lambda x: datetime.strptime(x[1]['timestamp'], "%Y-%m-%d %H:%M:%S"))
+            target_value.sort(key=lambda x: datetime.strptime(x['timestamp'], "%Y-%m-%d %H:%M:%S"))
         elif sort_by == "rate":  # 별점순 (높은 별점순)
-            target_value.sort(key=lambda x: int(x[1]['rate']), reverse=True)
+            target_value.sort(key=lambda x: int(x['rate']), reverse=True)
     
         new_dict={}
         for k,v in zip(target_key,target_value):
