@@ -1,7 +1,6 @@
 {% extends "index.html" %}
 
 {% block section %}
-{% include "nav_bar.html" %}
 <style>
     .sort a { 
     font-weight: normal; /* 기본 폰트 두께 */
@@ -30,6 +29,7 @@
         justify-content: space-between; /* 양쪽 정렬 */
         align-items: center;
         margin-bottom: 0px;
+        padding-top: 10px;
     }
     /* .sorting button {
         background: none;
@@ -76,8 +76,19 @@
     }
 </style>
 
+<nav>
+    <ul class="submenu__under">
+        <li><a href="/menu">메뉴</a></li>
+        <li>|</li>
+        {% if category == "All" and sort_by!="liked" %}
+            <li><a href="{{url_for('view_list', page=i, category='All')}}">전체</a></li>
+        {% elif category != "All" and sort_by!="liked" %}
+            <li><a href="{{url_for('view_list', page=i, category=category)}}">{{ category }}</a></li> <!-- 현재 선택된 카테고리 -->
+        {% endif %}
+    </ul>
+</nav>
 <section>
-    <hr>
+<hr>
 </section>
 
 <div class="sorting">
