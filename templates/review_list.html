@@ -1,17 +1,46 @@
 {% extends "index.html" %}
 {% block section %}
 <style>
+    .sort a {
+        font-weight: normal;
+        /* 기본 폰트 두께 */
+        text-decoration: none;
+        float: left;
+        display: block;
+        color: #505050;
+        text-align: center;
+        padding: 0px 8px;
+        text-decoration: none;
+    }
+
+    .sort a:hover {
+        color: rgb(0, 70, 42);
+        font-weight: bold;
+    }
+
+    .sort a.selected {
+        color: rgb(0, 70, 42);
+        /* 선택된 항목 색상 */
+        font-weight: bold;
+        /* 선택된 항목 폰트 두께 */
+        text-decoration: underline;
+        /* 선택된 항목 강조 (옵션) */
+    }
+
     .sorting {
         display: flex;
-        justify-content: space-between; /* 양쪽 정렬 */
+        justify-content: space-between;
+        /* 양쪽 정렬 */
         align-items: center;
         margin-bottom: 0px;
     }
+
     .sorting-left {
         display: flex;
         gap: 5px;
     }
-    .sorting button {
+
+    /* .sorting button {
         background: none;
         border: none;
         color: gray;
@@ -24,18 +53,20 @@
     .sorting button.active {
         color: green;
         font-weight: bold;
-    }
+    } */
     .separator {
         color: gray;
         margin: 0 5px;
     }
+
     .container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 5px;
-        margin-top: 15px; 
+        margin-top: 15px;
     }
+
     .review-card {
         border: none;
         width: 22%;
@@ -44,6 +75,7 @@
         padding: 10px;
         text-align: left;
     }
+
     .review-image {
         width: 100%;
         height: 0;
@@ -52,6 +84,7 @@
         border: 2px solid gray;
         box-sizing: border-box;
     }
+
     .review-image img {
         position: absolute;
         top: 0;
@@ -60,6 +93,7 @@
         height: 100%;
         object-fit: cover;
     }
+
     .title-rating {
         display: flex;
         justify-content: space-between;
@@ -68,43 +102,51 @@
         font-size: 20px;
         color: black;
     }
+
     .title {
         font-weight: bold;
         color: black;
     }
+
     .rating {
-        color: black; 
+        color: black;
         font-weight: bold;
     }
+
     .star {
-        color: green; 
+        color: green;
         font-weight: bold;
     }
+
     .like-icon {
         position: absolute;
         bottom: 5px;
         right: 5px;
-        font-size: 50px; 
+        font-size: 50px;
         cursor: pointer;
     }
+
     .pagination {
         text-align: center;
         margin-top: 20px;
     }
+
     .pagination a {
         margin: 0px;
         text-decoration: none;
         color: gray;
-        font-family: 'Arial'; 
+        font-family: 'Arial';
     }
+
     .pagination .prev-next {
         display: inline-block;
-        background-color: lightgray; 
-        border: 1px solid gray; 
+        background-color: lightgray;
+        border: 1px solid gray;
         padding: 5px 5px;
-        border-radius: 0; 
+        border-radius: 0;
         font-weight: bold;
     }
+
     .pagination button {
         font-size: 20px;
         background: none;
@@ -114,29 +156,102 @@
         cursor: pointer;
         padding: 5px;
     }
-    .pagination button.active {
-        color: green; 
-    }
-    </style>
-    <section class="sec_review_list">
-        <div class="sorting">
-            <div class="sorting-left">
-                <button onclick="setActive(this)">최신순</button>
-                <span class="separator">|</span>
-                <button onclick="setActive(this)">오래된순</button>
-                <span class="separator">|</span>
-                <button onclick="setActive(this)">별점순</button>
-                <span class="separator">|</span>
-                <button onclick="setActive(this)">공감순</button>
-            </div>
-            <div class="sorting-right">
-                <button onclick="location.href='/review_form'">
-                    <img src="{{ url_for('static', filename='images/submit.png') }}" alt="리뷰 추가" width="50px" height="50px">
-                </button>
-            </div>        
-        </div>    
 
-        <div class="container">
+    .pagination button.active {
+        color: green;
+    }
+</style>
+<nav>
+    <ul class="submenu__under">
+        <li><a href="/review_list">리뷰</a></li>
+    </ul>
+</nav>
+<section>
+    <hr>
+</section>
+<div class="sorting">
+    <div class="sorting-left">
+        <ul class="sort">
+            <li><a href="{{url_for('view_review', page=i, sort_by='newest')}}"
+                    class="{% if sort_by == 'newest' %}selected{% endif %}">최신순</a></li>
+            <li>|</li>
+            <li><a href="{{url_for('view_review', page=i, sort_by='oldest')}}"
+                    class="{% if sort_by == 'oldest' %}selected{% endif %}">오래된순</a></li>
+            <li>|</li>
+            <li><a href="{{url_for('view_review', page=i, sort_by='rate')}}"
+                    class="{% if sort_by == 'rate' %}selected{% endif %}">별점순</a></li>
+        </ul>
+    </div>
+    <div class="sorting-right">
+        <button onclick="location.href='/review_form'">
+            <img src="{{ url_for('static', filename='images/submit.png') }}" alt="리뷰 추가" width="50px" height="50px">
+        </button>
+    </div>
+</div>
+
+{% if total > 0 %}
+<table class="prd_table">
+    <tbody>
+        <!-- 첫 번째 row -->
+        <tr class="row">
+            {% for key, value in row1 %}
+            <td class="prd" onclick="location.href='/view_detail/{{key}}/';" style="cursor:pointer;">
+                <div class="prd_info">
+                    <a href="#">
+                        <img class="prd_img" src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
+                    </a>
+                </div>
+                <div class="prd_name">
+                    <a href="#">
+                        <p>{{ value['title'] }}</p>
+                    </a>
+                </div>
+                <p class="prd_price">{{ value['rate'] }}</p>
+            </td>
+            {% endfor %}
+        </tr>
+
+        <!-- 두 번째 row -->
+        <tr class="row">
+            {% for key, value in row2 %}
+            <td class="prd" onclick="location.href='/view_detail/{{key}}/';" style="cursor:pointer;">
+                <div class="prd_info">
+                    <a href="#">
+                        <img class="prd_img" src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
+                    </a>
+                </div>
+                <div class="prd_name">
+                    <a href="#">
+                        <p>{{ value['title'] }}</p>
+                    </a>
+                </div>
+                <button class="btn_jjim"></button>
+                <p class="prd_price">{{ value['rate'] }}</p>
+            </td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="page-wrap">
+    <div class="page-nation">
+        <ul>
+            <li>
+                {% for i in range(page_count) %}
+                <a href="{{ url_for('view_list', page=i, sort_by=sort_by) }}" style="color: black;">
+                    {{ i + 1 }}
+                </a>
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+</div>
+
+{% else %}
+<p>등록된 상품이 없습니다.</p>
+{% endif %}
+<!-- <div class="container">
             <div class="review-card">
                 <div class="review-image">
                     <img src="static/images/test.png" alt="리뷰 사진">
@@ -177,19 +292,13 @@
                     <div class="rating"><span class="star">★</span> 4.0</div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="pagination">
-            <a href="#" class="prev-next"></a>
-            <button onclick="setPageActive(this)">1</button>
-            <button onclick="setPageActive(this)">2</button>
-            <button onclick="setPageActive(this)">3</button>
-            <button onclick="setPageActive(this)">4</button>
-            <button onclick="setPageActive(this)">5</button>
-            <a href="#" class="prev-next">></a>
-        </div>
 
-        <script>
+<!-- {% else %}
+<p>등록된 상품이 없습니다. </p>
+{% endif %} -->
+<!-- <script>
             function setActive(button) {
                 const buttons = document.querySelectorAll('.sorting button');
                 buttons.forEach(btn => btn.classList.remove('active'));
@@ -204,7 +313,5 @@
             }
 
         
-        </script>
-
-    </section>
+        </script> -->
 {% endblock section %}

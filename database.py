@@ -1,4 +1,3 @@
-
 import pyrebase
 import json
 import re
@@ -113,9 +112,19 @@ class DBhandler:
                     target_value['payment'] = target_value['payment'].split(",")
         print("Retrieved item data:", target_value)
         return target_value
+
+        # print("######target_value",target_value) #디버깅 코드
+        # for item in target_value:
+        #     print(f"Item Name: {item['name']}, Price: {item['price']}")
+        #print(target_value)
+        #print(target_key)
+        #print(self.db.child("heart"))
+
+            
+
     
     #카테고리별로 상품 가져오기
-    def get_items_bycategory(self, cate, sort_by=None):
+    def get_items_bycategory(self, cate):
             # 카테고리가 "All"인 경우, 모든 아이템을 가져옵니다.
         if cate == "All":
             items = self.db.child("item").get().val()
@@ -135,18 +144,57 @@ class DBhandler:
                     target_key.append(key_value)
         # print("######target_value",target_value) #디버깅 코드
         # for item in target_value:
-        #     print(f"Item Name: {item['name']}, Price: {item['price']}")
-        
-        #가격순 정렬
-        if sort_by == "low_to_high":  # 낮은 가격순
-            target_value.sort(key=lambda x: int(x['price']))
-        elif sort_by == "high_to_low":  # 높은 가격순
-            target_value.sort(key=lambda x: int(x['price']), reverse=True)
+        # print(f"Item Name: {item['name']}, Price: {item['price']}")
+    
         new_dict={}
         for k,v in zip(target_key,target_value):
             new_dict[k]=v
         return new_dict
+    
+    # 정렬
+    def sort_item(self, data, sort_by):
+        sorted_item={}
+        
+        #가격순 정렬
+        if sort_by == "low_to_high": # 낮은 가격순
+            sorted_item = dict(sorted(data.items(), key=lambda x: int(x[1]['price'])))
+        elif sort_by == "high_to_low": # 높은 가격순
+            sorted_item = dict(sorted(data.items(), key=lambda x: int(x[1]['price']), reverse=True))
+        # elif sort_by == "liked" and user_id: 
+        #     sorted_item = {k: v for k, v in zip(target_key, target_value)}
+        
+        return sorted_item     
 
+    def sort_liked(self, user_id):
+        sorted_liked={}
+        foods=self.db.child("heart").child(user_id).get()
+        
+        for food in foods.each():
+            food_name=food.key()
+            interested_value=food.val().get("interested")
+            
+            if(interested_value=="Y"):
+                #sorted_liked[food_name]=interested_value
+                item = self.db.child("item").child(food_name).get().val()  # 음식 이름에 해당하는 상세 정보를 가져옴
+                if item:  # 만약 아이템 정보가 있다면
+                    sorted_liked[food_name] = item 
+                    print(item)
+        #print(food_name)
+        return sorted_liked    
+        
+    
+        # 좋아요한 메뉴 필터링
+        #if sort_by == "liked" and user_id:
+        # "liked" 정렬 시, "heart" 테이블에서 "user_id"가 "Y"인 항목만 필터링
+            # target_value = [
+            #     item for item, key in zip(target_value, target_key) 
+            #     if self.db.child("heart").child(user_id).child(key).val() == "Y"
+            # ]
+            # target_key = [
+            #     key for key, item in zip(target_key, target_value) 
+            #     if self.db.child("heart").child(user_id).child(key).val() == "Y"
+            # ]
+        
     # 상품 정보 수정
     def update_item(self, updated_data, img_path):
         payment = updated_data.get("payment")
@@ -358,6 +406,34 @@ class DBhandler:
             if res.key() == key:
                 target_value=res.val()
         return target_value
+    
+
+    #리뷰 가져오기
+    def get_reviews_sorted(self, sort_by):
+        reviews = self.db.child("review").get()
+        target_value=[]
+        target_key=[]
+        for res in reviews.each():
+            value = res.val()  #rate, title같은거 
+            key_value = res.key() #리뷰글 고유 id
+            #print(f"Review ID (Key): {key_value}") #리뷰글 고유 id
+            #print(f"Review Details (Value): {value}") #rate, title같은거 
+            
+            target_value.append(value) 
+            target_key.append(key_value)
+            
+        if sort_by == "newest":  # 최신순
+            target_value.sort(key=lambda x: datetime.strptime(x['timestamp'], "%Y-%m-%d %H:%M:%S"), reverse=True)
+        elif sort_by == "oldest":  # 오래된순
+            target_value.sort(key=lambda x: datetime.strptime(x['timestamp'], "%Y-%m-%d %H:%M:%S"))
+        elif sort_by == "rate":  # 별점순 (높은 별점순)
+            target_value.sort(key=lambda x: int(x['rate']), reverse=True)
+    
+        new_dict={}
+        for k,v in zip(target_key,target_value):
+            new_dict[k]=v
+        return new_dict
+
     
     def get_average_rating(self, name):
             try:

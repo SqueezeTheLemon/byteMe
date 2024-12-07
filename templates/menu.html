@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-
 {% block section %}
 <style>
     .sort a { 
@@ -41,40 +40,8 @@
         font-size: 20px; 
         font-weight: bold;
     } */
-    .pagination {
-        display: flex;
-        justify-content: center; /* Center-aligns the pagination bar */
-        align-items: center;
-        margin-top: 20px;
-        width: 100%;
-    }
-    .pagination a, .pagination button {
-        margin: 0 5px;
-        text-decoration: none;
-        color: gray;
-        font-family: 'Arial'; 
-    }
-    .pagination .prev-next {
-        display: inline-block;
-        background-color: lightgray; 
-        border: 1px solid gray; 
-        padding: 5px 5px;
-        border-radius: 0; 
-        font-weight: bold;
-    }
-    .pagination button {
-        font-size: 20px;
-        background: none;
-        border: none;
-        color: gray;
-        font-weight: bold;
-        cursor: pointer;
-        padding: 5px;
-    }
-    .pagination button.active {
-        color: green; 
-    }
 </style>
+
 
 <nav>
     <ul class="submenu__under">
@@ -94,16 +61,20 @@
 <div class="sorting">
     <div class="sorting-left">
         <ul class="sort">
-            <li>인기순</li>
-            <li>|</li>
             <li><a href="{{url_for('view_list', page=i, category=category, sort_by='low_to_high')}}"
                 class="{% if sort_by == 'low_to_high' %}selected{% endif %}">낮은 가격순</a></li>
             <li>|</li>
             <li><a href="{{url_for('view_list', page=i, category=category, sort_by='high_to_low')}}"
                 class="{% if sort_by == 'high_to_low' %}selected{% endif %}">높은 가격순</a></li>
             <li>|</li>
-            <li>리뷰 많은순</li>
-        </ul>
+            <li>
+                {% if session.get('id') %}
+                    <a href="{{url_for('view_list', page=i, category=category, sort_by='liked')}}"
+                        class="{% if sort_by == 'liked' %}selected{% endif %}">좋아요한 메뉴</a></li>
+                {% else %}
+                    <a href="#" onclick="alert('로그인이 필요합니다!');">좋아요한 메뉴</a>
+                {% endif %}
+                    </ul>
     </div>
     <div class="sorting-right">
         {% if session.get('position') == 'admin' %}

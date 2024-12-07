@@ -1,6 +1,32 @@
 {% extends "index.html" %}
 {% block section %}
 <style>
+     .sort a {
+        font-weight: normal;
+        /* 기본 폰트 두께 */
+        text-decoration: none;
+        float: left;
+        display: block;
+        color: #505050;
+        text-align: center;
+        padding: 0px 8px;
+        text-decoration: none;
+    }
+
+    .sort a:hover {
+        color: rgb(0, 70, 42);
+        font-weight: bold;
+    }
+
+    .sort a.selected {
+        color: rgb(0, 70, 42);
+        /* 선택된 항목 색상 */
+        font-weight: bold;
+        /* 선택된 항목 폰트 두께 */
+        text-decoration: underline;
+        /* 선택된 항목 강조 (옵션) */
+    }
+
     .sorting {
         display: flex;
         justify-content: space-between; /* 양쪽 정렬 */
@@ -22,13 +48,14 @@
 <div class="sorting">
     <div class="sorting-left">
         <ul class="sort">
-            <li>최신순</li>
+            <li><a href="{{url_for('view_review', page=i, sort_by='newest')}}"
+                class="{% if sort_by == 'newest' %}selected{% endif %}">최신순</a></li>
             <li>|</li>
-            <li>오래된순</li>
+            <li><a href="{{url_for('view_review', page=i, sort_by='oldest')}}"
+                class="{% if sort_by == 'oldest' %}selected{% endif %}">오래된순</a></li>
             <li>|</li>
-            <li>별점순</li>
-            <li>|</li>
-            <li>공감순</li>
+            <li><a href="{{url_for('view_review', page=i, sort_by='rate')}}"
+                class="{% if sort_by == 'rate' %}selected{% endif %}">별점순</a></li>
         </ul>
     </div>
     <div class="sorting-right">
@@ -45,7 +72,7 @@
     </tr>
     <tr>
     {% for key, value in row1 %}
-        <td>{{value.title}}</td>
+        <td>{{value.title}} ★{{value.rate}}</td>
     {% endfor %}
     </tr>
     <tr>
@@ -55,7 +82,7 @@
     </tr>
     <tr>
     {% for key, value in row2 %}
-        <td>{{value.title}}</td>
+        <td>{{value.title}} ★{{value.rate}}</td>
     {% endfor %}
     </tr>
 </table>
@@ -65,7 +92,7 @@
         <ul>
             <li>
                 {% for i in range(page_count)%}
-                    <a href="{{url_for('view_review', page=i)}}" color="black">{{i}}</a>
+                    <a href="{{url_for('view_review', page=i, sort_by=sort_by)}}" color="black">{{i+1}}</a>
                 {% endfor %}
             </li>
         </ul>
