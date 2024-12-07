@@ -42,7 +42,6 @@
     } */
 </style>
 
-
 <nav>
     <ul class="submenu__under">
         <li><a href="/menu">메뉴</a></li>
@@ -54,6 +53,7 @@
         {% endif %}
     </ul>
 </nav>
+
 <section>
 <hr>
 </section>
@@ -103,12 +103,6 @@
                         <p>{{ value['name'] }}</p>
                     </a>
                 </div>
-                <!--<div class="prd_star">
-                    <a href="#">
-                        <button class="btn_star"></button>
-                        <p class="star_score">4.5</p>
-                    </a>
-                </div>-->
                 <p class="prd_price">{{ value['price'] }}원</p>
             </td>
             {% endfor %}

@@ -528,18 +528,20 @@ textarea {
     float: left;
     width: 350px;
     padding: 30px 25px 35px;
+    text-align: center;
 }
 
 .prd_info {
     text-align: center;
     font-size: 14px;
-    display: table;
+    display: flex;
+    justify-content: center;
     margin: 0;
     padding: 0;
 }
 
 .prd_img {
-    display: table-cell;
+    display: inline-block;
     width: 315px;
     height: 315px;
     vertical-align: top;
@@ -548,6 +550,7 @@ textarea {
 
 .prd_name {
     margin-top: 15px;
+    text-align: center;
 }
 
 .prd_name a {
@@ -572,6 +575,7 @@ textarea {
 .prd_price {
     height: 25px;
     line-height: 22px;
+    text-align: center;
 }
 
 .prd_star {

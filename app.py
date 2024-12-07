@@ -138,7 +138,13 @@ def view_mypage():
         tot_count = len(item)
         data=DB.get_items()
         new_complete=DB.count_complete()
-        return render_template("mypage_manager.html", items=item, total=tot_count, datas=data.items(), complete=new_complete, nickname=nickname)
+        return render_template(
+            "mypage_manager.html", 
+            items=item, 
+            total=tot_count, 
+            datas=data.items(), 
+            complete=new_complete, 
+            nickname=nickname)
     # 일반회원일 때
     else:
         if position == "user":
@@ -150,25 +156,19 @@ def view_mypage():
             data=DB.get_items()
             # 구매 횟수
             num = DB.get_num(user_id)
-            return render_template("mypage_user.html", item=item, total=total, datas=data.items(), num=num, nickname=nickname)  
+            review_num = DB.count_review(user_id)
+            return render_template(
+                "mypage_user.html", 
+                item=item, 
+                total=total, 
+                datas=data.items(), 
+                num=num, 
+                review_num=review_num, 
+                nickname=nickname)  
 
 @application.route("/customer_center")
 def view_customer_center():
     return render_template("customer_center.html")
-
-# @application.route("/drink")
-# def view_drink():
-#     # 특정 카테고리 데이터를 가져옴
-#     items = DB.get_items_bycategory("음료")
-#     return render_template("drink.html")
-
-# @application.route("/dessert")
-# def view_dessert():
-#     return render_template("dessert.html")
-
-# @application.route("/gimbap")
-# def view_gimbap():
-#     return render_template("gimbap.html")
 
 @application.route("/menu")
 def view_list():
@@ -183,11 +183,6 @@ def view_list():
     row_count = int(per_page / per_row)  # 전체 행 수
     start_idx = per_page * page  # 시작 인덱스
     end_idx = per_page * (page + 1)  # 끝 인덱스
-
-    # 로그인 여부를 전달하며, sort_by가 'liked'일 때만 user_id를 사용
-    # if sort_by == "liked" and user_id is None:
-    #     flash("로그인이 필요합니다!")
-    #     return render_template("menu.html")  # 로그인 페이지로 리디렉션
     
     # 카테고리에 맞는 데이터 가져오기
     if sort_by=="liked":
@@ -451,8 +446,16 @@ def my_order_history():
     data=DB.get_items()
     # 구매 횟수
     num = DB.get_num(user_id)
+    review_num = DB.count_review(user_id)
     nickname = DB.get_nickname(user_id)
-    return render_template("my-order-history.html", item=item, total=total, datas=data.items(), num=num, nickname=nickname)
+    return render_template(
+        "my-order-history.html", 
+        item=item, 
+        total=total, 
+        datas=data.items(), 
+        num=num, 
+        review_num=review_num,
+        nickname=nickname)
 
 # 구매 내역 페이지
 @application.route("/my-ordered")
@@ -467,14 +470,31 @@ def my_ordered():
     # 구매 횟수
     num = DB.get_num(user_id)
     nickname = DB.get_nickname(user_id)
-    return render_template("my-ordered.html", item=item, total=total, datas=data.items(), num=num, nickname=nickname)
+    review_num = DB.count_review(user_id)
+    return render_template(
+        "my-ordered.html", 
+        item=item, 
+        total=total, 
+        datas=data.items(), 
+        num=num, 
+        review_num=review_num,
+        nickname=nickname)
 
 # 좋아요 페이지
 @application.route("/liked_page")
 def liked_page():
-    num = DB.get_num(session['id'])
-    nickname = DB.get_nickname(session['id'])
-    return render_template("liked_page.html", num=num, nickname=nickname)
+    user_id=session['id']
+    num = DB.get_num(user_id)
+    review_num = DB.count_review(user_id)
+    nickname = DB.get_nickname(user_id)
+    data=DB.find_liked(user_id)
+    print(data)
+    return render_template(
+        "liked_page.html", 
+        num=num, 
+        review_num=review_num, 
+        nickname=nickname, 
+        datas=data)
 
 # 나의 리뷰 페이지
 @application.route("/my-review")
@@ -482,15 +502,29 @@ def my_review():
     user_id=session["id"]
     review = DB.find_review(user_id)
     num = DB.get_num(user_id)
+    review_num = DB.count_review(user_id)
     nickname = DB.get_nickname(user_id)
-    return render_template("my-review.html", num=num, nickname=nickname, review=review)
+    return render_template(
+        "my-review.html", 
+        num=num, 
+        nickname=nickname, 
+        review_num=review_num,
+        review=review)
 
 # 공감 리뷰 페이지
 @application.route("/liked-review")
 def liked_review():
-    num = DB.get_num(session['id'])
-    nickname = DB.get_nickname(session['id'])
-    return render_template("liked-review.html", num=num, nickname=nickname)
+    user_id=session['id']
+    num = DB.get_num(user_id)
+    review_num = DB.count_review(user_id)
+    nickname = DB.get_nickname(user_id)
+    review=DB.ddabong_review(user_id)
+    return render_template(
+        "liked-review.html", 
+        num=num, 
+        review_num=review_num,
+        nickname=nickname,
+        review=review)
 
 # 계정 정보 수정 페이지 (일반회원, 관리자 공통)
 @application.route("/edit_account", methods=["POST"])

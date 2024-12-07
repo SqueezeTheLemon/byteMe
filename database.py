@@ -180,21 +180,31 @@ class DBhandler:
                     sorted_liked[food_name] = item 
                     print(item)
         #print(food_name)
-        return sorted_liked    
-        
+        return sorted_liked
     
-        # 좋아요한 메뉴 필터링
-        #if sort_by == "liked" and user_id:
-        # "liked" 정렬 시, "heart" 테이블에서 "user_id"가 "Y"인 항목만 필터링
-            # target_value = [
-            #     item for item, key in zip(target_value, target_key) 
-            #     if self.db.child("heart").child(user_id).child(key).val() == "Y"
-            # ]
-            # target_key = [
-            #     key for key, item in zip(target_key, target_value) 
-            #     if self.db.child("heart").child(user_id).child(key).val() == "Y"
-            # ]
-        
+    # 좋아요 아이템 정보
+    def find_liked(self, user_id):
+        liked = []
+        datas = self.db.child("item").get()
+        items = self.get_liked_item(user_id)
+        for item in items:
+            for res in datas.each():
+                if item == res.key():
+                    liked.append((user_id, res.val())) 
+        return liked
+    
+    # 좋아요 아이템 이름 반환
+    def get_liked_item(self, user_id):
+        items = []
+        heart = self.db.child("heart").get()
+        for res in heart.each():
+            if res.key() == user_id:
+                datas=self.db.child("heart").child(res.key()).get()
+                for data in datas.each():
+                    if data.val()['interested']=="Y":
+                        items.append(data.key())
+        return items
+    
     # 상품 정보 수정
     def update_item(self, updated_data, img_path):
         payment = updated_data.get("payment")
@@ -492,3 +502,37 @@ class DBhandler:
                     count -= 1
                 self.db.child("review").child(res.key()).update({"ddabong_count": count})
         return True
+    
+    # 리뷰 횟수 카운트
+    def count_review(self, user_id):
+        num = 0
+        reviews=self.db.child("review").get()
+        for res in reviews.each():
+            if res.val()['id'] == user_id:
+                num+=1
+        print("Number of Reviews:", num)
+        return num
+
+    # 공감 리뷰 키 반환
+    def get_review_key(self, user_id):
+        key = []
+        ddabongs = self.db.child("ddabong").get()
+        for res in ddabongs.each():
+            if res.key() == user_id:
+                reviews = self.db.child("ddabong").child(res.key()).get()
+                for review in reviews.each():
+                    if review.val()['interested']=="Y":
+                        key.append(review.key())
+        return key
+    
+    # 공감 리뷰 반환
+    def ddabong_review(self, user_id):
+        review = []
+        keys = []
+        keys = self.get_review_key(user_id)
+        reviews = self.db.child("review").get()
+        for key in keys:
+            for res in reviews.each():
+                if res.key() == key:
+                    review.append((res.key(), self.db.child("review").child(res.key()).get().val()))
+        return review
