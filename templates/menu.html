@@ -1,61 +1,128 @@
 {% extends "index.html" %}
 {% block section %}
+{% include "nav_bar.html" %}
 <style>
-    .sort a { 
-    font-weight: normal; /* 기본 폰트 두께 */
-    text-decoration: none;
-    float: left;
-    display: block;
-    color: #505050;
-    text-align: center;
-    padding: 0px 8px;
-    text-decoration: none;
+    .sort a {
+        font-weight: normal;
+        text-decoration: none;
+        color: #505050;
+        padding: 5px 10px; /* 텍스트 주변 여백 추가 */
+        border-radius: 5px; /* 부드러운 박스 모서리 */
+        transition: background-color 0.3s, color 0.3s;
     }
 
     .sort a:hover {
-    color: rgb(0, 70, 42);
-    font-weight: bold;
+        background-color: rgb(200, 240, 200); /* 초록색 배경 */
+        color: rgb(0, 70, 42); /* 텍스트 색상 변경 */
+        font-weight: bold;
     }
 
     .sort a.selected {
-    color: rgb(0, 70, 42); /* 선택된 항목 색상 */
-    font-weight: bold; /* 선택된 항목 폰트 두께 */
-    text-decoration: underline; /* 선택된 항목 강조 (옵션) */
+        background-color: rgb(0, 70, 42); /* 초록색 박스 */
+        color: white; /* 박스 안 텍스트 흰색 */
+        font-weight: bold;
+        border-radius: 5px; /* 선택된 항목도 박스 모양 유지 */
     }
-
     .sorting {
         display: flex;
-        justify-content: space-between; /* 양쪽 정렬 */
+        justify-content: space-between;
         align-items: center;
-        margin-bottom: 0px;
+        margin-bottom: 10px;
         padding-top: 10px;
     }
-    /* .sorting button {
+
+    .prd_table {
+        width: 100%;
+        border-spacing: 20px; /* 각 상품 간격 */
+    }
+
+    .prd {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin: 20px;
+    }
+
+    .prd:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .prd_info img {
+        width: 100%; /* 부모 요소의 너비에 맞게 */
+        max-width: 350px; /* 이미지의 최대 크기 증가 */
+        aspect-ratio: 1 / 1; /* 1:1 비율 유지 */
+        border-radius: 5px;
+        object-fit: cover; /* 이미지 비율 유지 */
+        margin: 20px;
+    }
+    .prd_name p {
+        margin: 10px 0;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .prd_price {
+        font-size: 1rem;
+        color: rgb(0, 70, 42);
+        font-weight: bold;
+    }
+
+    .page-wrap {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .page-nation ul {
+        list-style: none;
+        padding: 0;
+        display: inline-block;
+    }
+
+    .page-nation ul li {
+        display: inline-block;
+        margin: 0 5px;
+    }
+
+    .page-nation ul li a {
+        text-decoration: none;
+        color: #505050;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .page-nation ul li a:hover,
+    .page-nation ul li a.active {
+        color: white;
+        background-color: rgb(0, 70, 42);
+    }
+
+    .sorting-right button {
         background: none;
         border: none;
-        color: gray;
-        padding: 10px 5px;
         cursor: pointer;
-        transition: color 0.3s;
-        font-size: 20px; 
-        font-weight: bold;
-    } */
+        padding: 5px;
+    }
+
+    .sorting-right button img {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.3s ease;
+    }
+
+    .sorting-right button img:hover {
+        transform: scale(1.1);
+    }
+
 </style>
 
-<nav>
-    <ul class="submenu__under">
-        <li><a href="/menu">메뉴</a></li>
-        <li>|</li>
-        {% if category == "All" and sort_by!="liked" %}
-            <li><a href="{{url_for('view_list', page=i, category='All')}}">전체</a></li>
-        {% elif category != "All" and sort_by!="liked" %}
-            <li><a href="{{url_for('view_list', page=i, category=category)}}">{{ category }}</a></li> <!-- 현재 선택된 카테고리 -->
-        {% endif %}
-    </ul>
-</nav>
-
 <section>
-<hr>
+    <hr>
 </section>
 
 <div class="sorting">
@@ -79,55 +146,24 @@
     <div class="sorting-right">
         {% if session.get('position') == 'admin' %}
             <button onclick="location.href='/reg_items'">
-                <img src="{{ url_for('static', filename='images/submit.png') }}" alt="상품 등록" width="40px" height="40px">
+                <img src="{{ url_for('static', filename='images/submit.png') }}" alt="상품 등록">
             </button>
         {% endif %}
     </div>
-    
 </div>
 
 {% if total > 0 %}
 <table class="prd_table">
     <tbody>
-        <!-- 첫 번째 row -->
         <tr class="row">
             {% for key, value in row1 %}
             <td class="prd" onclick="location.href='/view_detail/{{key}}/';" style="cursor:pointer;">
                 <div class="prd_info">
-                    <a href="#">
-                        <img class="prd_img" src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
-                    </a>
+                    <img class="prd_img" src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
                 </div>
                 <div class="prd_name">
-                    <a href="#">
-                        <p>{{ value['name'] }}</p>
-                    </a>
+                    <p>{{ value['name'] }}</p>
                 </div>
-                <p class="prd_price">{{ value['price'] }}원</p>
-            </td>
-            {% endfor %}
-        </tr>
-
-        <!-- 두 번째 row -->
-        <tr class="row">
-            {% for key, value in row2 %}
-            <td class="prd" onclick="location.href='/view_detail/{{key}}/';" style="cursor:pointer;">
-                <div class="prd_info">
-                    <a href="#">
-                        <img class="prd_img" src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
-                    </a>
-                </div>
-                <div class="prd_name">
-                    <a href="#">
-                        <p>{{ value['name'] }}</p>
-                    </a>
-                </div>
-                <!--<div class="prd_star">
-                    <a href="#">
-                        <button class="btn_star"></button>
-                        <p class="star_score">4.5</p>
-                    </a>
-                </div>-->
                 <p class="prd_price">{{ value['price'] }}원</p>
             </td>
             {% endfor %}
@@ -135,25 +171,22 @@
     </tbody>
 </table>
 
-
-<!-- 페이지네이션을 위한 코드 시작 -->
 <div class="page-wrap">
     <div class="page-nation">
         <ul>
             <li>
             {% for i in range(page_count) %}
-            <a href="{{ url_for('view_list', page=i, category=category, sort_by=sort_by) }}" style="color: black;">
+            <a href="{{ url_for('view_list', page=i, category=category, sort_by=sort_by) }}" 
+               class="{% if i == page %}active{% endif %}">
                 {{ i + 1 }}
             </a>
-        {% endfor %}
+            {% endfor %}
             </li>
-            
         </ul>
     </div>
 </div>
 {% else %}
-<p>등록된 상품이 없습니다. </p>
+<p>등록된 상품이 없습니다.</p>
 {% endif %}
-    
 
 {% endblock section %}
