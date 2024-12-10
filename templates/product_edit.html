@@ -8,6 +8,12 @@
         .upload-button {
             display: block; /* 버튼 표시 */
         }
+        .preview_img {
+            margin: 10px;
+            height: 200px;
+            width: auto;
+            max-width: 100%;
+        }
     </style>
 
 <main id="main-content">
@@ -15,16 +21,9 @@
     <form action="/edit_item_post" method="post" enctype="multipart/form-data">
         <br><br>
         <div class="column left">
-            <img id="preview" 
-            src="{{ url_for('static', filename='images/' + (data.img_path or 'image.png')) }}" 
-            alt="Image Upload" 
-            style="margin: 10px; height: 200px; width: auto; max-width: 100%;">
-       
-
-                <label for="file" class="upload-button">
-                    <span style="color:red;">*</span> 상품 사진 업로드
-                </label> <br>
-                <input type="file" name="file" id="file" class="file-input" accept="image/*" onchange="readURL(this)" /> <br><br>
+            <img id="preview" class="preview_img" src="static/images/image.png" alt="Image Upload">
+            <label for="file" class="upload-button"><span style="color:red;">*</span> 상품 사진 업로드</label> <br>
+            <input type="file" name="file" id="file" class="file-input" accept="image/*" onchange="readURL(this)" /> <br><br>
         </div>
         <div class="column right">
             <label for="name"><span style="color:red;">*</span> 상품명  </label>
@@ -65,24 +64,5 @@
     </form>
   </div>
 </main>
-
-<!-- JavaScript 코드 추가 -->
-<script>
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        console.log("File detected:", input.files[0]); // 디버깅용
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('preview').src = e.target.result;
-            console.log("Preview updated with:", e.target.result); // 디버깅용 로그
-        };
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        document.getElementById('preview').src = "{{ url_for('static', filename='images/image.png') }}";
-        console.log("Reverting to default image"); // 디버깅용 로그
-    }
-}
-
-</script>
 
 {% endblock section %}

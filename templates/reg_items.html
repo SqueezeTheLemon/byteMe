@@ -47,21 +47,4 @@
             <input type="submit" value="등록" id="submit"><br><br>
         </div>
     </form>
-
-    <!-- JavaScript 코드 추가 -->
-    <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    // 미리보기 이미지를 업데이트
-                    document.getElementById('preview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                // 파일이 없으면 기본 이미지로 되돌림
-                document.getElementById('preview').src = "static/images/image.png";
-            }
-        }
-    </script>
 {% endblock section %}
