@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% block section %}
-{% include "nav_bar.html" %}
+
 <script>
     function showHeart() {
         $.ajax({
@@ -214,6 +214,17 @@
     }
 </style>
 
+<nav>
+    <ul class="submenu__under">
+        <li><a href="/menu">메뉴</a></li>
+        <li>></li>
+        {% if category == "All" and sort_by!="liked" %}
+            <li><a href="{{url_for('view_list', page=i, category='All')}}">전체</a></li>
+        {% elif category != "All" and sort_by!="liked" %}
+            <li><a href="{{url_for('view_item_detail', name=name)}}">{{ name }}</a></li> <!-- 현재 선택된 카테고리 -->
+        {% endif %}
+    </ul>
+</nav>
 
 <section>
     <hr>
