@@ -227,6 +227,9 @@ def store():
 
 @application.route("/reg_review")
 def reg_review():
+    if 'id' not in session:  # 세션에 로그인 정보가 없으면
+        flash("로그인이 필요합니다!") 
+        return redirect(url_for("login_selection"))
     return render_template("reg_reviews.html")
 
 @application.route("/reg_review_init/<name>/")
