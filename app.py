@@ -350,12 +350,6 @@ def product_edit():
     print(f"Rendering product_edit.html with nickname={nickname} and data={data}")  # 디버깅
     return render_template("product_edit.html", nickname=nickname, data=data)
 
-@application.route('/show_heart/<name>/', methods=['GET'])
-def show_heart(name):
-    my_heart = DB.get_heart_byname(session['id'],name)
-    print("myheart", my_heart)
-    return jsonify({'my_heart': my_heart})
-
 # 상품 정보 수정
 @application.route("/edit_item_post", methods=['POST'])
 def edit_item_post():
