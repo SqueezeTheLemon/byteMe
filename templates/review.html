@@ -3,71 +3,137 @@
 <style>
     .sorting {
         display: flex;
-        justify-content: space-between; /* 양쪽 정렬 */
+        justify-content: space-between;
         align-items: center;
-        margin-bottom: 0px;
+        margin-bottom: 20px;
     }
-    .sorting button {
-        background: none;
-        border: none;
-        color: gray;
-        padding: 10px 5px;
-        cursor: pointer;
-        transition: color 0.3s;
-        font-size: 20px; 
+
+    .sort a {
+    font-weight: normal;
+    text-decoration: none;
+    color: #505050;
+    padding: 5px 10px; /* 텍스트 주변 여백 추가 */
+    border-radius: 5px; /* 부드러운 박스 모서리 */
+    transition: background-color 0.3s, color 0.3s;
+    }
+
+    .sort a:hover {
+        background-color: rgb(200, 240, 200); /* 초록색 배경 */
+        color: rgb(0, 70, 42); /* 텍스트 색상 변경 */
         font-weight: bold;
     }
+
+    .sort a.selected {
+        background-color: rgb(0, 70, 42); /* 초록색 박스 */
+        color: white; /* 박스 안 텍스트 흰색 */
+        font-weight: bold;
+        border-radius: 5px; /* 선택된 항목도 박스 모양 유지 */
+    }
+    .sorting-right button {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .review-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); /* 카드 크기 증가 */
+        gap: 30px; /* 블록 간 간격 증가 */
+        margin-top: 20px;
+    }
+
+    .review-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-card img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1; /* 1:1 비율 */
+        border-radius: 10px;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .review-card:hover {
+    transform: scale(1.05); /* hover 시 확대 효과 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* hover 시 그림자 효과 강화 */
+    }
+
+    .review-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: rgb(0, 70, 42);
+        margin-bottom: 5px;
+    }
+
+    .review-rating {
+        font-size: 0.9rem;
+        color: #333;
+    }
+
+    .page-wrap {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .page-nation a {
+        margin: 0 5px;
+        text-decoration: none;
+        color: gray;
+        font-weight: bold;
+    }
+
+    .page-nation a:hover {
+        color: rgb(0, 70, 42);
+    }
 </style>
-{% if total > 0 %}
+
 <div class="sorting">
     <div class="sorting-left">
         <ul class="sort">
-            <li>최신순</li>
+            <li><a href="{{ url_for('view_review', page=i, sort_by='newest') }}"
+                   class="{% if sort_by == 'newest' %}selected{% endif %}">최신순</a></li>
             <li>|</li>
-            <li>오래된순</li>
+            <li><a href="{{ url_for('view_review', page=i, sort_by='oldest') }}"
+                   class="{% if sort_by == 'oldest' %}selected{% endif %}">오래된순</a></li>
             <li>|</li>
-            <li>별점순</li>
-            <li>|</li>
-            <li>공감순</li>
+            <li><a href="{{ url_for('view_review', page=i, sort_by='rate') }}"
+                   class="{% if sort_by == 'rate' %}selected{% endif %}">별점순</a></li>
         </ul>
     </div>
     <div class="sorting-right">
-        <button onclick="location.href='/reg_review'">
-            <img src="{{ url_for('static', filename='images/submit.png') }}" alt="상품 등록" width="40px" height="40px">
+        <button onclick="checkLogin('/reg_review')">
+            <img src="{{ url_for('static', filename='images/submit.png') }}" alt="리뷰 등록" width="40px" height="40px">
         </button>
     </div>
 </div>
-<table>
-    <tr>
+
+{% if total > 0 %}
+<div class="review-grid">
     {% for key, value in row1 %}
-    <td onclick="location.href='/view_review_detail/{{key}}/';" style="cursor:pointer;"><img src="static/images/{{value.img_path}}", width=300, height=300></td>
+    <div class="review-card" onclick="location.href='/view_review_detail/{{key}}/';" style="cursor:pointer;">
+        <img src="static/images/{{ value.img_path }}" alt="{{ value.title }}">
+        <div class="review-title">{{ value.title }}</div>
+        <div class="review-rating">★ {{ value.rate }}</div>
+    </div>
     {% endfor %}
-    </tr>
-    <tr>
-    {% for key, value in row1 %}
-        <td>{{value.title}}</td>
-    {% endfor %}
-    </tr>
-    <tr>
-    {% for key, value in row2 %}
-        <td onclick="location.href='/view_review_detail/{{key}}/';" style="cursor:pointer;"><img src="static/images/{{value.img_path}}", width=300, height=300></td>
-    {% endfor %}
-    </tr>
-    <tr>
-    {% for key, value in row2 %}
-        <td>{{value.title}}</td>
-    {% endfor %}
-    </tr>
-</table>
-<!--페이지네이션을 위한 코드 시작--> 
+</div>
+
 <div class="page-wrap">
     <div class="page-nation">
         <ul>
-            <li>
-                {% for i in range(page_count)%}
-                    <a href="{{url_for('view_review', page=i)}}" color="black">{{i}}</a>
-                {% endfor %}
-            </li>
+            {% for i in range(page_count) %}
+            <a href="{{ url_for('view_review', page=i, sort_by=sort_by) }}">{{ i + 1 }}</a>
+            {% endfor %}
         </ul>
     </div>
 </div>

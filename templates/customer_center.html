@@ -1,6 +1,45 @@
 {% extends "index.html" %}
 
 {% block section %}
+<style>
+    .customer-support {
+        background-color: #f9f9f9; /* 밝은 배경 */
+        border: 1px solid #ddd; /* 부드러운 테두리 */
+        border-radius: 10px; /* 둥근 모서리 */
+        padding: 30px;
+        margin: 50px auto; /* 중앙 정렬 */
+        max-width: 600px;
+        text-align: center; /* 텍스트 중앙 정렬 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+    }
+
+    .customer-support h1 {
+        font-size: 2rem; /* 헤딩 크기 */
+        font-weight: bold;
+        color: #2c6a2c; /* 메인 색상 */
+        margin-bottom: 20px;
+    }
+
+    .customer-support p {
+        font-size: 1.1rem; /* 일반 텍스트 크기 */
+        color: #333; /* 어두운 기본 글자색 */
+        line-height: 1.6; /* 텍스트 간격 */
+        margin-bottom: 15px;
+    }
+
+    .customer-support a {
+        color: #2c6a2c; /* 강조된 링크 색상 */
+        text-decoration: none; /* 밑줄 제거 */
+        font-weight: bold;
+        border-bottom: 2px solid transparent; /* 밑줄 효과 */
+        transition: border-bottom 0.3s ease;
+    }
+
+    .customer-support a:hover {
+        border-bottom: 2px solid #2c6a2c; /* 마우스 오버 시 밑줄 */
+    }
+</style>
+
 <section class="customer-support">
     <h1>고객센터</h1>
     <p>안녕하세요, Brew-Ha 고객센터입니다.</p>

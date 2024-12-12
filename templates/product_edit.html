@@ -1,50 +1,68 @@
 {% extends "index.html" %}
 {% block section %}
-    <form action="/submit_item_post" method="post" enctype="multipart/form-data">
+
+    <style>
+        .file-input {
+            display: none;
+        }
+        .upload-button {
+            display: block; /* 버튼 표시 */
+        }
+        .preview_img {
+            margin: 10px;
+            height: 200px;
+            width: auto;
+            max-width: 100%;
+        }
+    </style>
+
+<main id="main-content">
+  <div class="product-edit-css">
+    <form action="/edit_item_post" method="post" enctype="multipart/form-data">
         <br><br>
         <div class="column left">
-            <!-- id="preview" 추가 -->
-            <img id="preview" src="static/images/image.png" alt="Image Upload" style="margin: 20px; height: 300px;">
-            <br>
-            <label for="file"><span style="color:red;">*</span> 상품 이미지 업로드 : </label>
-            <!-- id="file" 및 onchange 이벤트 추가 -->
-            <input type="file" name="file" id="file" accept="image/*" onchange="readURL(this)" /><br><br>
+            <img id="preview" class="preview_img" src="static/images/image.png" alt="Image Upload">
+            <label for="file" class="upload-button"><span style="color:red;">*</span> 상품 사진 업로드</label> <br>
+            <input type="file" name="file" id="file" class="file-input" accept="image/*" onchange="readURL(this)" /> <br><br>
         </div>
         <div class="column right">
-            <label for="name"><span style="color:red;">*</span> 상품명 : </label>
+            <label for="name"><span style="color:red;">*</span> 상품명  </label>
             <input type="text" name="name" id="name" required>&nbsp;&nbsp;
-            <label for="price"><span style="color:red;">*</span> 가격 : </label>
+            <label for="price"><span style="color:red;">*</span> 가격  </label>
             <input type="text" name="price" id="price" placeholder="원" required><br>
             <p>
-                <span style="color:red;">*</span> 카테고리 :
+                <span style="color:red;">*</span> 카테고리 
                 <label for="drink"><input type="radio" name="category" id="drink" value="음료"> 음료</label>
                 <label for="dessert"><input type="radio" name="category" id="dessert" value="디저트"> 디저트</label>
                 <label for="gimbap"><input type="radio" name="category" id="gimbap" value="김밥"> 김밥</label>
             </p>
             <p>
-                <span style="color:red;">*</span> 결제 가능 수단 : 
+                <span style="color:red;">*</span> 결제 가능 수단 </br>
                 <label for="card"><input type="checkbox" name="payment" id="card" value="카드"> 카드</label>
                 <label for="cash"><input type="checkbox" name="payment" id="cash" value="현금"> 현금</label>
                 <label for="payco"><input type="checkbox" name="payment" id="payco" value="페이코"> 페이코</label>
                 <label for="naverpay"><input type="checkbox" name="payment" id="naverpay" value="네이버 페이"> 네이버 페이</label>
                 <label for="kakaopay"><input type="checkbox" name="payment" id="kakaopay" value="카카오 페이"> 카카오 페이</label>
             </p>
-            <label for="stock"><span style="color: red;">*</span> 재고 : </label>
+            <label for="stock"><span style="color: red;">*</span> 재고  </label>
             <input type="number" name="stock" id="stock" min="0" value="0"><br><br>
-            <label for="seller"><span style="color:red;">*</span> 판매자 아이디 : </label>
+            <label for="seller"><span style="color:red;">*</span> 판매자 아이디  </label>
             <input type="text" name="seller" id="seller" required>&nbsp;&nbsp;
-            <label for="phone"><span style="color:red;">*</span> 문의 가능 번호 : </label>
+            <label for="phone"><span style="color:red;">*</span> 문의 가능 번호  </label>
             <input type="text" name="phone" id="phone"><br><br>
-            <label for="addr"><span style="color:red;">*</span> 판매 주소 : </label>
+            <label for="addr"><span style="color:red;">*</span> 판매 주소  </label>
             <input type="text" name="addr" id="addr" required><br><br>
             <div class="information">
-                <label for="info" style="margin-right: 10px;"><span style="color:red;">*</span> 상품 설명 : </label>
+                <label for="info" style="margin-right: 10px;"><span style="color:red;">*</span> 설명  </label>
                 <textarea name="info" id="info" required></textarea>
             </div>
             <br>
-            <label for="opt">추가 옵션 : </label>
+            <label for="opt">추가 옵션  </label>
             <input type="text" name="opt" id="opt"><br><br>
-            <input type="submit" value="등록" id="submit"><br><br>
+            <input type="submit" value="수정" id="edit"><br><br>
         </div>
     </form>
+  </div>
+</main>
+
 {% endblock section %}

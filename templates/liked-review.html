@@ -1,15 +1,27 @@
-{% extends "index.html" %}
+{% extends "mypage_user.html" %}
 {% block section %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공감 리뷰</title>
-</head>
-<body>
-    <h1>공감 리뷰</h1>
-    <p>여기서 사용자가 공감한 리뷰들을 확인할 수 있습니다.</p>
-</body>
-</html>
+{% block content %}
+<main id="main-content">
+    <div class="order-history-container">
+        {% if review != [] %}
+            <div class="order-row">
+                {% for key, value in review %}
+                <div class="order-card" onclick="location.href='/view_review_detail/{{key}}/';" style="cursor:pointer;">
+                    <div class="product-image">
+                        <img src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
+                    </div>
+                    <div class="product-details">
+                        <h2>{{ value['title'] }}</h2>
+                        <p>{{ value['name'] }}</p>
+                        <p>별점 | {{ value['rate'] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>공감한 리뷰가 없습니다.</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
 {% endblock section %}

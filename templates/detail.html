@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-
 {% block section %}
 
 <script>
@@ -13,12 +12,12 @@
             if (my_heart['interested'] == 'Y')
             {
             $("#heart").css("color","red");
-            $("#heart").attr("onclick","unlike()");
+            $("#heart").off("click").on("click", unlike);
             }
             else
             {
             $("#heart").css("color","grey");
-            $("#heart").attr("onclick","like()");
+            $("#heart").off("click").on("click", like);
             }
             }
         });
@@ -32,7 +31,7 @@
         },
         success: function (response) {
         alert(response['msg']);
-        window.location.reload()
+        showHeart();
         }
         });
     }
@@ -45,26 +44,240 @@
         },
         success: function (response) {
         alert(response['msg']);
-        window.location.reload()
+        showHeart();
         }
         });
     }
     $(document).ready(function () {
         showHeart();
     });
-    </script>
-<p>
-    item name is <b>{{name}}</b> and address is {{data['addr']}}
-    </p>
-    <p>
-    Seller tel. is {{data['phone']}} and category is {{data['category']}} <br>
-    You can pay by {{data['payment']}}
-    </p>
+    $(document).ready(function () {
+        console.log(document.getElementById('purchase-button')); // 콘솔로 버튼 존재 여부 확인
+        document.getElementById('purchase-button').addEventListener('click', function () {
+            const form = document.getElementById('purchase-form');
+            const formData = new FormData(form);
+
+            fetch('/purchase_item', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            });
+        });
+    });
+</script>
+
+<style>
+    .product-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        border: 1px solid #2c6a2c;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .product-header h1 {
+        font-size: 1.5rem;
+        color: #2c6a2c;
+        margin: 0;
+    }
+
+    .product-header .rating {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2c6a2c;
+        display: flex;
+        align-items: center;
+    }
+
+    .product-header .rating .star {
+        margin-right: 5px;
+    }
+
+    .product-body {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .product-image {
+        flex: 1;
+        max-width: 300px;
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f7f7f7;
+    }
+
+    .product-image img {
+        max-width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .product-details {
+        flex: 2;
+        font-size: 0.9rem;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .product-details p {
+        margin: 5px 0;
+    }
+
+    .product-details b {
+        color: #2c6a2c;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f8f8f8;
+        border-top: 1px solid #ddd;
+    }
+
+    .product-footer .stock {
+        font-size: 1rem;
+        color: #2c6a2c;
+        font-weight: bold;
+    }
+
+    .product-footer .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .product-footer .actions button {
+        background-color: #2c6a2c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 15px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .product-footer .actions button:hover {
+        background-color: #1e4b1e;
+    }
+
+
+    .product-title {
+    display: flex;
+    align-items: center; /* 이름과 하트를 수직으로 정렬 */
+    gap: 10px; /* 이름과 하트 사이 간격 */
+}
+
+.product-title h1 {
+    margin: 0; /* 기본 여백 제거 */
+    font-size: 1.5rem; /* 이름의 글꼴 크기 */
+    color: #2c6a2c;
+}
+
+    #heart {
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    #heart.red {
+        color: red;
+    }
+
+    #heart.grey {
+        color: grey;
+    }
+</style>
+
+<nav>
+    <ul class="submenu__under">
+        <li><a href="/menu">메뉴</a></li>
+        <li>></li>
+        {% if category == "All" and sort_by!="liked" %}
+            <li><a href="{{url_for('view_list', page=i, category='All')}}">전체</a></li>
+        {% elif category != "All" and sort_by!="liked" %}
+            <li><a href="{{url_for('view_item_detail', name=name)}}">{{ name }}</a></li> <!-- 현재 선택된 카테고리 -->
+        {% endif %}
+    </ul>
+</nav>
+
+<section>
+    <hr>
+</section>
+<div class="product-container">
+    <!-- Header -->
+    <div class="product-header">
+        <div class="product-title">
+            <h1>{{ name }}</h1>
+            <i class="fa fa-heart" id="heart"></i> <!-- 이름 옆으로 이동 -->
+        </div>
+        <div class="rating">
+            <span class="star">★</span>
+            {{ average_rating if average_rating else "0.0" }}
+        </div>
+    </div>
+
+    <!-- Body -->
+    <div class="product-body">
+        <!-- Image -->
+        <div class="product-image">
+            <img src="../../static/images/{{ data.img_path }}" alt="{{ name }}">
+        </div>
+
+        <!-- Details -->
+        <div class="product-details">
+            <p><b>상품 설명 |</b> {{ data['info'] }}</p>
+            <p><b>가격 |</b> {{ data['price'] }} 원</p>
+            <p><b>결제 수단 |</b>
+                {% for method in data['payment'] %}
+                    <span>{{ method }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <p><b>판매 주소 |</b> {{ data['addr'] }}</p>
+            <p><b>문의 번호 |</b> {{ data['phone'] }}</p>
+            <p><b>추가 옵션 |</b> {{ data['opt'] }}</p>
+        </div>
+        
+    </div>
+
+    <!-- Footer -->
+    <div class="product-footer">
+        <!-- Stock Display -->
+        <span class="stock">재고: {{ data['stock'] }} 개</span>
     
-    <img src="../../static/images/{{data.img_path}}", width=140, height=140>
-
-    <button onclick="location.href='/reg_review_init/{{name}}/';">리뷰등록</button>
-
-
-    <i class="fa fa-heart" id="heart" ></i>
-{% endblock section %}
+        <!-- Actions -->
+        <div class="actions">
+            <form id="purchase-form" method="POST">
+                <input type="hidden" name="item_name" value="{{ name }}">
+                <button type="button" id="purchase-button">구매</button>
+            </form>
+            <button onclick="checkLogin('/reg_review_init/{{name}}/')">리뷰등록</button>
+        </div>
+    </div>    
+</div>
+{% endblock %}

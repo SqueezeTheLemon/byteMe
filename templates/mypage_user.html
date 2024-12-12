@@ -3,12 +3,6 @@
 
     <style>
         /* 기본 설정 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         .mypage-wrapper {
             font-family: Arial, sans-serif;
             display: flex;
@@ -126,12 +120,12 @@
         }
 
         .product-image {
-            width: 50%;
+            width: 100%;
             margin-right: 10px;
         }
 
         .product-image img {
-            width: 100%;
+            width: 200%;
             border-radius: 4px;
             object-fit: cover;
             border: 1px solid #ddd;
@@ -161,54 +155,240 @@
             font-weight: bold;
             font-size: 24px;
         }
-    </style>
+
+        .order-history-container {
+            display: grid;
+            flex-wrap: wrap; /* 줄 바꿈 활성화 */       
+            justify-content: flex-start; /* 왼쪽 정렬 */   
+            /* 카드 간격 */
+            padding: 10px;
+            background-color: rgb(255, 255, 255);
+        }
+
+        .order-row {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(4, 1fr); /* 5열로 정렬 */
+            /* 카드 간의 간격 */
+            padding: 6px;
+            background-color: rgb(255, 255, 255);
+        }  
+        
+        .order-card {
+            background-color: white;
+            width: 200px;
+            border-radius: 10px;
+            position:relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: center;
+            color: rgb(0, 70, 42);
+        }
+
+        .order-card p {
+        text-align: center;
+        font-size: 0.8em;
+        color: rgb(0, 70, 42);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .product-details {
+            margin-top: 10px;
+        }
+
+        .order-card h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .order-card .complete-button {
+        background-color: rgb(0, 70, 42);
+        }
+
+
+        
+      
+/* edit-css 클래스 안의 form */
+.edit-css form {
+    width: 100%; 
+    max-width: 900px;
+    height: auto; 
+    min-height: 50vh; 
+    margin: 10px auto; 
+    padding: 10px; 
+    background-color: #ffffff; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+/* 라벨 스타일 */
+.edit-css label {
+    display: block;
+    font-weight: bold; 
+    margin-bottom: 5px; 
+    color: rgb(0, 70, 42); 
+}
+
+/* 입력 필드 스타일 */
+.edit-css input[type="text"],
+.edit-css input[type="email"],
+.edit-css input[type="tel"] {
+    width: 100%;
+    padding: 10px; 
+    margin-bottom: 15px; 
+    border: 2px solid rgb(134, 182, 162); 
+    border-radius: 5px; 
+    font-size: 0.9rem; 
+    box-sizing: border-box; 
+}
+
+/* 라디오 버튼 */
+.edit-css input[type="radio"] {
+    margin-right: 5px; 
+}
+/* 버튼 스타일 */
+.edit-css button {
+    width: 100%; 
+    padding: 10px; 
+    background-color: rgb(0, 70, 42);
+    color: #ffffff; 
+    border: none; 
+    border-radius: 5px; 
+    font-size: 1rem; 
+    cursor: pointer; 
+}
+
+/* 버튼 호버 효과 */
+.edit-css button:hover {
+    background-color: rgb(134, 182, 162); 
+    color: rgb(0, 70, 42); 
+}
+
+
+
+
+  </style>
+
 
 <div class="mypage-wrapper">
     <!-- 상단 테이블 -->
     <div class="table-container">
         <div class="table-cell">
-            <h3>박이화 님</h3>
+            <h3>{{ nickname }} 님</h3>
             <p><strong>일반 회원</strong></p>
-            <a href="/edit-member-info" class="edit-button">정보 수정</a>
         </div>
         <div class="table-cell">
             <h3>구매 횟수</h3><br><br><br>
-            <div class="bottom-right"><strong>총 9회</strong></div>
+            <div class="bottom-right"><strong>총 {{num}}회</strong></div>
         </div>
         <div class="table-cell">
             <h3>리뷰 수</h3><br><br><br>
-            <div class="bottom-right"><strong>총 4회</strong></div>
+            <div class="bottom-right"><strong>총 {{review_num}}회</strong></div>
         </div>
     </div>
 
-    <!-- 하단 레이아웃 -->
+    <!-- 메뉴 컨테이너 -->
     <div class="bottom-container">
-        <div class="menu-container">
-            <a href="/my-order-history" class="menu-item">주문 내역</a>
-            <a href="/my-ordered" class="menu-item">구매 내역</a>
-            <a href="/liked_page" class="menu-item">좋아요</a>
+        <div class="menu-container"> 
+            <a href="/my-order-history" class="menu-item" onclick="loadPage(event, '/my-order-history')">주문 내역</a>
+            <a href="/my-ordered" class="menu-item" onclick="loadPage(event, '/my-ordered')">구매 내역</a>
+            <a href="/liked_page" class="menu-item" onclick="loadPage(event, '/liked_page')">좋아요</a>
             <div class="menu-divider"></div>
-            <a href="/my-review" class="menu-item">나의 리뷰</a>
-            <a href="/liked-review" class="menu-item">공감 리뷰</a>           
+            <a href="/my-review" class="menu-item" onclick="loadPage(event, '/my-review')">나의 리뷰</a>
+            <a href="/liked-review" class="menu-item" onclick="loadPage(event, '/liked-review')">공감 리뷰</a>
             <div class="menu-divider"></div>
-            <a href="/edit-member-info" class="menu-item">회원 정보 수정</a>
-            <a href="/delete-member" class="menu-item">회원 탈퇴</a>
+            <a href="/edit-info" class="menu-item" onclick="loadPage(event, '/edit-info')">회원 정보 수정</a>
+            <a href="#" class="menu-item" onclick="confirmDelete()">회원 탈퇴</a>
+            <form id="deleteAccountForm" action="/delete_account" method="POST" style="display: none;"></form>
         </div>
-        <div class="right-content">
-            <div class="product-container">
-                <div class="product-image">
-                    <img src="{{ url_for('static', filename='images/example.jpg') }}" alt="상품 이미지">
+
+        
+        <div id="content-container" style="flex: 5; padding: 10px;">
+        {% block content %}    
+            
+                
+             <div class="order-history-container">
+                {% if total > 0 %}
+                <div class="order-row">
+                
+                        {% for item_name, num_item in item %}
+                        {% for key, value in datas %}
+                            {% if item_name == value['name'] %}
+                           <div class="order-card">
+                            <div class="product-image">
+                                <img src="static/images/{{ value.img_path }}" alt="{{ value['name'] }}">
+                            </div>
+                            <div class="product-details">
+                                <h2>{{ item_name }}</h2>
+                                <p>{{ value['info'] }}</p>
+                                <p>구매 수량 | {{ num_item }}</p>
+                            </div>
+                           </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                
+                {% else %}
+                    <p>주문이 모두 완료되었습니다.</p>
+                {% endif %}
+                {% endblock %}
                 </div>
-                <div class="product-details">
-                    <div class="detail-item"><h2>핫티노/아이스티노</h2></div><br><br>
-                    <div class="detail-item">옵션 | ICE</div>
-                    <div class="detail-item">수량 | 1</div>
-                    <div class="detail-item">가격 | 2900원</div>
-                    <div class="detail-item">결제수단 | 카드</div>
-                </div>
-            </div>
-            <a href="#" class="complete-button">1 번째로 준비중</a>
+             </div>
+           
+            
         </div>
-    </div>
 </div>
+
+<script>
+    function loadPage(event, url) {
+        event.preventDefault(); // 페이지 이동 방지
+        const container = document.getElementById('content-container');
+
+        fetch(url) // 서버에서 HTML 페이지 요청
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 올바르지 않습니다.');
+                }
+                return response.text();
+            })
+            .then((html) => {
+                // HTML 문자열을 DOM으로 변환
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // 필요한 콘텐츠만 선택 (예: #main-content)
+                const mainContent = doc.querySelector('#main-content');
+
+                // 콘텐츠가 있다면 교체, 없으면 오류 메시지
+                if (mainContent) {
+                    container.innerHTML = mainContent.innerHTML;
+                } else {
+                    container.innerHTML = '<p>올바른 콘텐츠를 로드할 수 없습니다.</p>';
+                }
+            })
+            .catch((error) => {
+                console.error('페이지 로드 중 오류 발생:', error);
+                container.innerHTML = '<p>콘텐츠를 로드할 수 없습니다. 나중에 다시 시도해주세요.</p>';
+            });
+    }
+
+    // 회원 탈퇴 확인
+    function confirmDelete() {
+        const userConfirmed = confirm("정말로 탈퇴하시겠습니까?");
+        if (userConfirmed) {
+            document.getElementById("deleteAccountForm").submit();
+        } else {
+            alert("탈퇴가 취소되었습니다.");
+        }
+    }
+</script>
+
+
 {% endblock section %}

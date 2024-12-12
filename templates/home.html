@@ -1,10 +1,9 @@
 {% extends "index.html" %}
 
 {% block section %}
+<section>
     <div class="banner">
-        <img src="static/images/banner.jpg" alt="홈 배너" class="banner-image">
+        <img src="{{ url_for('static', filename='images/banner.jpg') }}" alt="우리 사이트의 메인 배너 이미지" class="banner-image">
     </div>
-    <section class="home-content">
-        <p>홈 화면 입니다.</p>
-    </section>
+</section>
 {% endblock %}
