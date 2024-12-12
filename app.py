@@ -548,7 +548,6 @@ def edit_account():
         "nickname": request.form.get("nickname"),
         "email": request.form.get("email"),
         "name": request.form.get("name"),
-        "position": request.form.get("position"),
         "phone": request.form.get("phone"),
     }
 

@@ -88,10 +88,15 @@ class DBhandler:
         users = self.db.child("user").get()
         for res in users.each():
             if res.val()['id'] == user_id:
+                # 'position' 필드 제거
+                if 'position' in updated_data:
+                    del updated_data['position']
+                    
                 self.db.child("user").child(res.key()).update(updated_data)
                 print(f"Updated user: {user_id}")
                 return True
         return False
+
 
     
     def get_items(self):
