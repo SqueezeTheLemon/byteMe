@@ -668,8 +668,9 @@ def complete_item():
     tot_count = len(item)
 
     data=DB.get_items()
+    nickname = DB.get_nickname(session["id"])
 
-    return render_template("mypage_manager.html", complete=new_complete, total=tot_count, items=item, datas=data.items())
+    return render_template("mypage_manager.html", complete=new_complete, total=tot_count, items=item, datas=data.items(), nickname=nickname)
 
 #로그인 확인 
 @application.route('/api/check-login')
